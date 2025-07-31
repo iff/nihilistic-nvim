@@ -144,6 +144,7 @@ let
           require("yi.formatter").setup()
           require("yi.diagnostic").setup()
           require("yi.treesitter").setup()
+          require("yi.codecompanion").setup()
 
           require("yi.mappings").apply()
       end

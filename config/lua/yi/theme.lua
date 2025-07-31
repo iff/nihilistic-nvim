@@ -78,6 +78,53 @@ function M.setup()
         return icon .. autosave .. ' ' .. protocol .. '%t'
     end
 
+    local spinner_symbols = {
+        "⠋",
+        "⠙",
+        "⠹",
+        "⠸",
+        "⠼",
+        "⠴",
+        "⠦",
+        "⠧",
+        "⠇",
+        "⠏",
+    }
+    local spinner_symbols_len = 10
+
+    local thinking = require("lualine.component"):extend()
+    thinking.processing = false
+    thinking.spinner_index = 1
+
+    -- Initializer
+    function thinking:init(options)
+        thinking.super.init(self, options)
+
+        local group = vim.api.nvim_create_augroup("CodeCompanionHooks", {})
+
+        vim.api.nvim_create_autocmd({ "User" }, {
+            pattern = "CodeCompanionRequest*",
+            group = group,
+            callback = function(request)
+                if request.match == "CodeCompanionRequestStarted" then
+                    self.processing = true
+                elseif request.match == "CodeCompanionRequestFinished" then
+                    self.processing = false
+                end
+            end,
+        })
+    end
+
+    -- Function that runs every time statusline is updated
+    function thinking:update_status()
+        if self.processing then
+            self.spinner_index = (self.spinner_index % spinner_symbols_len) + 1
+            return spinner_symbols[self.spinner_index]
+        else
+            return nil
+        end
+    end
+
     require('lualine').setup({
         options = {
             theme = 'nightfox',
@@ -90,7 +137,7 @@ function M.setup()
         sections = {
             lualine_a = { "mode", show_file },
             -- lualine_a = { window_nr, show_file },
-            lualine_b = {},
+            lualine_b = { thinking },
             lualine_c = {},
             lualine_x = {},
             lualine_y = { { 'diagnostics', sources = { 'nvim_lsp' }, colored = false } },

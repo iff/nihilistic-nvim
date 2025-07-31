@@ -80,6 +80,22 @@
         "type": "github"
       }
     },
+    "codecompanion-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1753907254,
+        "narHash": "sha256-KkxtMAspKSaGLDSvABIKE7X28xa7Q8tQoP+tfWY+kUI=",
+        "owner": "olimorris",
+        "repo": "codecompanion.nvim",
+        "rev": "3d4d85f03acc3a31ea2ec9bd34db5194ed7696ff",
+        "type": "github"
+      },
+      "original": {
+        "owner": "olimorris",
+        "repo": "codecompanion.nvim",
+        "type": "github"
+      }
+    },
     "comment-nvim": {
       "flake": false,
       "locked": {
@@ -650,6 +666,7 @@
         "cmp-lsp-nvim": "cmp-lsp-nvim",
         "cmp-luasnip-nvim": "cmp-luasnip-nvim",
         "cmp-path-nvim": "cmp-path-nvim",
+        "codecompanion-nvim": "codecompanion-nvim",
         "comment-nvim": "comment-nvim",
         "flake-utils": "flake-utils",
         "fugitive-nvim": "fugitive-nvim",

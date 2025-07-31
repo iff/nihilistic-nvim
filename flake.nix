@@ -164,6 +164,11 @@
       url = github:dkuettel/ptags.nvim;
       flake = true;
     };
+
+    codecompanion-nvim = {
+      url = github:olimorris/codecompanion.nvim;
+      flake = false;
+    };
   };
 
   outputs = { self, neovim-nightly-overlay, flake-utils, nixpkgs, ... }@inputs:
