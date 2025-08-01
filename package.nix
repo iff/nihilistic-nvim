@@ -105,14 +105,14 @@ let
     text = ''
       do
           vim.opt.runtimepath = {
-              "${pkgs.neovim-unwrapped}/share/nvim/runtime",
-              "${pkgs.neovim-unwrapped}/lib/nvim",
+              "${pkgs.neovim}/share/nvim/runtime",
+              "${pkgs.neovim}/lib/nvim",
               "${./config}",
               "${./config}/after",
           }
           vim.opt.packpath = {
-              "${pkgs.neovim-unwrapped}/share/nvim/runtime",
-              "${pkgs.neovim-unwrapped}/lib/nvim",
+              "${pkgs.neovim}/share/nvim/runtime",
+              "${pkgs.neovim}/lib/nvim",
               "${packs}",
           }
 
@@ -144,7 +144,7 @@ let
   bin-v = pkgs.writeScriptBin "v" ''
     #!${pkgs.zsh}/bin/zsh
     set -eu -o pipefail
-    if NVIM_APPNAME=nvim-e ${pkgs.neovim-unwrapped}/bin/nvim -u ${minimal} $@; then
+    if NVIM_APPNAME=nvim-e ${pkgs.neovim}/bin/nvim -u ${minimal} $@; then
         exit 0
     else
         ret=$?
@@ -161,8 +161,8 @@ pkgs.symlinkJoin {
   paths = [
     inputs.ptags-nvim.packages.${pkgs.system}.app
   ] ++ (with pkgs; [
-    # TODO install neovim-nightly
-    neovim-unwrapped
+    # neovim-nightly from overlay
+    neovim
     #
     fd
     ripgrep

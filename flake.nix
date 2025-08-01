@@ -171,10 +171,13 @@
     };
   };
 
-  outputs = { self, neovim-nightly-overlay, flake-utils, nixpkgs, ... }@inputs:
+  outputs = { self, flake-utils, neovim-nightly-overlay, nixpkgs, ... }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ neovim-nightly-overlay.overlays.default ];
+        };
 
         plib = import ./lib { inherit pkgs inputs; };
         lib = nixpkgs.lib.extend (final: prev: plib);
