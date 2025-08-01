@@ -177,13 +177,22 @@
         inherit (nixpkgs) lib;
         pkgs = nixpkgs.legacyPackages.${system};
 
-        prod = import ./package.nix { pkgs = pkgs; inputs = inputs; };
-        dev = import ./package.nix { pkgs = pkgs; inputs = inputs; dev-plugins = { }; };
+        pluginUtils = import ./lib/plugins.nix { inherit pkgs inputs; };
+
+        prod = import ./package.nix { pkgs = pkgs; inputs = inputs; dev-plugins = { }; };
+        dev = import ./package.nix {
+          pkgs = pkgs;
+          inputs = inputs;
+          dev-plugins = {
+            # e.g. something like this:
+            # auspicious-autosave-nvim = pluginUtils.plugLocal "auspicious-autosave-nvim" /path/to/local/autosave.nvim {};
+          };
+        };
 
         test = pkgs.writeScriptBin "test" ''
           #!${pkgs.zsh}/bin/zsh
           set -eu -o pipefail
-          path=(${dev}/bin $path) ${dev}/bin/e $@
+          path=(${dev}/bin $path) ${dev}/bin/v $@
         '';
 
       in
@@ -193,6 +202,7 @@
           dev = dev;
           prod = prod;
         };
+
         apps.default = {
           type = "app";
           program = "${test}/bin/test";

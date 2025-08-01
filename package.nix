@@ -1,5 +1,8 @@
 { pkgs, inputs, dev-plugins }:
 let
+  pluginUtils = import ./lib/plugins.nix { inherit pkgs inputs; };
+  inherit (pluginUtils) plug plugNoCheck;
+
   treesitter = pkgs.vimPlugins.nvim-treesitter.withPlugins (p: with p; [
     c
     javascript
@@ -29,26 +32,6 @@ let
     bibtex
     cmake
   ]);
-
-  plugWith = name: { doCheck ? true }: pkgs.vimUtils.buildVimPlugin {
-    pname = name;
-    version = "git";
-    src = builtins.getAttr name inputs;
-    buildPhase = ''
-      ${if name == "telescope-fzf-native-nvim" then "make" else ""}
-    '';
-    # TODO fix doCheck and get deps as argument?
-    # inherit dependencies;
-    # dependencies = with pkgs.vimPlugins [
-    #   nvim-cmp
-    #   plenary-nvim
-    #   telescope-nvim
-    # ];
-    inherit doCheck;
-  };
-
-  plug = name: plugWith name { doCheck = true; };
-  plugNoCheck = name: plugWith name { doCheck = false; };
 
   basePluginsList = with pkgs.vimPlugins; [
     (plug "hop-nvim")
