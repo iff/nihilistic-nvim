@@ -1,7 +1,6 @@
-{ pkgs, inputs, dev-plugins }:
+{ pkgs, inputs, lib, dev-plugins }:
 let
-  pluginUtils = import ./lib/plugins.nix { inherit pkgs inputs; };
-  inherit (pluginUtils) plug plugNoCheck;
+  inherit (lib) plug plugNoCheck;
 
   treesitter = pkgs.vimPlugins.nvim-treesitter.withPlugins (p: with p; [
     c

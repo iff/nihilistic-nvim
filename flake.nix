@@ -174,18 +174,18 @@
   outputs = { self, neovim-nightly-overlay, flake-utils, nixpkgs, ... }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        inherit (nixpkgs) lib;
         pkgs = nixpkgs.legacyPackages.${system};
 
-        pluginUtils = import ./lib/plugins.nix { inherit pkgs inputs; };
-
-        prod = import ./package.nix { pkgs = pkgs; inputs = inputs; dev-plugins = { }; };
+        plib = import ./lib { inherit pkgs inputs; };
+        lib = nixpkgs.lib.extend (final: prev: plib);
+        prod = import ./package.nix { pkgs = pkgs; inputs = inputs; inherit lib; dev-plugins = { }; };
         dev = import ./package.nix {
           pkgs = pkgs;
           inputs = inputs;
+          inherit lib;
           dev-plugins = {
             # e.g. something like this:
-            # auspicious-autosave-nvim = pluginUtils.plugLocal "auspicious-autosave-nvim" /path/to/local/autosave.nvim {};
+            # auspicious-autosave-nvim = lib.plugLocal "auspicious-autosave-nvim" /path/to/local/autosave.nvim {};
           };
         };
 
