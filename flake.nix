@@ -193,7 +193,7 @@
           dev = dev;
           prod = prod;
         };
-        apps.${system}.default = {
+        apps.default = {
           type = "app";
           program = "${test}/bin/test";
         };
