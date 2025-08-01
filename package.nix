@@ -30,76 +30,86 @@ let
     cmake
   ]);
 
-  plug = name: pkgs.vimUtils.buildVimPlugin {
+  plugWith = name: { doCheck ? true }: pkgs.vimUtils.buildVimPlugin {
     pname = name;
     version = "git";
     src = builtins.getAttr name inputs;
     buildPhase = ''
       ${if name == "telescope-fzf-native-nvim" then "make" else ""}
     '';
-    # hack to fix build tests
-    dependencies = [
-      pkgs.vimPlugins.nvim-cmp
-      pkgs.vimPlugins.plenary-nvim
-      pkgs.vimPlugins.telescope-nvim
-    ];
-    # TODO or
-    # doCheck = false;
+    # TODO fix doCheck and get deps as argument?
+    # inherit dependencies
+    # dependencies = [
+    #   pkgs.vimPlugins.nvim-cmp
+    #   pkgs.vimPlugins.plenary-nvim
+    #   pkgs.vimPlugins.telescope-nvim
+    # ];
+    inherit doCheck;
   };
+
+  plug = name: plugWith name { };
+  plugNoCheck = name: plugWith name { doCheck = false; };
+
 
   # TODO how to pair the plugins with their setup
   # TODO some plugins need some compilation step?
-  plugins = (with pkgs.vimPlugins;
-    [
-      (plug "hop-nvim")
-      (plug "fugitive-nvim")
-      # (plug "gitsigns-nvim")
-      gitsigns-nvim
-      (plug "lsp-indicator-nvim")
-      (plug "auspicious-autosave-nvim")
-      (plug "lavish-layouts-nvim")
-      (plug "funky-formatter-nvim")
-      (plug "funky-contexts-nvim")
-      (plug "comment-nvim")
+  basePluginsList = with pkgs.vimPlugins; [
+    (plug "hop-nvim")
+    (plug "fugitive-nvim")
+    # (plug "gitsigns-nvim")
+    gitsigns-nvim
+    (plug "lsp-indicator-nvim")
+    (plug "auspicious-autosave-nvim")
+    (plug "lavish-layouts-nvim")
+    (plug "funky-formatter-nvim")
+    (plug "funky-contexts-nvim")
+    (plug "comment-nvim")
 
-      # theme
-      (plug "nightfox-nvim")
-      (plug "web-devicons-nvim")
-      (plug "lualine-nvim")
+    # theme
+    (plug "nightfox-nvim")
+    (plug "web-devicons-nvim")
+    (plug "lualine-nvim")
 
-      # lsp (minimal)
-      (plug "nvim-lspconfig")
-      # (plug "nvim-cmp")
-      nvim-cmp
-      (plug "cmp-lsp-nvim")
-      (plug "luasnip-nvim")
+    # lsp (minimal)
+    (plug "nvim-lspconfig")
+    # (plug "nvim-cmp")
+    nvim-cmp
+    (plug "cmp-lsp-nvim")
+    (plug "luasnip-nvim")
 
-      # lsp (ext completion)
-      (plug "cmp-buffer-nvim")
-      (plug "cmp-path-nvim")
-      (plug "cmp-luasnip-nvim")
-      (plug "lspkind-nvim")
-      (plug "ptags-nvim")
+    # lsp (ext completion)
+    (plug "cmp-buffer-nvim")
+    (plugNoCheck "cmp-path-nvim")
+    (plugNoCheck "cmp-luasnip-nvim")
+    (plug "lspkind-nvim")
+    (plugNoCheck "ptags-nvim")
 
-      # telescope
-      # (plug "plenary-nvim")
-      plenary-nvim
-      (plug "telescope-nvim")
-      (plug "telescope-fzf-native-nvim")
-      (plug "telescope-hop-nvim")
-      (plug "telescope-ui-select-nvim")
+    # telescope
+    # (plug "plenary-nvim")
+    plenary-nvim
+    (plugNoCheck "telescope-nvim")
+    (plug "telescope-fzf-native-nvim")
+    (plug "telescope-hop-nvim")
+    (plug "telescope-ui-select-nvim")
 
-      # (plug "rustacean-nvim")
-      rustaceanvim
+    # (plug "rustacean-nvim")
+    rustaceanvim
 
-      (plug "neodev-nvim")
-      (plug "kmonad-vim")
-      (plug "resty-vim")
+    (plug "neodev-nvim")
+    (plug "kmonad-vim")
+    (plugNoCheck "resty-vim")
 
-      treesitter
-    ]) ++ (with dev-plugins; [
-    # TODO
-  ]);
+    (plugNoCheck "codecompanion-nvim")
+
+    treesitter
+  ];
+
+  devPluginsList = builtins.attrValues dev-plugins;
+
+  # dev-plugins take precedence - filter out base plugins that have same name as dev plugins
+  devPluginNames = map pkgs.lib.getName devPluginsList;
+  filteredBasePlugins = builtins.filter (plugin: !(builtins.elem (pkgs.lib.getName plugin) devPluginNames)) basePluginsList;
+  plugins = devPluginsList ++ filteredBasePlugins;
 
   pluginsWithDependencies = pkgs.lib.unique (builtins.concatMap getDependencies plugins);
   # TODO is that still true? do plugins bring their dependencies?
@@ -151,7 +161,7 @@ let
     '';
   };
 
-  # TODO might have been better before? "NVIM_APPNAME=nvim-e exec -a $0 ${pkgs.neovim-unwrapped}/bin/nvim -u ${minimal(false)} -V1 $@"
+  # TODO might have been better before? "NVIM_APPNAME=nvim-e exec -a $0 ${pkgs.neovim-unwrapped}/bin/nvim -u ${minimal()} -V1 $@"
   bin-v = pkgs.writeScriptBin "v" ''
     #!${pkgs.zsh}/bin/zsh
     set -eu -o pipefail
