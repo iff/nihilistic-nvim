@@ -38,21 +38,18 @@ let
       ${if name == "telescope-fzf-native-nvim" then "make" else ""}
     '';
     # TODO fix doCheck and get deps as argument?
-    # inherit dependencies
-    # dependencies = [
-    #   pkgs.vimPlugins.nvim-cmp
-    #   pkgs.vimPlugins.plenary-nvim
-    #   pkgs.vimPlugins.telescope-nvim
+    # inherit dependencies;
+    # dependencies = with pkgs.vimPlugins [
+    #   nvim-cmp
+    #   plenary-nvim
+    #   telescope-nvim
     # ];
     inherit doCheck;
   };
 
-  plug = name: plugWith name { };
+  plug = name: plugWith name { doCheck = true; };
   plugNoCheck = name: plugWith name { doCheck = false; };
 
-
-  # TODO how to pair the plugins with their setup
-  # TODO some plugins need some compilation step?
   basePluginsList = with pkgs.vimPlugins; [
     (plug "hop-nvim")
     (plug "fugitive-nvim")
