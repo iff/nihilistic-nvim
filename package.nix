@@ -181,6 +181,7 @@ pkgs.symlinkJoin {
   ]);
 
   postBuild = ''
+    ln -sfT ${bin-v}/bin/v $out/bin/nvim
     ln -sfT ${bin-v}/bin/v $out/bin/v
   '';
 }
