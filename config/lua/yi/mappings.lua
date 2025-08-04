@@ -583,6 +583,7 @@ function M.for_inserts()
         { [[s e]], n, "insert empty line below", rhs = "o<esc>k" },
         { [[s u]], n, "insert empty line below", rhs = "O<esc>j" },
         { [[s]], v, "insert over visual", rhs = "c" },
+        { [[sr]], v, "enter replace mode", rhs = "R" },
     }
 end
 
