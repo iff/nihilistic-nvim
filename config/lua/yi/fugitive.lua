@@ -37,9 +37,9 @@ function M.setup()
         callback = M.gitcommit_config,
     })
 
-    require('gitsigns').setup({
+    require("gitsigns").setup {
         on_attach = function(bufnr)
-            local gitsigns = require('gitsigns')
+            local gitsigns = require("gitsigns")
 
             local function map(mode, l, r, opts)
                 opts = opts or {}
@@ -47,23 +47,23 @@ function M.setup()
                 vim.keymap.set(mode, l, r, opts)
             end
 
-            map('n', 'ge', function()
+            map("n", "ge", function()
                 if vim.wo.diff then
-                    vim.cmd.normal({ ']c', bang = true })
+                    vim.cmd.normal { "]c", bang = true }
                 else
-                    gitsigns.nav_hunk('next')
+                    gitsigns.nav_hunk("next")
                 end
             end)
 
-            map('n', 'gu', function()
+            map("n", "gu", function()
                 if vim.wo.diff then
-                    vim.cmd.normal({ '[c', bang = true })
+                    vim.cmd.normal { "[c", bang = true }
                 else
-                    gitsigns.nav_hunk('prev')
+                    gitsigns.nav_hunk("prev")
                 end
             end)
         end,
-    })
+    }
 end
 
 local function map(mode, lhs, rhs, desc)
@@ -84,6 +84,9 @@ function M.status_config()
 
     map(nv, "t", "<Plug>fugitive:-", "stage or unstage")
     map(n, "q", "<Plug>fugitive:U", "unstage everything")
+
+    -- discard hunk
+    map(nv, ",x", "<Plug>fugitive:X", "discard")
 
     -- TODO on a big monitor, seeing the diff in a split instead of inline might be nicer
     map("n", "d", "<Plug>fugitive:O<cmd>Gvdiff<enter>", "diff in tab")
