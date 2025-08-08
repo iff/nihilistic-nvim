@@ -305,7 +305,11 @@ function M.pick_jumplist()
 end
 
 function M.pick_file_config()
-    builtin.find_files { prompt_title = "config files", search_dirs = { "~/src/dotfiles" } }
+    builtin.find_files { prompt_title = "fleet config files", search_dirs = { "~/src/fleet" } }
+end
+
+function M.pick_file_nvim_config()
+    builtin.find_files { prompt_title = "nvim config files", search_dirs = { "~/src/nihilistic-nvim" } }
 end
 
 function M.pick_grep()

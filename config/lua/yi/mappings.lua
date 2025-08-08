@@ -1019,6 +1019,7 @@ function M.for_jumps()
         { [[tm]], n, "marks", fn = t.pick_mark },
         { [[tj]], n, "jumps", fn = t.pick_jumplist },
         { [[tfc]], n, "config files", fn = t.pick_file_config },
+        { [[tfv]], n, "config files", fn = t.pick_file_nvim_config },
         { [[te]], n, "buffer symbols", fn = t.pick_buffer_symbol },
         { [[tu]], n, "project symbols", fn = t.pick_project_symbol },
 
