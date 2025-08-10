@@ -2,23 +2,16 @@
   description = "neovim";
 
   inputs = {
-    # config.url = "github:iff/dotfiles/main";
-    # nixpkgs.follows = "config/nixpkgs";
-    nixpkgs.url = github:nixos/nixpkgs/nixpkgs-unstable;
+    fleet.url = github:iff/fleet;
+    nixpkgs.follows = "fleet/nixpkgs";
 
-    flake-utils.url = "github:numtide/flake-utils";
+    flake-utils.url = github:numtide/flake-utils;
 
     # life on the cutting edge
     neovim-nightly-overlay = {
       url = github:nix-community/neovim-nightly-overlay;
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # TODO needed as flake and as plugin, so its a flake with a .plugin output?
-    # that is not so generic with the later ones, but i dont want to flake update twice for this
-    # but what in dev mode, we then need to use a flake from a submodule, that is bumpy
-    # ok later split into plugins and flake plugins, and for flake plugins assume in dev mode there is a package.nix or something?
-    # or just see what happens with subflake?
 
     hop-nvim = {
       url = github:smoka7/hop.nvim;
@@ -27,11 +20,6 @@
 
     fugitive-nvim = {
       url = github:tpope/vim-fugitive;
-      flake = false;
-    };
-
-    lsp-indicator-nvim = {
-      url = github:dkuettel/lsp-indicator.nvim;
       flake = false;
     };
 
