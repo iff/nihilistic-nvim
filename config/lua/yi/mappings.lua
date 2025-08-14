@@ -554,8 +554,8 @@ function M.for_inserts()
         -- TODO map([[s ]], "n", "insert left of hop", todo)
         { [[s e]], n, "insert empty line below", rhs = "o<esc>k" },
         { [[s u]], n, "insert empty line below", rhs = "O<esc>j" },
+        { [[s.]], n, "enter replace mode", rhs = "R" },
         { [[s]], v, "insert over visual", rhs = "c" },
-        { [[sr]], v, "enter replace mode", rhs = "R" },
     }
 end
 
@@ -962,8 +962,8 @@ function M.for_jumps()
             fn = vim.diagnostic.open_float,
         },
         -- TODO would be nicer to have the same binding to toggle
-        { [[=]], n, "highlight references", fn = l.highlight_references },
-        { [[?]], n, "clear highlight references", fn = l.clear_highlight_references },
+        { [[a=]], n, "highlight references", fn = l.highlight_references },
+        { [[a ]], n, "clear highlight references", fn = l.clear_highlight_references },
         -- TODO range actions also exist, not the same as union of actions, more like "make try except" and stuff
         { [[a;]], n, "code action", fn = l.code_action },
         { [[a;]], v, "code action", fn = l.code_action },
