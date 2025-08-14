@@ -143,42 +143,14 @@ end
 local function visualize_submode()
     local back = {
         window = vim.api.nvim_get_current_win(),
-        -- TODO modes might change window, so that's not so easy
-        -- use something else a bit more global for the indication?
-        -- plus how did it even work when we switched windows?
-        -- cursorline = vim.wo[0].cursorline,
-        -- highlight = vim.api.nvim_get_hl(0, { name = "CursorLine" }),
-        -- signcolumn = vim.api.nvim_get_hl(0, { name = "SignColumn" }),
         normal = vim.api.nvim_get_hl(0, { name = "Normal" }),
     }
 
-    -- https://github.com/morhetz/gruvbox/tree/master?tab=readme-ov-file
-    local colors = {
-        blue = "#458588",
-        green = "#98971a",
-        aqua = "#689d6a",
-        yiblue = "#81a1c1",
-    }
-
-    -- vim.wo.cursorline = true
-    -- TODO underline or so could also be nice instead
-    -- vim.api.nvim_set_hl(0, "CursorLine", { bg = colors.green })
-    -- vim.api.nvim_set_hl(0, "SignColumn", { bg = colors.green })
-    vim.api.nvim_set_hl(0, "Normal", { bg = colors.mix })
+    local palette = require("nightfox.palette").load("nordfox")
+    vim.api.nvim_set_hl(0, "Normal", { bg = palette.bg2 })
     vim.cmd.redraw()
 
     local function reset()
-        -- vim.wo[back.window].cursorline = back.cursorline
-        -- vim.api.nvim_set_hl(
-        --     0,
-        --     "CursorLine",
-        --     back.highlight ---@diagnostic disable-line: param-type-mismatch
-        -- )
-        -- vim.api.nvim_set_hl(
-        --     0,
-        --     "SignColumn",
-        --     back.signcolumn ---@diagnostic disable-line: param-type-mismatch
-        -- )
         vim.api.nvim_set_hl(
             0,
             "Normal",
