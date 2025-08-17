@@ -166,10 +166,10 @@
           inherit system;
           overlays = [
             neovim-nightly-overlay.overlays.default
-            # disable test for now to prevent build failures
+            # hack: disable tests only on CI to prevent build failures
             (final: prev: {
               neovim = prev.neovim.overrideAttrs (old: {
-                doCheck = false;
+                doCheck = builtins.getEnv "CI" == "";
               });
             })
           ];
