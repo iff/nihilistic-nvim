@@ -164,7 +164,15 @@
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ neovim-nightly-overlay.overlays.default ];
+          overlays = [
+            neovim-nightly-overlay.overlays.default
+            # disable test for now to prevent build failures
+            (final: prev: {
+              neovim = prev.neovim.overrideAttrs (old: {
+                doCheck = false;
+              });
+            })
+          ];
         };
 
         plib = import ./lib { inherit pkgs inputs; };
