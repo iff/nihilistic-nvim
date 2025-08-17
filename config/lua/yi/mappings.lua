@@ -146,7 +146,7 @@ local function visualize_submode()
         normal = vim.api.nvim_get_hl(0, { name = "Normal" }),
     }
 
-    local palette = require("nightfox.palette").load(vim.g.colors_name)
+    local palette = require("yi.theme").palette()
     vim.api.nvim_set_hl(0, "Normal", { bg = palette.bg2 })
     vim.cmd.redraw()
 

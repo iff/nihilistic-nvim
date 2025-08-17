@@ -11,7 +11,7 @@ syntax match noteNow "\v^ *! \zs.*\ze$"
 syntax match noteRunning "\v^ *r \zs.*\ze$"
 
 lua << EOF
-local palette = require('nightfox.palette').load("nordfox")
+local palette = require("yi.theme").palette
 vim.cmd('highlight noteSection gui=underline,bold guifg=' .. palette.fg1 .. ' guibg=' .. palette.bg1)
 vim.cmd('highlight noteSectionDone gui=underline,strikethrough,bold guifg=' .. palette.fg1 .. ' guibg=' .. palette.bg1)
 vim.cmd('highlight noteTodo gui=bold guifg=' .. palette.fg1)

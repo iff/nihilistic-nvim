@@ -1,10 +1,24 @@
 local M = {}
 
+function M.palette()
+    return require("nightfox.palette").load(vim.g.colors_name)
+end
+
 function M.setup()
     vim.cmd("syntax enable")
 
     vim.opt.background = "dark"
     vim.cmd("colorscheme nordfox")
+
+    vim.api.nvim_create_user_command("SwTheme", function()
+        if vim.g.colors_name == "nordfox" then
+            vim.opt.background = "light"
+            vim.cmd("colorscheme dayfox")
+        else
+            vim.opt.background = "dark"
+            vim.cmd("colorscheme nordfox")
+        end
+    end, {})
 
     require("nvim-web-devicons").setup {}
 
