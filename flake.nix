@@ -166,11 +166,14 @@
           inherit system;
           overlays = [
             neovim-nightly-overlay.overlays.default
-            # hack: disable tests to prevent build failures
+            # hack: disable neotests to prevent build failures
+            # see: https://github.com/nvim-neotest/neotest/issues/530
             (final: prev: {
-              neovim = prev.neovim.overrideAttrs (old: {
-                doCheck = false;
-              });
+              vimPlugins = prev.vimPlugins // {
+                neotest-nvim = prev.vimPlugins.neotest-nvim.overrideAttrs (old: {
+                  doCheck = false;
+                });
+              };
             })
           ];
         };
