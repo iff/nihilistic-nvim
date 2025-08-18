@@ -167,10 +167,14 @@
           overlays = [
             neovim-nightly-overlay.overlays.default
             # hack: disable tests to prevent build failures
+            # note it seems to be neotest (https://github.com/nvim-neotest/neotest/issues/530)
+            # and that is pulled in by lua?
             (final: prev: {
-              neovim = prev.neovim.overrideAttrs (old: {
-                doCheck = false;
-              });
+              vimPlugins = prev.vimPlugins // {
+                neotest-nvim = prev.vimPlugins.neotest-nvim.overrideAttrs (old: {
+                  doCheck = false;
+                });
+              };
             })
           ];
         };
