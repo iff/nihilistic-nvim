@@ -167,7 +167,7 @@ pkgs.symlinkJoin {
     ripgrep
     basedpyright
     clang-tools
-    pyright
+    # pyright
     sumneko-lua-language-server
     yaml-language-server
     # formatters
