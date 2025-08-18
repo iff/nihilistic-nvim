@@ -2,8 +2,9 @@
   description = "neovim";
 
   inputs = {
-    fleet.url = github:iff/fleet;
-    nixpkgs.follows = "fleet/nixpkgs";
+    # fleet.url = github:iff/fleet;
+    # nixpkgs.follows = "fleet/nixpkgs";
+    nixpkgs.url = github:nixos/nixpkgs/nixpkgs-unstable;
 
     flake-utils.url = github:numtide/flake-utils;
 
