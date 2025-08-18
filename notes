@@ -1,9 +1,9 @@
 ! rename action is again broken in python but not sure why
     o basedpyright should still include the fix?
     o so what changed? does it work with nvim stable?
-- offer both stable and unstable vim executables
-    o some plugins probably dont work with older stable releases?
+c offer both stable and unstable vim executables
+    c some plugins probably dont work with older stable releases?
 - gha workflows for flake update are a bit broken when following fleet nixpkgs
     o go back to separate nixpkgs?
-    o at least update fleet first
+    x at least update fleet first
     o maybe some gha triggering to update fleet once nvim is merged
