@@ -1,9 +1,13 @@
 ! rename action is again broken in python but not sure why
-    o basedpyright should still include the fix?
-    o so what changed? does it work with nvim stable?
+    x basedpyright should still include the fix?
+    x so what changed? does it work with nvim stable?
+    o seems to only happen in the trains repository
+        - maybe uv2nix setting a workspace?
 c offer both stable and unstable vim executables
     c some plugins probably dont work with older stable releases?
 - gha workflows for flake update are a bit broken when following fleet nixpkgs
     x go back to separate nixpkgs?
     x at least update fleet first
     o maybe some gha triggering to update fleet once nvim is merged
+- towards using direnv/flakes per project for formatter and lsp server and dont install global?
+    o up to date flakes in https://github.com/iff/envs and scripts to setup project
