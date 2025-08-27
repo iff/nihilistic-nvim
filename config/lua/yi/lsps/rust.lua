@@ -14,6 +14,11 @@ function M.setup(capabilities)
             on_attach = on_attach,
             capabilities = capabilities,
         },
+        default_settings = {
+            ["rust-analyzer"] = {
+                checkOnSave = false,
+            },
+        },
     }
 end
 

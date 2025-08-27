@@ -1017,6 +1017,9 @@ function M.for_comma()
     local function reset_view_and_format()
         vim.cmd([[normal! 0^]])
         require("yi.formatter").format_buffer()
+        if vim.bo.filetype == "rust" then
+            vim.cmd([[RustLsp flyCheck]])
+        end
     end
     local g = require("yi.fugitive")
     local h = require("hop")
