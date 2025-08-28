@@ -105,6 +105,24 @@ function M.setup()
     }
     telescope.load_extension("fzf")
     telescope.load_extension("ui-select")
+
+    vim.api.nvim_set_hl(0, "TelescopeSelection", { underline = true })
+    vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+        pattern = { "*" },
+        callback = function(event)
+            if vim.bo[event.buf].filetype == "TelescopePrompt" then
+                vim.api.nvim_set_hl(0, "TelescopeSelection", { standout = true })
+            end
+        end,
+    })
+    vim.api.nvim_create_autocmd({ "InsertEnter" }, {
+        pattern = { "*" },
+        callback = function(event)
+            if vim.bo[event.buf].filetype == "TelescopePrompt" then
+                vim.api.nvim_set_hl(0, "TelescopeSelection", { bold = true })
+            end
+        end,
+    })
 end
 
 local function at_top()
