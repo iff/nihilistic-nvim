@@ -1,7 +1,7 @@
 local M = {}
 
 function M.palette()
-    return require("nightfox.palette").load(vim.g.colors_name)
+    return require("nightfox.palette").load(vim.g.colors_name or "nordfox")
 end
 
 function M.setup()
