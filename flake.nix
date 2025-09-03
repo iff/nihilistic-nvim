@@ -154,10 +154,10 @@
       flake = true;
     };
 
-    codecompanion-nvim = {
-      url = github:olimorris/codecompanion.nvim;
-      flake = false;
-    };
+    # codecompanion-nvim = {
+    #   url = github:olimorris/codecompanion.nvim;
+    #   flake = false;
+    # };
   };
 
   outputs = { self, flake-utils, neovim-nightly-overlay, nixpkgs, ... }@inputs:

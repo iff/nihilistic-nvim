@@ -77,7 +77,7 @@ let
     (plug "kmonad-vim")
     (plugNoCheck "resty-vim")
 
-    (plugNoCheck "codecompanion-nvim")
+    # (plugNoCheck "codecompanion-nvim")
 
     treesitter
   ];
@@ -132,7 +132,7 @@ let
           require("yi.formatter").setup()
           require("yi.diagnostic").setup()
           require("yi.treesitter").setup()
-          require("yi.codecompanion").setup()
+          -- require("yi.codecompanion").setup()
 
           require("yi.mappings").apply()
       end
