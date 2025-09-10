@@ -838,9 +838,11 @@ function M.mode_search()
 end
 
 function M.for_search()
+    local t = require("yi.telescope")
     return validated_maps {
         { [[f]], n, "search" },
-        { [[ff]], n, "from the beginning", rhs = "gg0/", maps = M.mode_search },
+        -- { [[ff]], n, "from the beginning", rhs = "gg0/", maps = M.mode_search },
+        { [[ff]], n, "fuzzy find", fn = t.kinda_fuzzy_find_in_buffer },
         { [[fu]], n, "backwards", rhs = "?", maps = M.mode_search },
         { [[fe]], n, "forward", rhs = "/", maps = M.mode_search },
         { [[fn]], n, "word backwards", rhs = "#", maps = M.mode_search },

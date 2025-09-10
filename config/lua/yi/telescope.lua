@@ -342,6 +342,10 @@ function M.pick_references()
     builtin.lsp_references()
 end
 
+function M.kinda_fuzzy_find_in_buffer()
+    builtin.current_buffer_fuzzy_find { default_text = "'" }
+end
+
 function M.pick_help()
     -- TODO not sure how to handle things when we cancel things
     vim.cmd.enew() -- NOTE doesnt seem to leave unused unnamed buffers around, even thou I expected it to
