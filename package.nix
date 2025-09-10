@@ -104,15 +104,15 @@ let
     text = ''
       do
           vim.opt.runtimepath = {
+              "${./config}",
               "${pkgs.neovim}/share/nvim/runtime",
               "${pkgs.neovim}/lib/nvim",
-              "${./config}",
               "${./config}/after",
           }
           vim.opt.packpath = {
+              "${packs}",
               "${pkgs.neovim}/share/nvim/runtime",
               "${pkgs.neovim}/lib/nvim",
-              "${packs}",
           }
 
           require("yi.options").setup()
