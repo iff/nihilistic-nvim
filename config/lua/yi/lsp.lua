@@ -188,7 +188,7 @@ function M.op(method)
         local reset_highlight = highlight()
 
         local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
-        local replies, error = client:request_sync(method, params, 1000, 0)
+        local replies, error = client:request_sync(method, params, 2000, 0)
 
         if error or not replies or replies.err then
             vim.print { replies = replies, error = error }
@@ -203,10 +203,11 @@ function M.op(method)
             return
         end
 
-        -- TODO offer selection? does builtin do that?
         if #replies.result > 1 then
-            vim.print(replies.result)
-            vim.cmd.echomsg([["many candidates"]])
+            reset_highlight()
+            local builtin = require("telescope.builtin")
+            builtin.lsp_definitions()
+            return
         end
 
         local selected = replies.result[1]
