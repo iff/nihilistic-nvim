@@ -42,6 +42,7 @@ let
     (plug "funky-formatter-nvim")
     (plug "funky-contexts-nvim")
     (plug "comment-nvim")
+    oil-nvim
 
     # theme
     (plug "nightfox-nvim")
@@ -124,6 +125,7 @@ let
           require("auspicious-autosave").setup()
 
           -- my config
+          require("yi.oil").setup()
           require("yi.hop").setup()
           require("yi.telescope").setup()
           require("yi.completion").setup()
