@@ -9,7 +9,7 @@ function mod.setup()
 
     -- change some hl for visibility
     local palette = require("yi.theme").palette()
-    vim.api.nvim_set_hl(0, "@comment.documentation", { fg = palette.cyan.dim })
+    vim.api.nvim_set_hl(0, "@comment.documentation", { fg = palette.blue.dim })
 
     require("nvim-treesitter.configs").setup {
         highlight = {

@@ -5,6 +5,11 @@
 ;; vim.api.nvim_set_hl(0, "@comment.documentation", { fg = "#7c7c7c" })
 
 (
+  (doc_comment) @comment.documentation
+  (#set! priority 126)
+)
+
+(
   (line_comment) @comment.todo
   (#match? @comment.todo "TODO")
   (#set! priority 126)
