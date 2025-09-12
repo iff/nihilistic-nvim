@@ -142,7 +142,7 @@ function M.rename_symbol()
     vim.cmd([[:wa]])
 end
 
-local function get_one_lsp_client()
+function M.get_one_lsp_client()
     local clients = vim.lsp.get_clients { bufnr = 0 }
     if #clients == 0 then
         vim.cmd.echomsg([["no lsp on this buffer"]])
@@ -180,7 +180,7 @@ end
 
 function M.op(method)
     local function fn(make)
-        local client = get_one_lsp_client()
+        local client = M.get_one_lsp_client()
         if not client then
             return
         end

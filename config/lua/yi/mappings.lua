@@ -1067,6 +1067,7 @@ function M.for_completion()
     return validated_maps {
         { [[<c-t>]], i, "complete flat", fn = c.complete_flat },
         { [[<c-l>]], i, "complete full", fn = c.complete_full },
+        { [[<c-y>]], i, "complete select", fn = c.complete_select },
     }
 end
 

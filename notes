@@ -2,7 +2,7 @@ x oil instead of netrw
 x ff with telescope
 x telescope jump to multiple refs
 x treesitter grammar for comments (rust for starters)
-- telescope for completion (wip)
+x telescope for completion (wip)
 - lua lsp https://github.com/EmmyLuaLs/emmylua-analyzer-rust
 - towards using direnv/flakes per project for formatter and lsp server and dont install global?
     o up to date flakes in https://github.com/iff/envs and scripts to setup project (using gha?)
