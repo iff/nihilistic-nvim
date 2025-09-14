@@ -2,36 +2,6 @@
 let
   inherit (lib) plug plugNoCheck;
 
-  treesitter = pkgs.vimPlugins.nvim-treesitter.withPlugins (p: with p; [
-    c
-    javascript
-    json
-    cpp
-    go
-    python
-    typescript
-    rust
-    bash
-    html
-    haskell
-    regex
-    css
-    toml
-    nix
-    clojure
-    latex
-    lua
-    make
-    markdown
-    vim
-    yaml
-    glsl
-    dockerfile
-    graphql
-    bibtex
-    cmake
-  ]);
-
   basePluginsList = with pkgs.vimPlugins; [
     (plug "hop-nvim")
     (plug "fugitive-nvim")
@@ -80,7 +50,7 @@ let
 
     # (plugNoCheck "codecompanion-nvim")
 
-    treesitter
+    pkgs.vimPlugins.nvim-treesitter.withAllGrammars
   ];
 
   devPluginsList = builtins.attrValues dev-plugins;
