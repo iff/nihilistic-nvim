@@ -137,15 +137,16 @@ pkgs.symlinkJoin {
     #
     fd
     ripgrep
+    # lang servers
     basedpyright
     clang-tools
-    sumneko-lua-language-server
+    emmylua-ls
+    lua-language-server
     yaml-language-server
+    nodePackages.typescript-language-server
     # formatters
-    black
     nixpkgs-fmt
     nodePackages.prettier
-    nodePackages.typescript-language-server
     stylua
     taplo
   ]);
