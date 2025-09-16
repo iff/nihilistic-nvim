@@ -4,9 +4,10 @@ function M.setup(capabilities)
     -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#yamlls
     -- https://github.com/redhat-developer/yaml-language-server
 
-    require("lspconfig").yamlls.setup {
-        on_attach = M.mappings,
-        capabilities = capabilities,
+    vim.lsp.config("yamlls", {
+        cmd = { "yaml-language-server", "--stdio" },
+        filetypes = { "yaml" },
+        root_markers = { ".git" },
         settings = {
             redhat = {
                 telemetry = {
@@ -14,7 +15,9 @@ function M.setup(capabilities)
                 },
             },
         },
-    }
+    })
+
+    vim.lsp.enable("yamlls")
 end
 
 return M
