@@ -24,6 +24,9 @@ local disable_distribution_plugins = function()
     vim.g.loaded_netrwPlugin = 1
     vim.g.loaded_netrwSettings = 1
     vim.g.loaded_netrwFileHandlers = 1
+    -- no netrw using oil
+    vim.g.loaded_netrw = 1
+    vim.g.loaded_netrwPlugin = 1
 end
 
 function mod.setup()
@@ -65,6 +68,8 @@ function mod.set()
     set.ttimeout = true
 
     set.cmdwinheight = 10
+
+    vim.g.no_man_maps = 1 -- see share/nvim/runtime/ftplugin/man.vim
 
     vim.api.nvim_create_autocmd({ "VimResized" }, {
         desc = "relayout on resize",

@@ -93,41 +93,18 @@ let
   minimal = pkgs.writeTextFile {
     name = "init.lua";
     text = ''
-      do
-          vim.opt.runtimepath = {
-              "${./config}",
-              "${pkgs.neovim}/share/nvim/runtime",
-              "${pkgs.neovim}/lib/nvim",
-              "${./config}/after",
-          }
-          vim.opt.packpath = {
-              "${packs}",
-              "${pkgs.neovim}/share/nvim/runtime",
-              "${pkgs.neovim}/lib/nvim",
-          }
-
-          require("yi.options").setup()
-          require("yi.theme").setup()
-          require("yi.options").set()
-
-          -- no config
-          require("Comment").setup()
-          require("auspicious-autosave").setup()
-
-          -- my config
-          require("yi.oil").setup()
-          require("yi.hop").setup()
-          require("yi.telescope").setup()
-          require("yi.completion").setup()
-          require("yi.lsp").setup(require("yi.completion").get_capabilities())
-          require("yi.fugitive").setup()
-          require("yi.formatter").setup()
-          require("yi.diagnostic").setup()
-          require("yi.treesitter").setup()
-          -- require("yi.codecompanion").setup()
-
-          require("yi.mappings").apply()
-      end
+      vim.opt.runtimepath = {
+          "${./config}",
+          "${pkgs.neovim-unwrapped}/share/nvim/runtime",
+          "${pkgs.neovim-unwrapped}/lib/nvim",
+          "${./config}/after",
+      }
+      vim.opt.packpath = {
+          "${packs}",
+          "${pkgs.neovim-unwrapped}/share/nvim/runtime",
+          "${pkgs.neovim-unwrapped}/lib/nvim",
+      }
+      require("yi.main").main()
     '';
   };
 
@@ -153,7 +130,7 @@ pkgs.symlinkJoin {
     inputs.ptags-nvim.packages.${pkgs.system}.app
   ] ++ (with pkgs; [
     # neovim-nightly from overlay
-    neovim
+    neovim-unwrapped
     luarc
     #
     fd
