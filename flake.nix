@@ -187,7 +187,7 @@
           };
         };
 
-        test = pkgs.writeScriptBin "test" ''
+        tv = pkgs.writeScriptBin "tv" ''
           #!${pkgs.zsh}/bin/zsh
           set -eu -o pipefail
           path=(${dev}/bin $path) ${dev}/bin/v $@
@@ -203,12 +203,12 @@
 
         apps.default = {
           type = "app";
-          program = "${test}/bin/test";
+          program = tv;
         };
 
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
-            # TODO
+            tv
           ];
 
           shellHook = ''
