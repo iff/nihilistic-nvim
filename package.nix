@@ -5,7 +5,6 @@ let
   basePluginsList = with pkgs.vimPlugins; [
     (plug "hop-nvim")
     (plug "fugitive-nvim")
-    # (plug "gitsigns-nvim")
     gitsigns-nvim
     (plug "auspicious-autosave-nvim")
     (plug "lavish-layouts-nvim")
@@ -46,8 +45,6 @@ let
 
     (plug "kmonad-vim")
     (plugNoCheck "resty-vim")
-
-    # (plugNoCheck "codecompanion-nvim")
 
     pkgs.vimPlugins.nvim-treesitter.withAllGrammars
   ];
