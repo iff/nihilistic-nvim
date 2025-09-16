@@ -134,11 +134,6 @@
     #   flake = true;
     # };
 
-    neodev-nvim = {
-      url = github:folke/neodev.nvim;
-      flake = false;
-    };
-
     kmonad-vim = {
       url = github:kmonad/kmonad-vim;
       flake = false;

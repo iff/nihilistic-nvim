@@ -44,7 +44,6 @@ let
     # (plug "rustacean-nvim")
     rustaceanvim
 
-    (plug "neodev-nvim")
     (plug "kmonad-vim")
     (plugNoCheck "resty-vim")
 
@@ -67,8 +66,29 @@ let
     mkdir -p $out/pack/default/start/
     cd $out/pack/default/start
     ${pkgs.lib.concatMapStringsSep "\n" linkInPlugin pluginsWithDependencies}
+
+    cd $out
+    touch paths
+    ls -d pack/dependencies/start/*/ >> $out/paths
+    ls -d pack/prod/start/*/ >> $out/paths
   '';
   linkInPlugin = plugin: "ln -sfT ${plugin} ${pkgs.lib.getName plugin}";
+  packPaths = pkgs.lib.unique (builtins.filter (x: x != "") (pkgs.lib.splitString "\n" (builtins.readFile "${packs}/paths")));
+
+  luarc = pkgs.writeTextFile {
+    name = "luarcjson";
+    destination = "/luarcs/main.json";
+    text = builtins.toJSON {
+      "runtime.version" = "LuaJIT";
+      "runtime.pathStrict" = true;
+      # we dont add /after right now
+      "runtime.path" = [ "lua/?.lua" "lua/?/init.lua" ];
+      "workspace.library" = [
+        "${pkgs.neovim-unwrapped}/share/nvim/runtime"
+        "${pkgs.neovim-unwrapped}/lib/nvim"
+      ] ++ packPaths;
+    };
+  };
 
   minimal = pkgs.writeTextFile {
     name = "init.lua";
@@ -134,6 +154,7 @@ pkgs.symlinkJoin {
   ] ++ (with pkgs; [
     # neovim-nightly from overlay
     neovim
+    luarc
     #
     fd
     ripgrep
