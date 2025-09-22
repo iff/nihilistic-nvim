@@ -9,10 +9,10 @@
     flake-utils.url = github:numtide/flake-utils;
 
     # life on the cutting edge
-    neovim-nightly-overlay = {
-      url = github:nix-community/neovim-nightly-overlay;
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # neovim-nightly-overlay = {
+    #   url = github:nix-community/neovim-nightly-overlay;
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     hop-nvim = {
       url = github:smoka7/hop.nvim;
@@ -150,22 +150,13 @@
     };
   };
 
-  outputs = { self, flake-utils, neovim-nightly-overlay, nixpkgs, ... }@inputs:
+  outputs = { self, flake-utils, nixpkgs, ... }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
           overlays = [
-            neovim-nightly-overlay.overlays.default
-            # hack: disable neotests to prevent build failures
-            # see: https://github.com/nvim-neotest/neotest/issues/530
-            (final: prev: {
-              vimPlugins = prev.vimPlugins // {
-                neotest-nvim = prev.vimPlugins.neotest-nvim.overrideAttrs (old: {
-                  doCheck = false;
-                });
-              };
-            })
+            # neovim-nightly-overlay.overlays.default
           ];
         };
 
