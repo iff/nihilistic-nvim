@@ -1,9 +1,11 @@
 local M = {}
 
 function M.setup(capabilities)
-    require("lspconfig").ts_ls.setup {
+    vim.lsp.config("ts_ls", {
         capabilities = capabilities,
-    }
+    })
+
+    vim.lsp.enable("ts_ls")
 end
 
 return M

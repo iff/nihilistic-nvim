@@ -1,7 +1,11 @@
 local M = {}
 
 function M.setup(capabilities)
-    require("lspconfig").clangd.setup {}
+    vim.lsp.config("clangd", {
+        capabilities = capabilities,
+    })
+
+    vim.lsp.enable("clangd")
 end
 
 return M

@@ -5,6 +5,7 @@ function M.setup(capabilities)
     -- https://github.com/redhat-developer/yaml-language-server
 
     vim.lsp.config("yamlls", {
+        capabilities = capabilities,
         cmd = { "yaml-language-server", "--stdio" },
         filetypes = { "yaml" },
         root_markers = { ".git" },
