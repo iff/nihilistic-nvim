@@ -31,7 +31,7 @@ jobs:
         run: |
           delimiter="$(openssl rand -hex 16)"
           echo "message<<${delimiter}" >> "${GITHUB_OUTPUT}"
-          git log -1 --pretty=%B | tail +3 | awk -f ./.github/misc/flake-to-markdown.awk >> "${GITHUB_OUTPUT}"
+          git log -1 --pretty=%B | tail +3 | nix run github:iff/flakers >> "${GITHUB_OUTPUT}"
           echo "${delimiter}" >> "${GITHUB_OUTPUT}"
 
       - name: create Pull Request
