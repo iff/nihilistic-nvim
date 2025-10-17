@@ -6,7 +6,7 @@ end
 
 function M.setup()
     -- see https://github.com/tpope/vim-fugitive
-    vim.g["fugitive_no_maps"] = 1
+    vim.g.fugitive_no_maps = 1
 
     -- NOTE needs to happen after the theme is set
     -- because themes will overwrite it again otherwise (most of them anyway)
@@ -18,17 +18,9 @@ function M.setup()
         highlight link fugitiveHunk Comment
     ]])
 
-    -- TODO generally fugitive has good mappings, read again and again before trying to fix things
-    -- it also extends vims diffview a bit, same there before mapping stuff
-    -- was thinking about < and > to put and get (dp and do)
-
     -- see https://github.com/tpope/vim-fugitive/issues/1425
-    -- not sure which event now did it
-    -- so I get the basic maps again from basics.lua and apply them this time with <buffer>?
-    -- I already have them in topics, so should be easy enough to reuse
-    -- TODO use filetype here too? ("fugitive")
     vim.api.nvim_create_autocmd("User", {
-        pattern = { "FugitiveIndex", "FugitiveObject" },
+        pattern = { "FugitiveIndex" },
         callback = M.status_config,
     })
 
