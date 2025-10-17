@@ -19,26 +19,47 @@ local function format_long(diagnostic)
 end
 
 function M.setup()
-    local filter = { min = vim.diagnostic.severity.WARN }
-    vim.diagnostic.config {
-        underline = {
+    M.config(false)
+
+    vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { undercurl = true })
+    vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { undercurl = true })
+    vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { undercurl = true })
+    vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", { undercurl = true })
+    vim.api.nvim_set_hl(0, "DiagnosticUnnecessary", { undercurl = true })
+end
+
+---@type boolean
+M.virtual_lines_enabled = false
+
+---@param enable_virtual_lines boolean
+function M.config(enable_virtual_lines)
+    local filter = { min = vim.diagnostic.severity.HINT }
+    M.virtual_lines_enabled = enable_virtual_lines
+    local virtual_text, virtual_lines
+    if enable_virtual_lines then
+        virtual_text = false
+        virtual_lines = {
             severity = filter,
-        },
+            current_line = false,
+            format = format_long,
+        }
+    else
         virtual_text = {
             severity = filter,
             prefix = "",
             format = format_short,
+        }
+        virtual_lines = false
+    end
+    vim.diagnostic.config {
+        underline = {
+            severity = filter,
         },
-        -- TODO this is cool for some other stuff for parentheses?
-        -- virtual_lines = {
-        --     severity = filter,
-        --     current_line = true,
-        --     format = format_long,
-        -- },
+        virtual_text = virtual_text,
+        virtual_lines = virtual_lines,
         signs = true,
         update_in_insert = false,
         severity_sort = true,
-        -- TODO jump? float?
         float = {
             -- prefix = function(diagnostic)
             --     local icons = { "E", "W", "I", "H" }
@@ -51,6 +72,39 @@ function M.setup()
             -- format = function(diagnostic)
             --     return "«" .. diagnostic.message .. "»"
             -- end,
+            suffix = function(diagnostic)
+                local icons = { "E", "W", "I", "H" }
+                if diagnostic.code == nil then
+                    return "  [" .. icons[diagnostic.severity] .. "]", ""
+                else
+                    return "  [" .. icons[diagnostic.severity] .. "=" .. diagnostic.code .. "]", ""
+                end
+            end,
+            border = "double",
+            anchor_bias = "below",
+        },
+    }
+end
+
+function M.toggle_virtual_lines()
+    M.config(not M.virtual_lines_enabled)
+end
+
+function M.old_config()
+    local filter = { min = vim.diagnostic.severity.WARN }
+    vim.diagnostic.config {
+        underline = {
+            severity = filter,
+        },
+        virtual_text = {
+            severity = filter,
+            prefix = "",
+            format = format_short,
+        },
+        signs = true,
+        update_in_insert = false,
+        severity_sort = true,
+        float = {
             suffix = function(diagnostic)
                 local icons = { "E", "W", "I", "H" }
                 if diagnostic.code == nil then

@@ -961,7 +961,7 @@ function M.for_jumps()
             [[a,]],
             n,
             "show diagnostic",
-            fn = vim.diagnostic.open_float,
+            fn = require("yi.diagnostic").toggle_virtual_lines,
         },
         -- TODO would be nicer to have the same binding to toggle
         { [[a=]], n, "highlight references", fn = l.highlight_references },
