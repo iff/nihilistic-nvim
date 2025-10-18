@@ -963,6 +963,22 @@ function M.for_jumps()
             "show diagnostic",
             fn = require("yi.diagnostic").toggle_virtual_lines,
         },
+        {
+            [[<s-tab>]],
+            n,
+            "show context",
+            fn = function()
+                local lines = require("yi.treesitter").get_context()
+                vim.lsp.util.open_floating_preview(lines, vim.bo.filetype, {
+                    height = #lines,
+                    width = 100,
+                    wrap = true,
+                    focus_id = "context",
+                    anchor_bias = "above",
+                    border = "double",
+                })
+            end,
+        },
         -- TODO would be nicer to have the same binding to toggle
         { [[a=]], n, "highlight references", fn = l.highlight_references },
         { [[a ]], n, "clear highlight references", fn = l.clear_highlight_references },
