@@ -659,14 +659,42 @@ function M.for_operators()
 end
 
 function M.for_visual()
+    local ts = require("nvim-treesitter.incremental_selection")
     return validated_maps {
-        { [[v]], n, "visual lines", rhs = "V" },
-        -- map([[v]], "v", "visual characters", "v") -- instead use column moves to switch to characters
-        { [[av]], n, "visual block", rhs = "<c-v>" },
-        -- TODO collides with d for delete
-        -- map { [[dv]], n, "previous visual", rhs = "gv" },
+        -- { [[v]], n, "visual lines", rhs = "V" },
+        { [[ v]], n, "visual block", rhs = "<c-v>" },
+        { [[aav]], n, "previous visual", rhs = "gv" },
+
+        -- visual objects, trying to mimic operator and moves
+        { [[vn]], n, "visual line", rhs = "V" },
+        { [[v.]], n, "visual character", rhs = "v" },
+        { [[ve]], n, "visual word", rhs = "viw" },
+        { [[v e]], n, "visual word with space", rhs = "vaw" },
+        { [[vu]], n, "visual word", rhs = "viW" },
+        { [[v u]], n, "visual word with space", rhs = "vaW" },
+        { [[vp]], n, "visual inner paragraph", rhs = "vip" },
+        { [[v p]], n, "visual outer paragraph", rhs = "vap" },
+        { [[v(]], n, "visual inner ()", rhs = "vib" },
+        { [[v)]], n, "visual outer ()", rhs = "vab" },
+        { [[v{]], n, "visual inner {}", rhs = "viB" },
+        { [[v}]], n, "visual outer {}", rhs = "vaB" },
+        { [[v[]], n, "visual inner []", rhs = "vi[" },
+        { "v]", n, "visual outer []", rhs = "va]" },
+        { [[v<]], n, "visual inner <>", rhs = "vi<" },
+        { [[v>]], n, "visual outer <>", rhs = "va<" },
+        { [[v"]], n, 'visual inner "', rhs = 'vi"' },
+        { [[v "]], n, '"visual outer "', rhs = 'va"' },
+        { [[v']], n, "visual inner '", rhs = "vi'" },
+        { [[v ']], n, "visual outer '", rhs = "va'" },
+        { [[v`]], n, "visual inner `", rhs = "vi`" },
+        { [[v `]], n, "visual outer `", rhs = "va`" },
+        { [[vc]], n, "visual comment", fn = require("vim._comment").textobject },
+        { [[vt]], n, "visual treesitter", fn = ts.init_selection, maps = M.mode_treesitter },
+
         { [[v]], v, "exit visual", rhs = "<esc>" },
-        { [[av]], v, "other side", rhs = "o" },
+        { [[ v]], v, "other side", rhs = "o" },
+        { [[U]], v, "make uppercase", rhs = "U" },
+        { [[E]], v, "make lowercase", rhs = "u" },
     }
 end
 
@@ -826,6 +854,20 @@ local function maps_with_fallback(maps, fallbacks)
 end
 
 ---@type ModeFn
+function M.mode_treesitter()
+    local ts = require("nvim-treesitter.incremental_selection")
+    local maps = validated_maps {
+        { [[u]], v, "one more parent", fn = ts.node_incremental },
+        { [[U]], v, "one more parent", fn = ts.scope_incremental },
+        { [[e]], v, "one less parent", fn = ts.node_decremental },
+        { [[<esc>]], v, "end treesitter and visual", rhs = "<esc>", maps = M.mode_default },
+        { [[<enter>]], v, "end treesitter but keep visual", maps = M.mode_default },
+    }
+    maps = maps_with_fallback(maps, M.get())
+    return "treesitter", maps
+end
+
+---@type ModeFn
 function M.mode_search()
     local maps = validated_maps {
         { [[u]], n, "previous match", rhs = "Nzz" },
@@ -835,23 +877,6 @@ function M.mode_search()
         { [[<enter>]], n, "end search", rhs = "<cmd>nohlsearch<enter>", maps = M.mode_default },
     }
     return "search", maps_with_fallback(maps, M.get())
-end
-
-function M.for_search()
-    local t = require("yi.telescope")
-    return validated_maps {
-        { [[f]], n, "search" },
-        -- { [[ff]], n, "from the beginning", rhs = "gg0/", maps = M.mode_search },
-        { [[ff]], n, "fuzzy find", fn = t.kinda_fuzzy_find_in_buffer },
-        { [[fu]], n, "backwards", rhs = "?", maps = M.mode_search },
-        { [[fe]], n, "forward", rhs = "/", maps = M.mode_search },
-        { [[fn]], n, "word backwards", rhs = "#", maps = M.mode_search },
-        { [[fi]], n, "word forward", rhs = "*", maps = M.mode_search },
-        { [[f,]], n, "clear search", rhs = "<cmd>nohlsearch<enter>" },
-        { [[f ]], n, "activate", rhs = "<cmd>set hlsearch<enter>", maps = M.mode_search },
-        -- { [[<a-u>]], n, "previous match", rhs = "Nzz" },
-        -- { [[<a-e>]], n, "next match", rhs = "nzz" },
-    }
 end
 
 ---@type ModeFn
@@ -891,6 +916,23 @@ local function stack_pop()
     end
     vim.cmd.edit(at.file) -- TODO could need escapes
     vim.api.nvim_win_set_cursor(0, at.cursor) -- TODO marks would be better, because they move as text changes
+end
+
+function M.for_search()
+    local t = require("yi.telescope")
+    return validated_maps {
+        { [[f]], n, "search" },
+        -- { [[ff]], n, "from the beginning", rhs = "gg0/", maps = M.mode_search },
+        { [[ff]], n, "fuzzy find", fn = t.kinda_fuzzy_find_in_buffer },
+        { [[fu]], n, "backwards", rhs = "?", maps = M.mode_search },
+        { [[fe]], n, "forward", rhs = "/", maps = M.mode_search },
+        { [[fn]], n, "word backwards", rhs = "#", maps = M.mode_search },
+        { [[fi]], n, "word forward", rhs = "*", maps = M.mode_search },
+        { [[f,]], n, "clear search", rhs = "<cmd>nohlsearch<enter>" },
+        { [[f ]], n, "activate", rhs = "<cmd>set hlsearch<enter>", maps = M.mode_search },
+        -- { [[<a-u>]], n, "previous match", rhs = "Nzz" },
+        -- { [[<a-e>]], n, "next match", rhs = "nzz" },
+    }
 end
 
 ---@return Map[] mappings
@@ -1079,11 +1121,11 @@ function M.for_undos()
 end
 
 function M.for_completion()
-    local c = require("yi.completion")
+    local cmp = require("yi.completion")
     return validated_maps {
-        { [[<c-t>]], i, "complete flat", fn = c.complete_flat },
-        { [[<c-l>]], i, "complete full", fn = c.complete_full },
-        { [[<c-y>]], i, "complete select", fn = c.complete_select },
+        { [[<c-t>]], i, "complete flat", fn = cmp.complete_flat },
+        { [[<c-l>]], i, "complete full", fn = cmp.complete_full },
+        { [[<c-y>]], i, "complete select", fn = cmp.complete_select },
     }
 end
 
