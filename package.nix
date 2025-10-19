@@ -139,6 +139,7 @@ pkgs.symlinkJoin {
     lua-language-server
     yaml-language-server
     nodePackages.typescript-language-server
+    nil
     # formatters
     nixpkgs-fmt
     nodePackages.prettier

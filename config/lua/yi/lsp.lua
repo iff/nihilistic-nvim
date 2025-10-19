@@ -6,6 +6,7 @@ function M.setup(capabilities)
     -- see https://github.com/neovim/nvim-lspconfig
     require("yi.lsps.clangd").setup(capabilities)
     require("yi.lsps.lua").setup(capabilities)
+    require("yi.lsps.nix").setup(capabilities)
     require("yi.lsps.python").setup(capabilities)
     require("yi.lsps.rust").setup(capabilities)
     require("yi.lsps.typescript").setup(capabilities)
