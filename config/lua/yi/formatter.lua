@@ -25,7 +25,7 @@ function M.setup()
         graphql = from_cmds { { "prettier", "--parser", "graphql", path_token } },
         javascript = from_cmds { { "prettier", "--parser", "javascript", path_token } },
         typescript = from_cmds { { "prettier", "--parser", "typescript", path_token } },
-        typescriptreact = from_cmds { { "prettier", "--parser", "typescriptreact", path_token } },
+        typescriptreact = from_cmds { { "prettier", "--parser", "typescript", path_token } },
         markdown = from_cmds { { "prettier", "--parser", "markdown", path_token } },
     }
 end
