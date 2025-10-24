@@ -87,7 +87,22 @@ function M.config(enable_virtual_lines)
 end
 
 function M.toggle_virtual_lines()
+    local before = vim.fn.winline()
+
     M.config(not M.virtual_lines_enabled)
+
+    -- NOTE if the lsp is slow, no virtual lines have been added yet, and we dont counteract the move
+    -- but they will pop in later and things will jump
+    local after = vim.fn.winline()
+    local move = -after + before
+
+    if move > 0 then
+        vim.cmd([[exe "normal! ]] .. move .. [[\<c-y>"]])
+    end
+
+    if move < 0 then
+        vim.cmd([[exe "normal! ]] .. -move .. [[\<c-e>"]])
+    end
 end
 
 function M.old_config()
