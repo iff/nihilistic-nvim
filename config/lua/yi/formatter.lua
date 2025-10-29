@@ -8,7 +8,7 @@ end
 function M.setup()
     local formatter = require("funky-formatter")
     local c = formatter.configs
-    local from_cmds = formatter.from_cmds
+    local from_stdout = formatter.from_stdout
     local path_token = formatter.path_token
 
     formatter.setup {
@@ -21,12 +21,25 @@ function M.setup()
         gitignore = c.gitignore_sort,
         nix = c.nix_nixpkgsfmt,
         toml = c.toml_taplo,
-        css = from_cmds { { "prettier", "--parser", "css", path_token } },
-        graphql = from_cmds { { "prettier", "--parser", "graphql", path_token } },
-        javascript = from_cmds { { "prettier", "--parser", "javascript", path_token } },
-        typescript = from_cmds { { "prettier", "--parser", "typescript", path_token } },
-        typescriptreact = from_cmds { { "prettier", "--parser", "typescript", path_token } },
-        markdown = from_cmds { { "prettier", "--parser", "markdown", path_token } },
+        css = from_stdout { "prettier", "--parser", "css", path_token },
+        graphql = from_stdout { "prettier", "--parser", "graphql", path_token },
+        javascript = from_stdout {
+            "prettier",
+            "--write",
+            "--log-level",
+            "silent",
+            "--parser",
+            "javascript",
+            path_token,
+        },
+        typescript = from_stdout { "prettier", "--parser", "typescript", path_token },
+        typescriptreact = from_stdout {
+            "prettier",
+            "--parser",
+            "typescript",
+            path_token,
+        },
+        markdown = from_stdout { "prettier", "--parser", "markdown", path_token },
     }
 end
 
