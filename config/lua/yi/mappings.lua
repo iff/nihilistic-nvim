@@ -1028,7 +1028,7 @@ function M.for_jumps()
         { [[a;]], n, "code action", fn = l.code_action },
         { [[a;]], v, "code action", fn = l.code_action },
         { [[ah]], n, "toggle inlay hints", fn = l.toggle_inlay_hints },
-        { [[<F11-t>]], i, "show function signature", fn = l.show_function_signature },
+        { [[<F11>s]], i, "show function signature", fn = l.show_function_signature },
         -- TODO again this would be better just a command behind a lsp prefix, like for layouts?
         { [[ao]], n, "rename symbol", fn = l.rename_symbol },
         { [[ai]], n, "add ignore", fn = l.add_ignore },
