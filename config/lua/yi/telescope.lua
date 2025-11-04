@@ -385,7 +385,7 @@ function M.pick_project_symbol()
         ptags_workspace()
     else
         local make = function() end
-        as_op(builtin.lsp_dynamic_workspace_symbols(), jump_lsp_symbol)(make)
+        as_op(builtin.lsp_dynamic_workspace_symbols, jump_lsp_symbol)(make)
     end
 end
 
