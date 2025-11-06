@@ -30,6 +30,10 @@ function M.setup()
     })
 
     require("gitsigns").setup {
+        watch_gitdir = {
+            enable = false,
+            follow_files = false,
+        },
         on_attach = function(bufnr)
             local gitsigns = require("gitsigns")
 
