@@ -5,6 +5,8 @@ function M.main()
     require("yi.theme").setup()
     require("yi.options").set()
 
+    require("yi.neovide").setup()
+
     -- no config
     require("Comment").setup()
     require("auspicious-autosave").setup()
