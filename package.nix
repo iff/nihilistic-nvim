@@ -1,4 +1,9 @@
-{ pkgs, inputs, lib, dev-plugins }:
+{
+  pkgs,
+  inputs,
+  lib,
+  dev-plugins,
+}:
 let
   inherit (lib) plug plugNoCheck;
 
@@ -53,12 +58,15 @@ let
 
   # dev-plugins take precedence - filter out base plugins that have same name as dev plugins
   devPluginNames = map pkgs.lib.getName devPluginsList;
-  filteredBasePlugins = builtins.filter (plugin: !(builtins.elem (pkgs.lib.getName plugin) devPluginNames)) basePluginsList;
+  filteredBasePlugins = builtins.filter (
+    plugin: !(builtins.elem (pkgs.lib.getName plugin) devPluginNames)
+  ) basePluginsList;
   plugins = devPluginsList ++ filteredBasePlugins;
 
   pluginsWithDependencies = pkgs.lib.unique (builtins.concatMap getDependencies plugins);
   # TODO is that still true? do plugins bring their dependencies?
-  getDependencies = plugin: [ plugin ] ++ (builtins.concatMap getDependencies (plugin.dependencies or [ ]));
+  getDependencies =
+    plugin: [ plugin ] ++ (builtins.concatMap getDependencies (plugin.dependencies or [ ]));
   packs = pkgs.runCommandLocal "packs" { } ''
     mkdir -p $out/pack/default/start/
     cd $out/pack/default/start
@@ -70,7 +78,9 @@ let
     ls -d pack/prod/start/*/ >> $out/paths
   '';
   linkInPlugin = plugin: "ln -sfT ${plugin} ${pkgs.lib.getName plugin}";
-  packPaths = pkgs.lib.unique (builtins.filter (x: x != "") (pkgs.lib.splitString "\n" (builtins.readFile "${packs}/paths")));
+  packPaths = pkgs.lib.unique (
+    builtins.filter (x: x != "") (pkgs.lib.splitString "\n" (builtins.readFile "${packs}/paths"))
+  );
 
   luarc = pkgs.writeTextFile {
     name = "luarcjson";
@@ -79,11 +89,15 @@ let
       "runtime.version" = "LuaJIT";
       "runtime.pathStrict" = true;
       # we dont add /after right now
-      "runtime.path" = [ "lua/?.lua" "lua/?/init.lua" ];
+      "runtime.path" = [
+        "lua/?.lua"
+        "lua/?/init.lua"
+      ];
       "workspace.library" = [
         "${pkgs.neovim-unwrapped}/share/nvim/runtime"
         "${pkgs.neovim-unwrapped}/lib/nvim"
-      ] ++ packPaths;
+      ]
+      ++ packPaths;
     };
   };
 
@@ -125,7 +139,8 @@ pkgs.symlinkJoin {
   name = "nvim";
   paths = [
     inputs.ptags-nvim.packages.${pkgs.system}.app
-  ] ++ (with pkgs; [
+  ]
+  ++ (with pkgs; [
     # neovim-nightly from overlay
     neovim-unwrapped
     luarc

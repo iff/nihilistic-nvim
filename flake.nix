@@ -150,8 +150,15 @@
     };
   };
 
-  outputs = { self, flake-utils, nixpkgs, ... }@inputs:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      flake-utils,
+      nixpkgs,
+      ...
+    }@inputs:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -162,7 +169,12 @@
 
         plib = import ./lib { inherit pkgs inputs; };
         lib = nixpkgs.lib.extend (final: prev: plib);
-        prod = import ./package.nix { pkgs = pkgs; inputs = inputs; inherit lib; dev-plugins = { }; };
+        prod = import ./package.nix {
+          pkgs = pkgs;
+          inputs = inputs;
+          inherit lib;
+          dev-plugins = { };
+        };
         dev = import ./package.nix {
           pkgs = pkgs;
           inputs = inputs;
@@ -179,6 +191,13 @@
           path=(${dev}/bin $path) ${dev}/bin/v $@
         '';
 
+        recent_map = pkgs.writeScriptBin "recent_map" ''
+          #!${pkgs.zsh}/bin/zsh
+          set -eu -o pipefail
+
+          commits=$(git log --since="1 week ago" --format=%h -- config/lua/yi/mappings.lua | paste -sd'|')
+          git blame config/lua/yi/mappings.lua | grep -E "^($commits)" | sed 's/^\([^ ]*\) ([^)]*) /\1 /' | awk '{sha=$1; $1=""; lines[sha]=lines[sha] " " $0 "\n"} END {for (sha in lines) {cmd="git log -1 --format=\"%h - %s\" " sha; cmd | getline msg; close(cmd); print msg "\n" lines[sha]}}' | ${pkgs.bat}/bin/bat -l lua --style=plain --theme="base16" --paging=never -
+        '';
       in
       {
         packages = {
@@ -195,6 +214,7 @@
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
             nil
+            recent_map
             tv
           ];
 
