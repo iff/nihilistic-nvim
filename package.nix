@@ -141,7 +141,7 @@ pkgs.symlinkJoin {
     nodePackages.typescript-language-server
     nil
     # formatters
-    nixpkgs-fmt
+    nixfmt
     nodePackages.prettier
     stylua
     taplo

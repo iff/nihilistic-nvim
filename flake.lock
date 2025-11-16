@@ -223,11 +223,11 @@
     "funky-formatter-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1762429754,
-        "narHash": "sha256-oo+vNq2vya5m+jEiCu/ASKQ5V/j5dGetIH/suBMI5MI=",
+        "lastModified": 1763214717,
+        "narHash": "sha256-CuTMoWwumg4b6hznDxFUSWpknMf97e3Yv43ljJNx/cE=",
         "owner": "dkuettel",
         "repo": "funky-formatter.nvim",
-        "rev": "0442bbb589fafaf0e490e8ebedb896e55a389a23",
+        "rev": "66a4aafe2d63c7504b3d571f6b6c748eb54b53fe",
         "type": "github"
       },
       "original": {
