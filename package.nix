@@ -45,7 +45,7 @@ let
     (plug "telescope-hop-nvim")
     (plug "telescope-ui-select-nvim")
 
-    (plugNoCheck "rustacean-nvim")
+    # (plugNoCheck "rustacean-nvim")
     # rustaceanvim
 
     (plug "kmonad-vim")

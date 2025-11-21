@@ -129,10 +129,10 @@
       flake = false;
     };
 
-    rustacean-nvim = {
-      url = "github:mrcjkb/rustaceanvim";
-      flake = true;
-    };
+    # rustacean-nvim = {
+    #   url = "github:mrcjkb/rustaceanvim";
+    #   flake = true;
+    # };
 
     kmonad-vim = {
       url = "github:kmonad/kmonad-vim";
