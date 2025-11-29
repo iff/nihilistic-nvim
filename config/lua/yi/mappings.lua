@@ -147,7 +147,7 @@ local function visualize_submode()
     }
 
     local palette = require("yi.theme").palette()
-    vim.api.nvim_set_hl(0, "Normal", { bg = palette.bg2 })
+    vim.api.nvim_set_hl(0, "Normal", { bg = palette.bg3 })
     vim.cmd.redraw()
 
     local function reset()
