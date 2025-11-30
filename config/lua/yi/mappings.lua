@@ -1,21 +1,5 @@
 local M = {}
 
--- moody mappings
--- how to make it modal?
--- what is a good spec for it, and what about shadowing, and prefix overlaps?
--- and should modes be per window, or global?
--- global would mean we only need to do things on keystrokes
--- otherwise we need to add events
--- but no matter what, the original modes will always interfere potentially
--- we already almost have "modes" in most ways, it's generally about repeating (?)
--- or you define sets of mappings (like layers), and you say when you want which, and they can be layered on top
--- but for simple cases, you dont want layered, just one
--- lets call it mode and mood, moods are on top of modes, modes and moods are orthogonal
--- so we use clear and reapply fresh? :mapclear, but could it be a problem for plugins that i dont control?
--- we could also try quick and dirty just overlay and hope for the best
--- names: macho, mad, manic, moody, motivated/ing, mutual, middle, militant, mighty, moving
--- relevant: https://github.com/debugloop/layers.nvim/tree/main
-
 ---@type "default" | "search" | "diagnostic"
 M.mode = "default"
 
@@ -275,60 +259,6 @@ function M.clear()
         vim.keymap.set(v, char, "<nop>")
         vim.keymap.set(o, char, "<nop>")
     end
-end
-
---- apply to which key (not setting any maps)
----@param maps Map[] mappings to apply
-function M.apply_which_key(maps)
-    local groups = {}
-    for _, map in ipairs(maps) do
-        for _, mode in ipairs(vim.iter(string.gmatch(map.mode, ".")):totable()) do
-            if map.rhs or map.expr or map.fn then
-            else
-                -- TODO i still dont seem to see anything after typing 'w'
-                table.insert(groups, { map.lhs, mode = mode, group = map.desc })
-            end
-        end
-    end
-    -- see https://github.com/folke/which-key.nvim
-    require("which-key").setup {
-        spec = groups,
-        plugins = {
-            marks = false,
-            registers = false,
-            spelling = false,
-            presets = {
-                operators = false,
-                motions = false,
-                text_objects = false,
-                windows = false,
-                nav = false,
-                z = false,
-                g = false,
-            },
-        },
-    }
-    -- TODO ':checkhealth which-key' will show if you have duplicates and/or overlaps; does it work when not set here?
-end
-
---- apply to legendary (not setting any maps)
----@param maps Map[] mappings to apply
-function M.apply_legendary(maps)
-    local spec = {}
-    for _, map in ipairs(maps) do
-        for _, mode in ipairs(vim.iter(string.gmatch(map.mode, ".")):totable()) do
-            if map.rhs or map.expr or map.fn then
-                table.insert(spec, { map.lhs, mode = mode, desc = map.desc })
-            end
-        end
-    end
-    -- TODO didnt show me n, showed me a bunch of built-ins, including the old n
-    -- require("legendary").setup({ extensions = { which_key = { auto_register = true, do_binding = false } } })
-    -- see https://github.com/mrjones2014/legendary.nvim
-    require("legendary").setup {
-        include_builtin = false,
-        keymaps = spec,
-    }
 end
 
 ---@param map Map map
@@ -601,20 +531,6 @@ end
 
 function M.for_indentation()
     return validated_maps {
-        -- TODO shift makes more sense? and shift up down too?
-        -- TODO does repeat maken sense here anyway? if we repeat with . after?
-        -- map([[<c-n>]], "n", "de-indent current line", "<<")
-        -- map([[<c-i>]], "n", "indent current line", ">>")
-        -- map([[p<c-n>]], "n", "de-indent last paste", "'[V']<")
-        -- map([[p<c-i>]], "n", "indent last paste", "'[V']>")
-        -- map([[<c-n>]], "v", "de-indent visual", "<")
-        -- map([[<c-i>]], "v", "indent visual", ">")
-        -- { [[zn]], n, "de-indent current line", rhs = "<<" },
-        -- { [[zi]], n, "indent current line", rhs = ">>" },
-        -- { [[pzn]], n, "de-indent last paste", rhs = "'[V']<" },
-        -- { [[pzi]], n, "indent last paste", rhs = "'[V']>" },
-        -- { [[zn]], v, "de-indent visual", rhs = "<" },
-        -- { [[zi]], v, "indent visual", rhs = ">" },
         { [[z]], nv, "shifts", maps = M.mode_shifts },
     }
 end
@@ -755,9 +671,9 @@ function M.for_copy_paste()
         { [[pn]], n, "insert before", fn = fn_pasted('"zP`]l', "c") },
         { [[pi]], n, "insert after", fn = fn_pasted('"zp`[h', "c") },
         { [[pm]], n, "insert at beginning of text in line", fn = fn_pasted([[mz0^"zP`z]], "c") },
-        { [[pan]], n, "insert at beginning of text in line", fn = fn_pasted([[mz0^"zP`z]], "c") },
-        { [[po]], n, "insert at end of line", fn = fn_pasted([[mz$"zp`z]], "c") },
-        { [[pai]], n, "insert at end of line", fn = fn_pasted([[mz$"zp`z]], "c") },
+        -- { [[pan]], n, "insert at beginning of text in line", fn = fn_pasted([[mz0^"zP`z]], "c") },
+        -- { [[po]], n, "insert at end of line", fn = fn_pasted([[mz$"zp`z]], "c") },
+        -- { [[pai]], n, "insert at end of line", fn = fn_pasted([[mz$"zp`z]], "c") },
 
         { [[p ]], n, "but keep indentation" },
         { [[p u]], n, "insert above", fn = fn_pasted([[mz"zP`z]], "l") },
@@ -766,23 +682,23 @@ function M.for_copy_paste()
         { [[p i]], n, "insert after", fn = fn_pasted('"zp`[h', "c") },
 
         -- TODO do we want the but move versions? totally forgot. we move to where?
-        { [[pp]], n, "but move" },
-        { [[ppu]], n, "insert above", fn = fn_pasted('"z]P`[', "l") },
-        { [[ppe]], n, "insert below", fn = fn_pasted('"z]p`]', "l") },
-        { [[ppn]], n, "insert before", fn = fn_pasted('"zP`[', "c") },
-        { [[ppi]], n, "insert after", fn = fn_pasted('"zp`]', "c") },
-        { [[ppm]], n, "insert at beginning of text in line", fn = fn_pasted('0^"zP`[', "c") },
-        { [[ppan]], n, "insert at beginning of text in line", fn = fn_pasted('0^"zP`[', "c") },
-        { [[ppo]], n, "insert at end of line", fn = fn_pasted('$"zp`z`]', "c") },
-        { [[ppai]], n, "insert at end of line", fn = fn_pasted('$"zp`z`]', "c") },
-
-        { [[pp ]], n, "but keep indentation" },
-        { [[pp u]], n, "insert above", fn = fn_pasted('"zP`[', "l") },
-        { [[pp e]], n, "insert below", fn = fn_pasted('"zp`]', "l") },
-        { [[pp m]], n, "insert before", fn = fn_pasted('"zP`[', "c") },
-        { [[pp n]], n, "insert before", fn = fn_pasted('"zP`[', "c") },
-        { [[pp o]], n, "insert after", fn = fn_pasted('"zp`]', "c") },
-        { [[pp i]], n, "insert after", fn = fn_pasted('"zp`]', "c") },
+        -- { [[pp]], n, "but move" },
+        -- { [[ppu]], n, "insert above", fn = fn_pasted('"z]P`[', "l") },
+        -- { [[ppe]], n, "insert below", fn = fn_pasted('"z]p`]', "l") },
+        -- { [[ppn]], n, "insert before", fn = fn_pasted('"zP`[', "c") },
+        -- { [[ppi]], n, "insert after", fn = fn_pasted('"zp`]', "c") },
+        -- { [[ppm]], n, "insert at beginning of text in line", fn = fn_pasted('0^"zP`[', "c") },
+        -- { [[ppan]], n, "insert at beginning of text in line", fn = fn_pasted('0^"zP`[', "c") },
+        -- { [[ppo]], n, "insert at end of line", fn = fn_pasted('$"zp`z`]', "c") },
+        -- { [[ppai]], n, "insert at end of line", fn = fn_pasted('$"zp`z`]', "c") },
+        --
+        -- { [[pp ]], n, "but keep indentation" },
+        -- { [[pp u]], n, "insert above", fn = fn_pasted('"zP`[', "l") },
+        -- { [[pp e]], n, "insert below", fn = fn_pasted('"zp`]', "l") },
+        -- { [[pp m]], n, "insert before", fn = fn_pasted('"zP`[', "c") },
+        -- { [[pp n]], n, "insert before", fn = fn_pasted('"zP`[', "c") },
+        -- { [[pp o]], n, "insert after", fn = fn_pasted('"zp`]', "c") },
+        -- { [[pp i]], n, "insert after", fn = fn_pasted('"zp`]', "c") },
 
         { [[p]], v, "replace visual with paste", fn = fn_pasted([["zp]], "") },
     }
@@ -886,9 +802,6 @@ function M.mode_windows()
         { [[u]], n, "previous window", fn = layouts.previous },
         { [[e]], n, "next window", fn = layouts.next },
         { [[n]], n, "focus window", fn = layouts.focus, maps = M.mode_default },
-        { [[f]], n, "focus window", fn = layouts.focus, maps = M.mode_default },
-        { [[i]], n, "close window", fn = layouts.close },
-        { [[c]], n, "close window", fn = layouts.close },
         { [[,]], n, "close window", fn = layouts.close },
         { [[d]], n, "close window and delete buffer", fn = layouts.close_and_delete },
         { [[<esc>]], n, "end windows", maps = M.mode_default },
@@ -897,39 +810,17 @@ function M.mode_windows()
     return "windows", maps
 end
 
-local stack = {}
-
-function M.get_stack_size()
-    return #stack
-end
-
-local function stack_push()
-    local file = vim.api.nvim_buf_get_name(0)
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    table.insert(stack, { file = file, cursor = cursor })
-end
-
-local function stack_pop()
-    local at = table.remove(stack)
-    if not at then
-        return
-    end
-    vim.cmd.edit(at.file) -- TODO could need escapes
-    vim.api.nvim_win_set_cursor(0, at.cursor) -- TODO marks would be better, because they move as text changes
-end
-
 function M.for_search()
     local t = require("yi.telescope")
     return validated_maps {
         { [[f]], n, "search" },
-        -- { [[ff]], n, "from the beginning", rhs = "gg0/", maps = M.mode_search },
         { [[ff]], n, "fuzzy find", fn = t.kinda_fuzzy_find_in_buffer },
-        { [[fu]], n, "backwards", rhs = "?", maps = M.mode_search },
-        { [[fe]], n, "forward", rhs = "/", maps = M.mode_search },
+        -- { [[fu]], n, "backwards", rhs = "?", maps = M.mode_search },
+        -- { [[fe]], n, "forward", rhs = "/", maps = M.mode_search },
         { [[fn]], n, "word backwards", rhs = "#", maps = M.mode_search },
         { [[fi]], n, "word forward", rhs = "*", maps = M.mode_search },
         { [[f,]], n, "clear search", rhs = "<cmd>nohlsearch<enter>" },
-        { [[f ]], n, "activate", rhs = "<cmd>set hlsearch<enter>", maps = M.mode_search },
+        -- { [[f ]], n, "activate", rhs = "<cmd>set hlsearch<enter>", maps = M.mode_search },
         -- { [[<a-u>]], n, "previous match", rhs = "Nzz" },
         -- { [[<a-e>]], n, "next match", rhs = "nzz" },
     }
@@ -948,31 +839,9 @@ function M.for_windows()
         { [[w.]], n, "only window", rhs = "<cmd>wincmd o<enter>" },
         { [[wd]], n, "close window and delete buffer", fn = layouts.close_and_delete },
 
-        -- tabs
-        -- { [[w  ]], n, "new tab", rhs = "<cmd>tab split<enter>" },
-        -- { [[w ,]], n, "close tab", rhs = "<cmd>tabclose<enter>" },
-        -- { [[w .]], n, "only tab", rhs = "<cmd>tabonly<enter>" },
-        -- { [[w n]], n, "previous tab", rhs = "<cmd>-tabnext<enter>" },
-        -- { [[w i]], n, "next tab", rhs = "<cmd>+tabnext<enter>" },
-
         -- layouts
-        { [[wlm]], n, "layout main", fn = layouts.switch_main },
-        { [[wls]], n, "layout stacked", fn = layouts.switch_stacked },
-
-        -- trying out stacks
-        { [[wm]], n, "stack push", fn = stack_push },
-        { [[wo]], n, "stack pop", fn = stack_pop },
-
-        -- hacky shorts
-        {
-            [[wt]],
-            n,
-            "new window and t...",
-            fn = function()
-                layouts.new_from_split()
-                vim.fn.feedkeys("t")
-            end,
-        },
+        { [[wm]], n, "layout main", fn = layouts.switch_main },
+        { [[ws]], n, "layout stacked", fn = layouts.switch_stacked },
     }
 end
 
@@ -1085,7 +954,6 @@ function M.for_comma()
     local h = require("hop")
     return validated_maps {
         { [[,]], n, "misc" },
-        -- map { [[,x]], n, "(try) save and exit (anyway)", rhs = "<cmd>silent! wa<enter><cmd>qa!<enter>" },
         { [[<c-d>]], ni, "(try) save and exit (anyway)", rhs = "<cmd>silent! wa<enter><cmd>qa!<enter>" },
         { [[<c-s>]], ni, "save", rhs = "<cmd>silent! w<enter>" },
 
@@ -1094,8 +962,7 @@ function M.for_comma()
         { [[gn]], n, "git", fn = g.git },
 
         -- hop
-        { [[  ]], n, "hop 2char", fn = h.hint_char2 },
-        { [[  ]], v, "hop 2char", fn = h.hint_char2 },
+        { [[  ]], nv, "hop 2char", fn = h.hint_char2 },
         -- TODO fixme if still needed?
         -- map {
         --     [[<F11>]],
