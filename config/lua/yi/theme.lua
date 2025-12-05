@@ -61,6 +61,21 @@ function M.setup()
         end
     end
 
+    local function map_mode()
+        local mappings = require("yi.mappings")
+        if mappings.mode == "default" then
+            return ""
+        end
+        local icons = {
+            search = "",
+            treesitter = "󰔱",
+            windows = "󱂬",
+            shifts = "",
+            diagnostic = "",
+        }
+        return icons[mappings.mode] or mappings.mode
+    end
+
     local function show_file()
         local file_icons = {
             modified = "",
@@ -127,11 +142,9 @@ function M.setup()
         },
         sections = {
             lualine_a = { "mode", show_file },
-            -- lualine_a = { window_nr, show_file },
             lualine_b = {},
             lualine_c = {},
             lualine_x = {},
-            -- lualine_y = { { "diagnostics", sources = { "nvim_lsp" }, colored = false } },
             lualine_y = {
                 {
                     function()
@@ -146,7 +159,6 @@ function M.setup()
         },
         inactive_sections = {
             lualine_a = { show_file },
-            -- lualine_a = { window_nr, show_file },
             lualine_b = {},
             lualine_c = {},
             lualine_x = {},
@@ -155,6 +167,7 @@ function M.setup()
         },
         tabline = {
             lualine_a = {
+                map_mode,
                 {
                     "tabs",
                     max_length = vim.o.columns,

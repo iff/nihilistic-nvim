@@ -3,7 +3,7 @@ local M = {}
 ---@type "default" | "search" | "diagnostic"
 M.mode = "default"
 
-local n, i, v, o, nv, ni, c = "n", "i", "v", "o", "nv", "ni", "c"
+local n, i, v, o, nv, ni = "n", "i", "v", "o", "nv", "ni"
 
 -- consider https://colemakmods.github.io/mod-dh/model.html when it comes to reachability
 
@@ -124,41 +124,41 @@ function M.get()
     return maps
 end
 
-local function visualize_submode()
-    local back = {
-        window = vim.api.nvim_get_current_win(),
-        normal = vim.api.nvim_get_hl(0, { name = "Normal" }),
-    }
+-- local function visualize_submode()
+--     local back = {
+--         window = vim.api.nvim_get_current_win(),
+--         normal = vim.api.nvim_get_hl(0, { name = "Normal" }),
+--     }
+--
+--     local palette = require("yi.theme").palette()
+--     vim.api.nvim_set_hl(0, "Normal", { bg = palette.bg3 })
+--     vim.cmd.redraw()
+--
+--     local function reset()
+--         vim.api.nvim_set_hl(
+--             0,
+--             "Normal",
+--             back.normal ---@diagnostic disable-line: param-type-mismatch
+--         )
+--     end
+--
+--     return reset
+-- end
 
-    local palette = require("yi.theme").palette()
-    vim.api.nvim_set_hl(0, "Normal", { bg = palette.bg3 })
-    vim.cmd.redraw()
-
-    local function reset()
-        vim.api.nvim_set_hl(
-            0,
-            "Normal",
-            back.normal ---@diagnostic disable-line: param-type-mismatch
-        )
-    end
-
-    return reset
-end
-
-local reset_visualized_submode = nil
+-- local reset_visualized_submode = nil
 
 ---@param mode ModeFn
 local function switch_submode(mode)
     local name, maps = mode()
     M.mode = name
-    if name == "default" then
-        if reset_visualized_submode then
-            reset_visualized_submode()
-        end
-        reset_visualized_submode = nil
-    else
-        reset_visualized_submode = visualize_submode()
-    end
+    -- if name == "default" then
+    --     if reset_visualized_submode then
+    --         reset_visualized_submode()
+    --     end
+    --     reset_visualized_submode = nil
+    -- else
+    --     reset_visualized_submode = visualize_submode()
+    -- end
     -- NOTE this also clears all mappings, very aggressive
     M.apply(maps)
     vim.cmd.redrawstatus()
