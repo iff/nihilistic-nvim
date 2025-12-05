@@ -1,11 +1,45 @@
 local M = {}
 
--- TODO builtin.resume could be interesting when jumping around with diagnostics!
-
 local builtin = require("telescope.builtin")
 
+local runtime_folders = nil
+
+local at = require("telescope.actions.mt").transform_mod {
+    center = function(_)
+        vim.cmd([[normal! zz]])
+    end,
+    top = function(_)
+        vim.cmd([[normal! zt]])
+    end,
+}
+
+local function fn_mappings(post)
+    -- TODO because setup can use .mappings, but a direct picker call can only do .attach_mappings
+    -- which is ... arr why? currently the only thing we change is the post step
+    -- so we assume the other settings come from above and are fine
+    local actions = require("telescope.actions")
+    local select = actions.select_default
+    if post then
+        select = select + post
+    end
+    return function(_, map)
+        map({ "i", "n" }, "<enter>", select)
+        return true -- means we also want the default mappings (not clear in what order)
+    end
+end
+
+---@param default? string
+---@return string
+local function maybe_default_text(default)
+    if vim.api.nvim_get_mode().mode ~= "v" then
+        return default or ""
+    end
+    vim.cmd([[normal! "ay]])
+    return vim.fn.getreg("a")
+end
+
 local function laforge()
-    require("telescope.pickers.layout_strategies").laforge = function(self, max_columns, max_lines, layout_config)
+    require("telescope.pickers.layout_strategies").laforge = function(self, max_columns, max_lines, _)
         -- local resolve = require("telescope.config.resolve")
         -- local p_window = require("telescope.pickers.window")
         -- local initial_options = p_window.get_initial_window_options(self)
@@ -59,7 +93,7 @@ local function laforge()
     return defaults
 end
 
-local function flex()
+local function flex() ---@diagnostic disable-line: unused-function,unused-local
     return {
         layout_strategy = "flex",
         layout_config = {},
@@ -71,7 +105,7 @@ function M.setup()
     local actions = require("telescope.actions")
 
     -- defaults = flex()
-    defaults = laforge()
+    local defaults = laforge()
 
     defaults["mappings"] = {
         i = {
@@ -125,191 +159,6 @@ function M.setup()
     })
 end
 
-local function at_top()
-    vim.cmd([[normal! zt]])
-end
-
----@diagnostic disable-next-line: unused-local, unused-function
-local function jump_find_files(entry)
-    -- { "config/lua/dk/mappings.lua",
-    --   index = 4,
-    --   <metatable> = {
-    --     __index = <function 1>,
-    --     cwd = "/home/dkuettel/config/i/nvim",
-    --     display = <function 2>
-    --   }
-    -- }
-    vim.cmd.edit(vim.fn.fnameescape(entry[1]))
-end
-
----@diagnostic disable-next-line: unused-local, unused-function
-local function jump_help_tags(entry)
-    -- {
-    --   cmd = "/*:map-nowait*",
-    --   display = ":map-nowait",
-    --   filename = "/nix/store/g6k5yzipk2ianqxj1d3xj1ab19kc31lf-neovim-unwrapped-0.10.3/share/nvim/runtime/doc/map.txt",
-    --   index = 2300,
-    --   ordinal = ":map-nowait",
-    --   <metatable> = {
-    --     __index = <function 1>
-    --   }
-    -- }
-    -- NOTE vim's help handling is a bit bumpy
-    -- the trick is to make a new buffer of type "help" so that :help decides to use it
-    -- this way we can control where it ends up predictably
-    vim.cmd.enew() -- NOTE doesnt seem to leave unused unnamed buffers around, even thou I expected it to
-    vim.bo.buftype = "help" -- NOTE documentation says dont do this, but no problem so far
-    vim.cmd.help(entry.display) -- TODO might have to escape here?
-end
-
-local function jump_lsp_symbol(entry)
-    -- lsp symbol
-    -- {
-    --   col = 12,
-    --   display = <function 1>,
-    --   filename = "/home/dkuettel/config/i/nvim/config/lua/dk/mappings.lua",
-    --   index = 583,
-    --   lnum = 286,
-    --   ordinal = "M.for_visual Function",
-    --   symbol_name = "M.for_visual",
-    --   symbol_type = "Function",
-    --   <metatable> = {
-    --     __index = <function 2>
-    --   }
-    -- }
-    vim.cmd.edit(vim.fn.fnameescape(entry.filename))
-    vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col })
-    at_top()
-end
-
----@diagnostic disable-next-line: unused-local, unused-function
-local function jump_live_grep(entry)
-    -- { "dev/run-tmux-bound-gg:5:12:# tmux new-window iloop run --until -- nix run '.?submodules=1#default' -- config/lua/dk/nvim.lua",
-    --   col = 12,
-    --   filename = "dev/run-tmux-bound-gg",
-    --   index = 1,
-    --   lnum = 5,
-    --   text = "# tmux new-window iloop run --until -- nix run '.?submodules=1#default' -- config/lua/dk/nvim.lua",
-    --   <metatable> = {
-    --     __index = <function 1>,
-    --     cwd = "/home/dkuettel/config/i/nvim",
-    --     display = <function 2>
-    --   }
-    -- }
-    vim.cmd.edit(vim.fn.fnameescape(entry.filename))
-    vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col })
-    at_top()
-end
-
----@diagnostic disable-next-line: unused-local, unused-function
-local function jump_buffers(entry)
-    -- {
-    --   bufnr = 1,
-    --   display = <function 1>,
-    --   filename = "config/lua/dk/nvim.lua",
-    --   index = 1,
-    --   indicator = "%a  ",
-    --   lnum = 1,
-    --   ordinal = "1 : config/lua/dk/nvim.lua",
-    --   path = "/home/dkuettel/config/i/nvim/config/lua/dk/nvim.lua",
-    --   <metatable> = {
-    --     __index = <function 2>
-    --   }
-    -- }
-    vim.cmd.edit(vim.fn.fnameescape(entry.filename))
-end
-
----@diagnostic disable-next-line: unused-local, unused-function
-local function jump_diagnostics(entry)
-    -- {
-    --   col = 1,
-    --   display = <function 1>,
-    --   filename = "/home/dkuettel/config/i/nvim/config/lua/dk/nvim.lua",
-    --   index = 1,
-    --   lnum = 3,
-    --   ordinal = " Unexpected <exp> .",
-    --   text = "Unexpected <exp> .",
-    --   type = "ERROR",
-    --   <metatable> = {
-    --     __index = <function 2>
-    --   }
-    -- }
-    vim.cmd.edit(vim.fn.fnameescape(entry.filename))
-    vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col })
-    at_top()
-end
-
----@diagnostic disable-next-line: unused-local, unused-function
-local function jump_man(entry)
-    -- {
-    --   description = "search for files in a directory hierarchy",
-    --   display = <function 1>,
-    --   index = 867,
-    --   keyword = "find (1)",
-    --   ordinal = "find",
-    --   section = "1",
-    --   value = "find",
-    --   <metatable> = {
-    --     __index = <function 2>
-    --   }
-    -- }
-    -- TODO probably needs escaping?
-    vim.cmd.edit("man://" .. entry.value .. "(" .. entry.section .. ")")
-end
-
----@diagnostic disable-next-line: unused-local, unused-function
-local function jump_marks(entry)
-    -- {
-    --   col = 39,
-    --   display = 'a      9   38     -- vim.cmd.colorscheme("retrobox")',
-    --   filename = "/home/dkuettel/config/i/nvim/config/lua/dk/nvim.lua",
-    --   index = 1,
-    --   lnum = 9,
-    --   ordinal = 'a      9   38     -- vim.cmd.colorscheme("retrobox")',
-    --   <metatable> = {
-    --     __index = <function 1>
-    --   }
-    -- }
-    vim.cmd.edit(vim.fn.fnameescape(entry.filename))
-    vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col })
-    at_top()
-end
-
----@param picker
----@param jump?
----@param opts?
----@return fun(make: fun()) op
-local function as_op(picker, jump, opts)
-    local actions = require("telescope.actions")
-    local state = require("telescope.actions.state")
-    ---@param make fun()
-    return function(make)
-        local callback = {
-            -- prompt_title = "buffer symbol", -- TODO should it come from outside? that its in-place, or a split?
-            attach_mappings = function(prompt_bufnr, map)
-                local function enter(prompt_bufnr)
-                    local entry = state.get_selected_entry()
-                    actions.close(prompt_bufnr)
-                    if not entry then
-                        return
-                    end
-                    make()
-                    if jump then
-                        jump(entry)
-                    else
-                        vim.print(entry)
-                    end
-                end
-                map("i", "<enter>", enter)
-                map("n", "<enter>", enter)
-                return true
-            end,
-        }
-        local merged = vim.tbl_deep_extend("force", opts or {}, callback)
-        picker(merged)
-    end
-end
-
 function M.pick_resume()
     builtin.resume()
 end
@@ -318,47 +167,98 @@ function M.pick_file()
     builtin.find_files()
 end
 
+function M.pick_file_config()
+    builtin.find_files {
+        prompt_title = "config files",
+        search_dirs = { "~/src/fleet" },
+        default_text = maybe_default_text(),
+    }
+end
+
+function M.pick_file_home()
+    builtin.find_files {
+        prompt_title = "home files",
+        search_dirs = { "~" },
+        default_text = maybe_default_text(),
+    }
+end
+
+function M.pick_file_nvim_config()
+    -- NOTE this doesnt adapt to changes to rtp or packpath after startup
+    -- TODO there is also nvim_get_runtime_file that could simulate exactly what nvim does? especially it can easily find all lua folders, or all ftplugin folders and things like that
+    -- TODO use here current runtime, or dev environment? do we even want that enabled when in normal operation?
+    -- TODO also a way to grep in all of vim source?
+    builtin.find_files {
+        prompt_title = "vim runtime",
+        search_dirs = runtime_folders,
+        default_text = maybe_default_text(),
+    }
+end
+
+function M.pick_file_buffer_folder()
+    local folder = assert(vim.fn.expand("%:h"), "no folder for current buffer")
+    builtin.find_files { prompt_title = folder, search_dirs = { folder }, default_text = maybe_default_text() }
+end
+
+function M.pick_file_root()
+    -- TODO somehow this kills telescope, too many files, wont update, wont filter, wont select, and after that vim is laggy, seems to keep things running in the background
+    -- if we switch away from telescope then maybe we dont fix it here now
+    builtin.find_files {
+        prompt_title = "root files",
+        search_dirs = { "/" },
+        default_text = maybe_default_text(),
+    }
+end
+
 function M.pick_jumplist()
     builtin.jumplist { initial_mode = "normal" }
 end
 
-function M.pick_file_config()
-    builtin.find_files { prompt_title = "fleet config files", search_dirs = { "~/src/fleet" } }
-end
-
-function M.pick_file_nvim_config()
-    builtin.find_files { prompt_title = "nvim config files", search_dirs = { "~/src/nihilistic-nvim" } }
+function M.pick_file_git_diff()
+    builtin.find_files {
+        prompt_title = "files with diff",
+        find_command = { "zsh", "-c", "git diff --name-only master 2>/dev/null || git diff --name-only main" },
+        initial_mode = "normal",
+        default_text = maybe_default_text(),
+    }
 end
 
 function M.pick_grep()
-    builtin.live_grep()
+    builtin.live_grep { default_text = maybe_default_text() }
 end
 
 function M.pick_buffer()
-    builtin.buffers()
+    builtin.buffers { default_text = maybe_default_text() }
 end
 
 function M.pick_references()
-    builtin.lsp_references()
+    builtin.lsp_references { initial_mode = "normal", default_text = maybe_default_text() }
 end
 
 function M.kinda_fuzzy_find_in_buffer()
-    builtin.current_buffer_fuzzy_find { default_text = "'" }
+    builtin.current_buffer_fuzzy_find { default_text = maybe_default_text("'") }
+    -- alternative: builtin.current_buffer_fuzzy_find { fuzzy = false }
 end
 
 function M.pick_help()
+    local default_text = maybe_default_text()
+
     -- TODO not sure how to handle things when we cancel things
     vim.cmd.enew() -- NOTE doesnt seem to leave unused unnamed buffers around, even thou I expected it to
     vim.bo.buftype = "help" -- NOTE documentation says dont do this, but no problem so far
     vim.bo.filetype = "help" -- not sure this is needed, or good?
-    builtin.help_tags()
+
+    builtin.help_tags { default_text = default_text }
 end
 
 function M.pick_man()
-    builtin.man_pages()
+    vim.cmd.enew()
+    vim.bo.buftype = "nofile"
+    vim.bo.filetype = "man"
+    builtin.man_pages { sections = { "1", "4", "5", "7", "8" }, default_text = maybe_default_text() }
 end
 function M.pick_man_all()
-    builtin.man_pages { sections = { "ALL" } }
+    builtin.man_pages { sections = { "ALL" }, default_text = maybe_default_text() }
 end
 
 function M.pick_mark()
@@ -366,50 +266,64 @@ function M.pick_mark()
 end
 
 function M.pick_project_symbol()
+    -- TODO make a filetype list with exceptions, just like for the snippets?
     if vim.bo.filetype == "python" then
         local ptags = require("ptags")
-        local function ptags_workspace()
-            -- TODO could we use a defined venv?
-            -- should ptags itself be able to do that?
-            local sources = {
-                vim.fn.glob("python", false, true),
-                vim.fn.glob("src", false, true),
-                vim.fn.glob("libs/*/python", false, true),
-            }
-            sources = vim.iter(sources):flatten(math.huge):totable()
-            if #sources == 0 then
-                sources = { "." }
-            end
-            ptags.telescope(sources)
+        -- TODO could we use a defined venv?
+        -- should ptags itself be able to do that?
+        local sources = {
+            vim.fn.glob("python", false, true),
+            vim.fn.glob("src", false, true),
+            vim.fn.glob("libs/*/python", false, true),
+        }
+        sources = vim.iter(sources):flatten():totable()
+        if #sources == 0 then
+            sources = { "." }
         end
-        ptags_workspace()
+        ptags.telescope(sources, { attach_mappings = fn_mappings(at.top) })
     else
-        local make = function() end
-        as_op(builtin.lsp_dynamic_workspace_symbols, jump_lsp_symbol)(make)
+        builtin.lsp_dynamic_workspace_symbols { default_text = maybe_default_text() }
     end
 end
 
 function M.pick_buffer_symbol()
+    -- TODO make a filetype list with exceptions, just like for the snippets?
     if vim.bo.filetype == "python" then
         local ptags = require("ptags")
-        local function ptags_local()
-            ptags.telescope { vim.fn.expand("%") }
-        end
-        ptags_local()
+        ptags.telescope({ vim.fn.expand("%") }, { attach_mappings = fn_mappings(at.top) })
+    elseif vim.bo.filetype == "man" then
+        -- TODO same for help files from vim? or are those text files? didnt know it only works in vim
+        require("man").show_toc()
+        vim.cmd([[wincmd c]])
+        -- TODO to hide the filename? doesnt seem to work anymore
+        builtin.loclist { fname_width = 0 }
     else
-        local make = function() end
-        as_op(builtin.lsp_document_symbols, jump_lsp_symbol)(make)
+        -- TODO can be annoyingly slow, see https://github.com/nvim-telescope/telescope.nvim/issues/2274
+        -- very shitty, and i tried to turn it around, but then the buf_request never calls the callback
+        -- it should be possible to update with later picker:refresh(finder, opts), but it never gets there
+        -- anyway lose telescope now?
+        builtin.lsp_document_symbols { default_text = maybe_default_text() }
     end
 end
 
 function M.pick_buffer_diagnostic()
     -- TODO needed to set severity because of a bug, otherwise shows nothing, still true?
     -- see https://github.com/nvim-telescope/telescope.nvim/issues/2661
-    builtin.diagnostics { initial_mode = "normal", bufnr = 0, severity_limit = vim.diagnostic.severity.ERROR }
+    builtin.diagnostics {
+        initial_mode = "normal",
+        bufnr = 0,
+        severity_limit = vim.diagnostic.severity.ERROR,
+        default_text = maybe_default_text(),
+    }
 end
 
 function M.pick_buffer_diagnostic_all()
-    builtin.diagnostics { initial_mode = "normal", bufnr = 0, severity_limit = vim.diagnostic.severity.HINT }
+    builtin.diagnostics {
+        initial_mode = "normal",
+        bufnr = 0,
+        severity_limit = vim.diagnostic.severity.HINT,
+        default_text = maybe_default_text(),
+    }
 end
 
 function M.pick_project_diagnostics()
@@ -418,6 +332,7 @@ function M.pick_project_diagnostics()
         bufnr = nil,
         no_unlisted = false,
         severity_limit = vim.diagnostic.severity.ERROR,
+        default_text = maybe_default_text(),
     }
 end
 
@@ -427,14 +342,7 @@ function M.pick_project_diagnostics_all()
         bufnr = nil,
         no_unlisted = false,
         severity_limit = vim.diagnostic.severity.HINT,
-    }
-end
-
-function M.pick_diff_files()
-    builtin.find_files {
-        prompt_title = "files with diff",
-        find_command = { "zsh", "-c", "git diff --name-only master 2>/dev/null || git diff --name-only main" },
-        initial_mode = "normal",
+        default_text = maybe_default_text(),
     }
 end
 
