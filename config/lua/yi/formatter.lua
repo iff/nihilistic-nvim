@@ -21,6 +21,7 @@ function M.setup()
         gitignore = c.gitignore_sort,
         nix = c.nix_nixfmt,
         toml = c.toml_taplo,
+        typst = from_stdout { "typstyle", path_token },
         css = from_stdout { "prettier", "--parser", "css", path_token },
         graphql = from_stdout { "prettier", "--parser", "graphql", path_token },
         javascript = from_stdout {
