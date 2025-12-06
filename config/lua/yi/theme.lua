@@ -63,10 +63,8 @@ function M.setup()
 
     local function map_mode()
         local mappings = require("yi.mappings")
-        if mappings.mode == "default" then
-            return ""
-        end
         local icons = {
+            default = "",
             search = "",
             treesitter = "󰔱",
             windows = "󱂬",
