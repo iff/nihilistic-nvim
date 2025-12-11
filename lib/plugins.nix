@@ -26,14 +26,4 @@ rec {
 
   plug = name: plugWith name { doCheck = true; };
   plugNoCheck = name: plugWith name { doCheck = false; };
-
-  # Helper to build plugins from local sources (useful for development)
-  plugLocal =
-    name: src:
-    pkgs.vimUtils.buildVimPlugin {
-      pname = name;
-      version = "local";
-      inherit src;
-      doCheck = false;
-    };
 }

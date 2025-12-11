@@ -5,5 +5,5 @@ let
 in
 
 {
-  inherit (plugins) plug plugNoCheck plugLocal;
+  inherit (plugins) plug plugNoCheck;
 }

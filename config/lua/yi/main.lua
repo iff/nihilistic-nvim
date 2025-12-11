@@ -8,7 +8,6 @@ function M.main()
     require("yi.neovide").setup()
 
     -- no config
-    require("Comment").setup()
     require("auspicious-autosave").setup()
 
     -- my config
