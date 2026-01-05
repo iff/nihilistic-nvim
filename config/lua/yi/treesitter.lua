@@ -11,7 +11,7 @@ function M.setup()
     local palette = require("yi.theme").palette()
     vim.api.nvim_set_hl(0, "@comment.documentation", { fg = palette.blue.dim })
 
-    require("nvim-treesitter.configs").setup {
+    require("nvim-treesitter").setup {
         highlight = {
             enable = true,
         },

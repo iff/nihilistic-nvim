@@ -575,7 +575,7 @@ function M.for_operators()
 end
 
 function M.for_visual()
-    local ts = require("nvim-treesitter.incremental_selection")
+    local ts = require("yi.incremental_selection")
     return validated_maps {
         -- { [[v]], n, "visual lines", rhs = "V" },
         { [[ v]], n, "visual block", rhs = "<c-v>" },
@@ -771,7 +771,7 @@ end
 
 ---@type ModeFn
 function M.mode_treesitter()
-    local ts = require("nvim-treesitter.incremental_selection")
+    local ts = require("yi.incremental_selection")
     local maps = validated_maps {
         { [[u]], v, "one more parent", fn = ts.node_incremental },
         { [[U]], v, "one more parent", fn = ts.scope_incremental },
