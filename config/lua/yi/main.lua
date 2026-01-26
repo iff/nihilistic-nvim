@@ -10,6 +10,11 @@ function M.main()
     -- no config
     require("auspicious-autosave").setup()
 
+    -- todo
+    local layouts = require("lavish-layouts")
+    layouts.setup()
+    layouts.switch("dynamic")
+
     -- my config
     require("yi.oil").setup()
     require("yi.hop").setup()
