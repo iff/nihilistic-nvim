@@ -101,6 +101,9 @@ function M.setup(capabilities)
         capabilities = capabilities,
         settings = {
             ["rust-analyzer"] = {
+                cargo = {
+                    allFeatures = true,
+                },
                 check = {
                     command = "clippy",
                 },

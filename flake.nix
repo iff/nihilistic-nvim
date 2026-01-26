@@ -126,11 +126,11 @@
           # (lib.plug "mad-mappings-nvim")
           (lib.plugNoCheck "ptags-nvim")
 
-          (lib.plug "hop-nvim")
-          (lib.plug "fugitive-nvim")
           gitsigns-nvim
           oil-nvim
           kmonad-vim
+          (lib.plug "hop-nvim")
+          (lib.plug "fugitive-nvim")
           (lib.plugNoCheck "resty-vim")
 
           # theme
