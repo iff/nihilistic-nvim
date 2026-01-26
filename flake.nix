@@ -180,7 +180,7 @@
           stylua
           taplo
           nodePackages.prettier
-          nixfmt-rfc-style
+          nixfmt
         ];
         dependencies-telescope = with pkgs; [
           fd
