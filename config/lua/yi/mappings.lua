@@ -842,6 +842,7 @@ function M.for_windows()
         -- layouts
         { [[wm]], n, "layout main", fn = layouts.switch_main },
         { [[ws]], n, "layout stacked", fn = layouts.switch_stacked },
+        { [[wld]], n, "layout dynamic", fn = layouts.switch_dynamic },
     }
 end
 
