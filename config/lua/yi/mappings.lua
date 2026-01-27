@@ -121,6 +121,7 @@ function M.get()
     vim.list_extend(maps, M.for_undos())
     vim.list_extend(maps, M.for_completion())
     vim.list_extend(maps, M.for_comments())
+    vim.list_extend(maps, M.for_dap())
     return maps
 end
 
@@ -1020,6 +1021,21 @@ function M.for_comments()
     return validated_maps {
         { [[,c]], n, "comment with operator", expr = operation },
         { [[,c]], v, "comment visual", expr = visual },
+    }
+end
+
+function M.for_dap()
+    local dap = require("dap")
+    -- local ui = require("dapui")
+    return validated_maps {
+        { [[<c-b>]], n, "toggle breakpoint", fn = dap.toggle_breakpoint },
+        { [[<c-r>]], n, "start or continue", fn = dap.continue },
+        { [[<c-i>]], n, "step over", fn = dap.step_over },
+        { [[<c-e>]], n, "step into", fn = dap.step_into },
+        { [[<c-u>]], n, "step out", fn = dap.step_out },
+        { [[<c-c>]], n, "exit/stop", fn = dap.terminate },
+        { [[<c-q>]], n, "ui", rhs = "<cmd>DapViewOpen<enter>" },
+        -- { [[<c-q>]], n, "ui", fn = ui.open },
     }
 end
 

@@ -158,6 +158,10 @@
           (lib.plug "telescope-hop-nvim")
           (lib.plug "telescope-ui-select-nvim")
 
+          nvim-dap
+          # nvim-dap-ui
+          nvim-dap-view
+
           pkgs.vimPlugins.nvim-treesitter.withAllGrammars
         ];
 

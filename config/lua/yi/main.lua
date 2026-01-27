@@ -17,6 +17,7 @@ function M.main()
 
     -- my config
     require("yi.oil").setup()
+    require("yi.dap").setup()
     require("yi.hop").setup()
     require("yi.telescope").setup()
     require("yi.completion").setup()
