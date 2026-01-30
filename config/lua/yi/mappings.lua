@@ -952,8 +952,19 @@ function M.for_comma()
         --     vim.cmd([[RustLsp flyCheck]])
         -- end
     end
+
     local g = require("yi.fugitive")
     local h = require("hop")
+    local j = require("yi.jj")
+
+    -- TODO only bindings for the vcs we have
+    local vcs_status = nil
+    local cwd = vim.fn.getcwd()
+    if vim.uv.fs_stat(cwd .. "/.jj") then
+        vcs_status = j.status
+    elseif vim.uv.fs_stat(cwd .. "/.git") then
+        vcs_status = g.git
+    end
     return validated_maps {
         { [[,]], n, "misc" },
         { [[<c-d>]], ni, "(try) save and exit (anyway)", rhs = "<cmd>silent! wa<enter><cmd>qa!<enter>" },
@@ -961,7 +972,7 @@ function M.for_comma()
 
         -- formatter and git
         { [[==]], n, "format buffer", fn = reset_view_and_format },
-        { [[gn]], n, "git", fn = g.git },
+        { [[gn]], n, "git", fn = vcs_status },
 
         -- hop
         { [[  ]], nv, "hop 2char", fn = h.hint_char2 },

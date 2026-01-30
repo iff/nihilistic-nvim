@@ -126,6 +126,7 @@
           # (lib.plug "mad-mappings-nvim")
           (lib.plugNoCheck "ptags-nvim")
 
+          jj-nvim
           gitsigns-nvim
           oil-nvim
           kmonad-vim
