@@ -244,7 +244,7 @@ function M.try_autoimport()
         -- TODO or instead we could use only the additionalTextEdits and ignore the current symbol edit
         -- but still, it looks like the proposals are better when done at the end of the symbol
         -- maybe there is an option fo the complete LSP call that gives a hint? no it doesnt
-        local params = vim.lsp.util.make_position_params()
+        local params = vim.lsp.util.make_position_params(0, "utf-8")
         local function handler(_, result, _, _)
             -- full signature: err, result, ctx, config
             for _, item in ipairs(result.items) do
