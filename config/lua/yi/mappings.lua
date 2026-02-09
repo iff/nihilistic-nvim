@@ -645,10 +645,10 @@ function M.for_copy_paste()
     -- NOTE both x and c keep cursor where it was
     -- TODO is there a way to paste and use the indentation from the cursor (not the text)
     return validated_maps {
-        { [[c]], n, "copy", rhs = [["zy]] },
-        { [[c]], v, "copy", rhs = [[mz"zy`z]] },
-        { [[x]], n, "cut", rhs = [["zd]] },
-        { [[x]], v, "cut", rhs = [[mz"zd`z]] },
+        { [[c]], n, "copy", rhs = [["+y]] },
+        { [[c]], v, "copy", rhs = [[mz"+y`z]] },
+        { [[x]], n, "cut", rhs = [["+d]] },
+        { [[x]], v, "cut", rhs = [[mz"+d`z]] },
 
         -- NOTE "yY copies into y, '< moves to start/end, "yp pastes
         { [[adu]], v, "duplicate above", rhs = [["yY'<"yP]] },
@@ -667,41 +667,22 @@ function M.for_copy_paste()
         },
 
         { [[p]], n, "paste, adapt indentation, and stay" },
-        { [[pu]], n, "insert above", fn = fn_pasted([[mz"z]P`z]], "l") },
-        { [[pe]], n, "insert below", fn = fn_pasted([[mz"z]p`z]], "l") },
-        { [[pn]], n, "insert before", fn = fn_pasted('"zP`]l', "c") },
-        { [[pi]], n, "insert after", fn = fn_pasted('"zp`[h', "c") },
-        { [[pm]], n, "insert at beginning of text in line", fn = fn_pasted([[mz0^"zP`z]], "c") },
-        -- { [[pan]], n, "insert at beginning of text in line", fn = fn_pasted([[mz0^"zP`z]], "c") },
-        -- { [[po]], n, "insert at end of line", fn = fn_pasted([[mz$"zp`z]], "c") },
-        -- { [[pai]], n, "insert at end of line", fn = fn_pasted([[mz$"zp`z]], "c") },
+        { [[pu]], n, "insert above", fn = fn_pasted([[mz"+]P`z]], "l") },
+        { [[pe]], n, "insert below", fn = fn_pasted([[mz"+]p`z]], "l") },
+        { [[pn]], n, "insert before", fn = fn_pasted('"+P`]l', "c") },
+        { [[pi]], n, "insert after", fn = fn_pasted('"+p`[h', "c") },
+        { [[pm]], n, "insert at beginning of text in line", fn = fn_pasted([[mz0^"+P`z]], "c") },
+        -- { [[pan]], n, "insert at beginning of text in line", fn = fn_pasted([[mz0^"+P`z]], "c") },
+        -- { [[po]], n, "insert at end of line", fn = fn_pasted([[mz$"+p`z]], "c") },
+        -- { [[pai]], n, "insert at end of line", fn = fn_pasted([[mz$"+p`z]], "c") },
 
         { [[p ]], n, "but keep indentation" },
-        { [[p u]], n, "insert above", fn = fn_pasted([[mz"zP`z]], "l") },
-        { [[p e]], n, "insert below", fn = fn_pasted([[mz"zp`z]], "l") },
-        { [[p n]], n, "insert before", fn = fn_pasted('"zP`]k', "c") },
-        { [[p i]], n, "insert after", fn = fn_pasted('"zp`[h', "c") },
+        { [[p u]], n, "insert above", fn = fn_pasted([[mz"+P`z]], "l") },
+        { [[p e]], n, "insert below", fn = fn_pasted([[mz"+p`z]], "l") },
+        { [[p n]], n, "insert before", fn = fn_pasted('"+P`]k', "c") },
+        { [[p i]], n, "insert after", fn = fn_pasted('"+p`[h', "c") },
 
-        -- TODO do we want the but move versions? totally forgot. we move to where?
-        -- { [[pp]], n, "but move" },
-        -- { [[ppu]], n, "insert above", fn = fn_pasted('"z]P`[', "l") },
-        -- { [[ppe]], n, "insert below", fn = fn_pasted('"z]p`]', "l") },
-        -- { [[ppn]], n, "insert before", fn = fn_pasted('"zP`[', "c") },
-        -- { [[ppi]], n, "insert after", fn = fn_pasted('"zp`]', "c") },
-        -- { [[ppm]], n, "insert at beginning of text in line", fn = fn_pasted('0^"zP`[', "c") },
-        -- { [[ppan]], n, "insert at beginning of text in line", fn = fn_pasted('0^"zP`[', "c") },
-        -- { [[ppo]], n, "insert at end of line", fn = fn_pasted('$"zp`z`]', "c") },
-        -- { [[ppai]], n, "insert at end of line", fn = fn_pasted('$"zp`z`]', "c") },
-        --
-        -- { [[pp ]], n, "but keep indentation" },
-        -- { [[pp u]], n, "insert above", fn = fn_pasted('"zP`[', "l") },
-        -- { [[pp e]], n, "insert below", fn = fn_pasted('"zp`]', "l") },
-        -- { [[pp m]], n, "insert before", fn = fn_pasted('"zP`[', "c") },
-        -- { [[pp n]], n, "insert before", fn = fn_pasted('"zP`[', "c") },
-        -- { [[pp o]], n, "insert after", fn = fn_pasted('"zp`]', "c") },
-        -- { [[pp i]], n, "insert after", fn = fn_pasted('"zp`]', "c") },
-
-        { [[p]], v, "replace visual with paste", fn = fn_pasted([["zp]], "") },
+        { [[p]], v, "replace visual with paste", fn = fn_pasted([["+p]], "") },
     }
 end
 
