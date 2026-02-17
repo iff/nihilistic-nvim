@@ -306,7 +306,7 @@
             bins
             ++ [
               pkgs.neovim-unwrapped
-              inputs.ptags-nvim.packages.${pkgs.stdenv.hostPlatform.system}.app
+              inputs.ptags-nvim.packages.${pkgs.stdenv.hostPlatform.system}.default
               # inputs.funky-formatter-nvim.packages.${pkgs.stdenv.hostPlatform.system}.default
             ]
             ++ dependencies;
