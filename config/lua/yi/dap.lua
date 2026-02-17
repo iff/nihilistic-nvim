@@ -1,13 +1,15 @@
-local mod = {}
+local M = {}
 
-function mod.setup()
+function M.setup()
     -- require("dapui").setup()
     local dap = require("dap")
+
     dap.adapters.lldb = {
         type = "executable",
         command = "lldb-dap",
         name = "lldb",
     }
+
     dap.configurations.rust = {
         {
             name = "Launch",
@@ -23,4 +25,4 @@ function mod.setup()
     }
 end
 
-return mod
+return M
