@@ -100,12 +100,98 @@ local function flex() ---@diagnostic disable-line: unused-function,unused-local
     }
 end
 
+local function flex_aspect_layout(self, max_columns, max_lines)
+    local borderchars = { "━", "┃", "━", "┃", "┏", "┓", "┛", "┗" }
+    -- NOTE this is aligned with when lavish-layout switches in dynamic mode
+    local narrow = max_columns <= 190
+    if narrow then
+        local border = 2
+        local prompt = 1
+        local results = 7
+        return {
+            prompt = {
+                col = 2,
+                line = max_lines - prompt,
+                width = max_columns - border,
+                height = prompt,
+                enter = true,
+                border = true,
+                borderchars = borderchars,
+                title = self.prompt_title,
+            },
+            results = {
+                col = 2,
+                line = max_lines - prompt - border - results,
+                width = max_columns - border,
+                height = results,
+                enter = false,
+                border = true,
+                borderchars = borderchars,
+                title = "results",
+            },
+            preview = {
+                col = 2,
+                line = 3,
+                width = max_columns - border,
+                height = max_lines - prompt - border - results - border - 3,
+                enter = false,
+                border = true,
+                borderchars = borderchars,
+                title = "preview",
+            },
+        }
+    else -- not narrow
+        local width = vim.fn.round(max_columns / 2)
+        local border = 2
+        local prompt = 1
+        return {
+            prompt = {
+                col = 2,
+                line = max_lines - prompt,
+                width = width - border,
+                height = prompt,
+                enter = true,
+                border = true,
+                borderchars = borderchars,
+                title = self.prompt_title,
+            },
+            results = {
+                col = 2,
+                line = 3,
+                width = width - border,
+                height = max_lines - prompt - border - 3,
+                enter = false,
+                border = true,
+                borderchars = borderchars,
+                title = "results",
+            },
+            preview = {
+                col = 2 + width,
+                line = 3,
+                width = width - border - 1,
+                height = max_lines - border - 1,
+                enter = false,
+                border = true,
+                borderchars = borderchars,
+                title = "preview",
+            },
+        }
+    end
+end
+
 function M.setup()
     local telescope = require("telescope")
     local actions = require("telescope.actions")
 
-    -- defaults = flex()
-    local defaults = laforge()
+    -- local defaults = laforge()
+
+    require("telescope.pickers.layout_strategies").flex_aspect = flex_aspect_layout
+    local defaults = {
+        borderchars = { "━", "┃", "━", "┃", "┏", "┓", "┛", "┗" },
+        layout_strategy = "flex_aspect",
+        scroll_strategy = "limit",
+        path_display = { "truncate" },
+    }
 
     defaults["mappings"] = {
         i = {
