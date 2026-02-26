@@ -42,7 +42,16 @@ function M.setup()
             "typescript",
             path_token,
         },
-        markdown = from_stdout { "prettier", "--parser", "markdown", path_token },
+        markdown = from_stdout {
+            "prettier",
+            "--prose-wrap",
+            "always",
+            "--print-width",
+            "80",
+            "--parser",
+            "markdown",
+            path_token,
+        },
     }
 end
 
