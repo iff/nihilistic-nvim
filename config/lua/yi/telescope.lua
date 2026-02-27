@@ -132,7 +132,7 @@ local function flex_aspect_layout(self, max_columns, max_lines)
             preview = {
                 col = 2,
                 line = 3,
-                width = max_columns - border,
+                width = max_columns - border - 1,
                 height = max_lines - prompt - border - results - border - 3,
                 enter = false,
                 border = true,
