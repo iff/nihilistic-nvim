@@ -890,6 +890,7 @@ function M.for_jumps()
         { [[a?]], n, "explain error", fn = l.explain_error },
         { [[ar]], n, "render diagnostic", fn = l.open_diagnostic },
         { [[ap]], n, "open package file", fn = l.open_pkg_manager },
+        { [[tdr]], n, "rust docs", fn = require("yi.rustdocs").pick_docs },
 
         { [[tt]], n, "definition", fn = l.go_to_definition },
         { [[t ]], n, "resume", fn = t.pick_resume },
