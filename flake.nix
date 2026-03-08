@@ -137,6 +137,7 @@
           (lib.plugNoCheck "resty-vim")
 
           # theme
+          # catppuccin-nvim # -> did not like it
           (lib.plug "nightfox-nvim")
           (lib.plug "lualine-nvim")
           nvim-web-devicons
@@ -174,15 +175,17 @@
           (map (name: "./plugins/${name}") devPluginNames)
           ++ (map (name: "./plugins/${name}/after") devPluginNames);
 
-        # TODO flake in project should install the deps!
         dependencies-lsps = with pkgs; [
-          basedpyright
-          clang-tools
           emmylua-ls
           lua-language-server
           yaml-language-server
-          nodePackages.typescript-language-server
           nil
+          # TODO move to project flakes
+          nodePackages.typescript-language-server
+          basedpyright
+          # ty
+          clang-tools
+          # lldb_20
         ];
         dependencies-formatters = with pkgs; [
           stylua
