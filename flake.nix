@@ -127,6 +127,7 @@
           (lib.plugNoCheck "ptags-nvim")
 
           hunk-nvim
+          diffview-nvim
           jj-nvim
           gitsigns-nvim
           oil-nvim

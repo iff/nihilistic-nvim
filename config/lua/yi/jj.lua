@@ -5,7 +5,11 @@ function M.status()
 end
 
 function M.setup()
-    require("jj").setup {}
+    require("jj").setup {
+        diff = {
+            backend = "diffview",
+        },
+    }
     require("hunk").setup {
         keys = {
             global = {
