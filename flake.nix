@@ -379,11 +379,27 @@
           ];
         };
 
+        build = pkgs.writeShellScriptBin "build" ''
+          nix build -v --log-format internal-json |& nom --json
+        '';
+
+        build-dev = pkgs.writeShellScriptBin "dev" ''
+          nix build '#dev' -v --log-format internal-json |& nom --json
+        '';
+
       in
       {
         packages = {
           default = package;
           dev = dev;
+        };
+
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [
+            build
+            build-dev
+            nix-output-monitor
+          ];
         };
       }
     );
