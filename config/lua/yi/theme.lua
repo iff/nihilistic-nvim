@@ -21,6 +21,9 @@ function M.setup()
     end, {})
 
     require("nvim-web-devicons").setup {}
+    -- require("mini.icons").setup {
+    --     style = "glyph",
+    -- }
 
     vim.cmd([[
         " hi CursorLine cterm=NONE ctermbg=1 ctermfg=NONE

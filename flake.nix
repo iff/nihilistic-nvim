@@ -140,6 +140,7 @@
           (lib.plug "nightfox-nvim")
           (lib.plug "lualine-nvim")
           nvim-web-devicons
+          # mini-icons
 
           # lsp (minimal)
           (lib.plug "nvim-lspconfig")
