@@ -970,6 +970,7 @@ function M.for_comma()
         -- },
 
         -- term aliases
+        { [[,t]], n, "terminal", rhs = "<cmd>term<enter>" },
         { [[,g]], n, "run .tmux/g", rhs = ":vsplit | term zsh -c '$(pwd)/.tmux/g'<CR>" },
         { [[<ESC>]], "t", "normal mode (term)", rhs = [[<C-\><C-n>]] },
     }
