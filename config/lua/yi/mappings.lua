@@ -903,8 +903,9 @@ function M.for_jumps()
         { [[tak]], n, "all man pages", fn = t.pick_man_all },
         { [[tm]], n, "marks", fn = t.pick_mark },
         { [[tj]], n, "jumps", fn = t.pick_jumplist },
+        { [[tfn]], n, "notes", fn = t.pick_file_notes },
         { [[tfc]], n, "config files", fn = t.pick_file_config },
-        { [[tfv]], n, "config files", fn = t.pick_file_nvim_config },
+        { [[tfv]], n, "nvim files", fn = t.pick_file_nvim_config },
         { [[te]], n, "buffer symbols", fn = t.pick_buffer_symbol },
         { [[tu]], n, "project symbols", fn = t.pick_project_symbol },
 

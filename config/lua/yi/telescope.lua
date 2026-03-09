@@ -253,6 +253,14 @@ function M.pick_file()
     builtin.find_files()
 end
 
+function M.pick_file_notes()
+    builtin.find_files {
+        prompt_title = "notes",
+        search_dirs = { "~/src/notes" },
+        default_text = maybe_default_text(),
+    }
+end
+
 function M.pick_file_config()
     builtin.find_files {
         prompt_title = "config files",
