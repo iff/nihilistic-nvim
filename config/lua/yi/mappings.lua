@@ -53,9 +53,8 @@ function M.apply(maps)
     maps = maps or M.get()
     M.validate(maps)
     M.clear()
-    M.apply_plain(maps)
-    -- M.apply_which_key(maps)
-    -- M.apply_legendary(maps)
+    -- M.apply_plain(maps)
+    M.apply_with_logging(maps)
 end
 
 ---@generic A
@@ -122,6 +121,7 @@ function M.get()
     vim.list_extend(maps, M.for_completion())
     vim.list_extend(maps, M.for_comments())
     vim.list_extend(maps, M.for_dap())
+    vim.list_extend(maps, M.for_literals())
     return maps
 end
 
@@ -215,6 +215,97 @@ function M.apply_plain(maps)
                 vim.keymap.set(map.mode, map.lhs, map.expr, { desc = map.desc, expr = true })
             elseif map.fn then
                 vim.keymap.set(map.mode, map.lhs, map.fn, { desc = map.desc })
+            end
+        end
+    end)
+end
+
+local log_session = string.sub(vim.system({ "uuidgen" }, { text = true }):wait().stdout, 1, -2)
+-- TODO there seems to be no way to detect if systemd-cat failed, popen just continues
+local log_process = assert(io.popen("systemd-cat --identifier=nvim-keys", "w"))
+
+local function log_raw(key, typed)
+    if typed == "" then
+        return
+    end
+    local event = {
+        kind = "raw-v1",
+        session = log_session,
+        typed = typed,
+    }
+    log_process:write(vim.json.encode(event) .. "\n")
+    log_process:flush()
+end
+
+vim.on_key(log_raw, 0)
+
+---@param map FlatMap
+local function log_map(map)
+    local event = {
+        kind = "map-v1",
+        session = log_session,
+        lhs = map.lhs,
+        desc = map.desc,
+        mode = map.mode,
+        submode = M.mode,
+        -- NOTE not 100% sure this is always the right "current buffer"
+        -- but for insert mode it seems solid
+        filetype = vim.bo.filetype or "",
+    }
+    log_process:write(vim.json.encode(event) .. "\n")
+    log_process:flush()
+end
+
+--- apply using nvim api, log every use of a mapping
+---@param maps Map[] mappings to apply
+function M.apply_with_logging(maps)
+    local flat = flatten_maps(maps)
+    foreach(flat, function(map)
+        if map.maps then -- switch to new submode
+            if map.rhs then
+                -- vim.keymap.set(map.mode, map.lhs, fn_submode_rhs(map.maps, map.rhs), { desc = map.desc, expr = true })
+                vim.keymap.set(map.mode, map.lhs, function()
+                    log_map(map)
+                    return fn_submode_rhs(map.maps, map.rhs)()
+                end, { desc = map.desc, expr = true })
+            elseif map.expr then
+                -- vim.keymap.set(map.mode, map.lhs, fn_submode_expr(map.maps, map.expr), { desc = map.desc, expr = true })
+                vim.keymap.set(map.mode, map.lhs, function()
+                    log_map(map)
+                    return fn_submode_expr(map.maps, map.expr)()
+                end, { desc = map.desc, expr = true })
+            elseif map.fn then
+                -- vim.keymap.set(map.mode, map.lhs, fn_submode_fn(map.maps, map.fn), { desc = map.desc })
+                vim.keymap.set(map.mode, map.lhs, function()
+                    log_map(map)
+                    fn_submode_fn(map.maps, map.fn)()
+                end, { desc = map.desc })
+            else
+                -- vim.keymap.set(map.mode, map.lhs, fn_submode_fn(map.maps, function() end), { desc = map.desc })
+                vim.keymap.set(map.mode, map.lhs, function()
+                    log_map(map)
+                    fn_submode_fn(map.maps, function() end)()
+                end, { desc = map.desc })
+            end
+        else -- stay in current submode
+            if map.rhs then
+                -- vim.keymap.set(map.mode, map.lhs, map.rhs, { desc = map.desc })
+                vim.keymap.set(map.mode, map.lhs, function()
+                    log_map(map)
+                    return map.rhs
+                end, { desc = map.desc, expr = true })
+            elseif map.expr then
+                -- vim.keymap.set(map.mode, map.lhs, map.expr, { desc = map.desc, expr = true })
+                vim.keymap.set(map.mode, map.lhs, function()
+                    log_map(map)
+                    return map.expr()
+                end, { desc = map.desc, expr = true })
+            elseif map.fn then
+                -- vim.keymap.set(map.mode, map.lhs, map.fn, { desc = map.desc })
+                vim.keymap.set(map.mode, map.lhs, function()
+                    log_map(map)
+                    map.fn()
+                end, { desc = map.desc })
             end
         end
     end)
@@ -1032,6 +1123,26 @@ function M.for_dap()
         { [[<c-q>]], n, "ui", rhs = "<cmd>DapViewOpen<enter>" },
         -- { [[<c-q>]], n, "ui", fn = ui.open },
     }
+end
+
+function M.for_literals()
+    local maps = {}
+    -- TODO hm how to make sure we got all, and dont overwrite something that should have an action?
+    -- TODO i thinkg ctrl-c we cannot get ever
+    local keys = [[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&*()\%@;+![]|~":-={}$#_<>?']]
+    for at = 1, #keys do
+        local key = string.sub(keys, at, at)
+        table.insert(maps, { key, i, "literal " .. key, rhs = key })
+    end
+    -- TODO we really need to go an map everything, even the defaults, like <esc>
+    -- and of course we dont see shift and co, that is only for kanata
+    foreach(
+        { "<enter>", "<esc>", "<tab>", "<s-tab>", "<bs>", "<space>", "<left>", "<right>", "<up>", "<down>" },
+        function(rhs)
+            table.insert(maps, { rhs, i, "literal " .. rhs, rhs = rhs })
+        end
+    )
+    return validated_maps(maps)
 end
 
 return M
