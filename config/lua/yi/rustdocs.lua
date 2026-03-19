@@ -1,13 +1,14 @@
 local M = {}
 
 local function get_std_docs_path()
-    local result = vim.system({ "rustc", "--print", "sysroot" }, { text = true }):wait()
+    local rustc = os.getenv("RUSTC") or "rustc"
+    local result = vim.system({ rustc, "--print", "sysroot" }, { text = true }):wait()
     if result.code ~= 0 then
         return nil, "rustc --print sysroot failed: " .. (result.stderr or "unknown error")
     end
 
     local sysroot = vim.trim(result.stdout)
-    local docs_path = sysroot .. "/share/doc/rust/html/std"
+    local docs_path = vim.fs.joinpath(sysroot, "share/doc/rust/html/std")
     if vim.fn.isdirectory(docs_path) == 0 then
         return nil, "docs not found at " .. docs_path
     end
