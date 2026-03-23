@@ -1,33 +1,17 @@
 local M = {}
 
 function M.setup()
-    local query_linter = {
-        enable = true,
-        use_virtual_text = true,
-        lint_events = { "BufWrite", "CursorHold" },
-    }
-
     -- change some hl for visibility
     local palette = require("yi.theme").palette()
     vim.api.nvim_set_hl(0, "@comment.documentation", { fg = palette.blue.dim })
 
-    require("nvim-treesitter").setup {
-        highlight = {
-            enable = true,
-        },
-        incremental_selection = {
-            enable = false,
-            -- TODO try
-            -- keymaps = {
-            --     init_selection = "gnn",
-            --     node_incremental = "grn",
-            --     scope_incremental = "grc",
-            --     node_decremental = "grm",
-            -- },
-        },
-        indent = { enable = false },
-        query_linter = query_linter,
-    }
+    -- nvim-treesitter no longer manages modules
+    -- use a FileType autocmd to start treesitter parsing per buffer
+    vim.api.nvim_create_autocmd("FileType", {
+        callback = function(args)
+            pcall(vim.treesitter.start, args.buf)
+        end,
+    })
 end
 
 ---@return string[]
@@ -36,8 +20,6 @@ function M.get_context()
 
     local cursor = vim.api.nvim_win_get_cursor(0)
     table.insert(lines, vim.fn.expand("%") .. " @ " .. cursor[1] .. ":" .. (cursor[2] + 1))
-
-    local ts_utils = require("nvim-treesitter.ts_utils")
 
     local type_patterns = {
         "class",
@@ -54,10 +36,22 @@ function M.get_context()
         return line:gsub("%s*[%[%(%{]*%s*$", "")
     end
 
+    local function get_line_for_node(node)
+        local node_type = node:type()
+        for _, pattern in ipairs(type_patterns) do
+            if node_type:find(pattern) then
+                local start_row = node:range()
+                local line = vim.api.nvim_buf_get_lines(0, start_row, start_row + 1, false)[1] or ""
+                return transform_fn(line, node)
+            end
+        end
+        return ""
+    end
+
     local contexts = {}
-    local at = ts_utils.get_node_at_cursor()
+    local at = vim.treesitter.get_node()
     while at do
-        local line = ts_utils._get_line_for_node(at, type_patterns, transform_fn, 0)
+        local line = get_line_for_node(at)
         if line ~= "" then
             table.insert(contexts, line)
         end
