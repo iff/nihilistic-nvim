@@ -3,7 +3,18 @@ local M = {}
 function M.setup()
     -- change some hl for visibility
     local palette = require("yi.theme").palette()
-    vim.api.nvim_set_hl(0, "@comment.documentation", { fg = palette.blue.dim })
+    vim.api.nvim_set_hl(0, "@comment.documentation", { fg = palette.green.dim })
+    vim.api.nvim_set_hl(0, "@comment.line", { fg = palette.fg3 })
+
+    -- handle TODO/NOTE highlighting with autocmd
+    vim.api.nvim_set_hl(0, "@comment.todo", { fg = palette.orange.bright, bold = true })
+    vim.api.nvim_set_hl(0, "@comment.note", { fg = palette.blue.bright, bold = true })
+    vim.api.nvim_create_autocmd({ "BufWinEnter", "WinNew" }, {
+        callback = function()
+            vim.fn.matchadd("@comment.todo", [[//.*\zs\<TODO\>]])
+            vim.fn.matchadd("@comment.note", [[//.*\zs\<NOTE\>]])
+        end,
+    })
 
     -- nvim-treesitter no longer manages modules
     -- use a FileType autocmd to start treesitter parsing per buffer
