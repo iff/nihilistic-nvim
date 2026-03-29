@@ -9,10 +9,12 @@ function M.setup()
     -- handle TODO/NOTE highlighting with autocmd
     vim.api.nvim_set_hl(0, "@comment.todo", { fg = palette.orange.bright, bold = true })
     vim.api.nvim_set_hl(0, "@comment.note", { fg = palette.blue.bright, bold = true })
+    vim.api.nvim_set_hl(0, "@comment.safety", { fg = palette.red.bright, bold = true })
     vim.api.nvim_create_autocmd({ "BufWinEnter", "WinNew" }, {
         callback = function()
             vim.fn.matchadd("@comment.todo", [[//.*\zs\<TODO\>]])
             vim.fn.matchadd("@comment.note", [[//.*\zs\<NOTE\>]])
+            vim.fn.matchadd("@comment.safety", [[//.*\zs\<SAFETY\>]])
         end,
     })
 
