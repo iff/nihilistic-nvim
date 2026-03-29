@@ -138,6 +138,7 @@
 
           # theme
           # catppuccin-nvim # -> did not like it
+          # everforest # -> also not so nice
           (lib.plug "nightfox-nvim")
           (lib.plug "lualine-nvim")
           nvim-web-devicons
