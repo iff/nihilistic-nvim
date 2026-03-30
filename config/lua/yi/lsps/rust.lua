@@ -64,7 +64,7 @@ function M.setup(capabilities)
                 diagnostics = {
                     enable = true,
                     experimental = {
-                        enable = true,
+                        enable = false,
                     },
                 },
                 -- procMacro = {
