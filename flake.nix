@@ -176,29 +176,23 @@
           (map (name: "./plugins/${name}") devPluginNames)
           ++ (map (name: "./plugins/${name}/after") devPluginNames);
 
-        dependencies-lsps = with pkgs; [
-          emmylua-ls
-          lua-language-server
-          yaml-language-server
-          nil
-          # TODO move to project flakes
-          nodePackages.typescript-language-server
-          basedpyright
-          # ty
-          clang-tools
-          # lldb_20
-        ];
-        dependencies-formatters = with pkgs; [
-          stylua
-          taplo
-          nodePackages.prettier
-          nixfmt
-        ];
         dependencies-telescope = with pkgs; [
           fd
           ripgrep
         ];
-        dependencies = dependencies-lsps ++ dependencies-formatters ++ dependencies-telescope;
+
+        # always install common formatters and nix lsp
+        dependencies-lsp-fmt = with pkgs; [
+          # lsps
+          nil
+          yaml-language-server
+          # formatters
+          nixfmt
+          prettier
+          stylua
+          taplo
+        ];
+        dependencies = dependencies-telescope ++ dependencies-lsp-fmt;
 
         plugins = worldPlugins ++ devPlugins;
         # TODO is that still true? do plugins bring their dependencies?
@@ -400,6 +394,9 @@
             build
             build-dev
             nix-output-monitor
+            #
+            # emmylua-ls
+            lua-language-server
           ];
         };
       }

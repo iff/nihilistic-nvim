@@ -1,11 +1,11 @@
+- lua lsp https://github.com/EmmyLuaLs/emmylua-analyzer-rust
 x oil instead of netrw
 x ff with telescope
 x telescope jump to multiple refs
 x treesitter grammar for comments (rust for starters)
 x telescope for completion (wip)
-- lua lsp https://github.com/EmmyLuaLs/emmylua-analyzer-rust
-- towards using direnv/flakes per project for formatter and lsp server and dont install global?
-    o up to date flakes in https://github.com/iff/envs and scripts to setup project (using gha?)
+x towards using direnv/flakes per project for formatter and lsp server and dont install global?
+    x up to date flakes in https://github.com/iff/envs and scripts to setup project (using gha?)
 x rename action is again broken in python but not sure why
     x basedpyright should still include the fix?
     x so what changed? does it work with nvim stable?
