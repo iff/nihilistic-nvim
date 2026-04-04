@@ -222,10 +222,13 @@ end
 
 local log_session = string.sub(vim.system({ "uuidgen" }, { text = true }):wait().stdout, 1, -2)
 -- TODO there seems to be no way to detect if systemd-cat failed, popen just continues
-local log_process = assert(io.popen("systemd-cat --identifier=nvim-keys", "w"))
+local log_process
+if vim.fn.executable("systemd-cat") == 1 then
+    log_process = io.popen("systemd-cat --identifier=nvim-keys", "w")
+end
 
 local function log_raw(key, typed)
-    if typed == "" then
+    if not log_process or typed == "" then
         return
     end
     local event = {
@@ -241,6 +244,9 @@ vim.on_key(log_raw, 0)
 
 ---@param map FlatMap
 local function log_map(map)
+    if not log_process then
+        return
+    end
     local event = {
         kind = "map-v1",
         session = log_session,
