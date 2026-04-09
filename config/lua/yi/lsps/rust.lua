@@ -58,9 +58,9 @@ function M.setup(capabilities)
                 cargo = {
                     allFeatures = true,
                 },
-                check = {
-                    command = "clippy",
-                },
+                -- check = {
+                --     command = "clippy",
+                -- },
                 diagnostics = {
                     enable = true,
                     experimental = {
