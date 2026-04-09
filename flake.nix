@@ -187,7 +187,7 @@
           nil
           yaml-language-server
           # formatters
-          nixfmt-rfc-style
+          nixfmt
           prettier
           stylua
           taplo
