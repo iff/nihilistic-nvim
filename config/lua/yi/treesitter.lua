@@ -4,10 +4,10 @@ function M.setup()
     -- change some hl for visibility
     local palette = require("yi.theme").palette()
     vim.api.nvim_set_hl(0, "@comment.documentation", { fg = palette.green.dim })
-    vim.api.nvim_set_hl(0, "@comment.line", { fg = palette.fg3 })
+    vim.api.nvim_set_hl(0, "@comment.line", { fg = palette.orange.dim })
 
     -- handle TODO/NOTE highlighting with autocmd
-    vim.api.nvim_set_hl(0, "@comment.todo", { fg = palette.orange.bright, bold = true })
+    vim.api.nvim_set_hl(0, "@comment.todo", { fg = palette.green.bright, bold = true })
     vim.api.nvim_set_hl(0, "@comment.note", { fg = palette.blue.bright, bold = true })
     vim.api.nvim_set_hl(0, "@comment.safety", { fg = palette.red.bright, bold = true })
     vim.api.nvim_create_autocmd({ "BufWinEnter", "WinNew" }, {
