@@ -142,13 +142,7 @@
 
           # lsp (minimal)
           (lib.plug "nvim-lspconfig")
-          nvim-cmp
-          cmp-nvim-lsp
-          cmp-buffer
-          cmp-path
-          luasnip
-          cmp_luasnip
-          lspkind-nvim
+          blink-cmp
 
           # (lib.plugNoCheck "rustacean-nvim")
           # rustaceanvim

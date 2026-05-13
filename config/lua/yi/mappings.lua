@@ -1043,9 +1043,8 @@ end
 function M.for_completion()
     local cmp = require("yi.completion")
     return validated_maps {
-        { [[<c-t>]], i, "complete flat", fn = cmp.complete_flat },
         { [[<c-n>]], i, "complete full", fn = cmp.complete_full },
-        { [[<c-y>]], i, "complete select", fn = cmp.complete_select },
+        { [[<c-t>]], i, "complete select", fn = cmp.complete_select },
     }
 end
 
