@@ -3,6 +3,7 @@ local M = {}
 function M.setup()
     -- change some hl for visibility
     local palette = require("yi.theme").palette()
+    vim.api.nvim_set_hl(0, "@comment", { fg = palette.orange.dim })
     vim.api.nvim_set_hl(0, "@comment.documentation", { fg = palette.green.dim })
     vim.api.nvim_set_hl(0, "@comment.line", { fg = palette.orange.dim })
 
