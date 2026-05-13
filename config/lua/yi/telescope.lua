@@ -308,10 +308,14 @@ function M.pick_jumplist()
     builtin.jumplist { initial_mode = "normal" }
 end
 
-function M.pick_file_git_diff()
+function M.pick_diff_files()
+    -- TODO better check?
+    local root = vim.fn.getcwd()
+    local is_jj = vim.fn.isdirectory(root .. "/.jj") == 1
     builtin.find_files {
         prompt_title = "files with diff",
-        find_command = { "zsh", "-c", "git diff --name-only master 2>/dev/null || git diff --name-only main" },
+        find_command = is_jj and { "jj", "diff", "--name-only", "-r", "trunk()..@" }
+            or { "zsh", "-c", "git diff --name-only master 2>/dev/null || git diff --name-only main" },
         initial_mode = "normal",
         default_text = maybe_default_text(),
     }
