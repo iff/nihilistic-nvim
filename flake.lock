@@ -316,7 +316,6 @@
         "ptags-nvim": "ptags-nvim",
         "resty-vim": "resty-vim",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
-        "telescope-hop-nvim": "telescope-hop-nvim",
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim"
       }
@@ -364,22 +363,6 @@
       "original": {
         "owner": "nvim-telescope",
         "repo": "telescope-fzf-native.nvim",
-        "type": "github"
-      }
-    },
-    "telescope-hop-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1636109078,
-        "narHash": "sha256-OtCSjglHdXKj9EqnaTzw+4/L+op/lJ82CxlvxPLsee8=",
-        "owner": "nvim-telescope",
-        "repo": "telescope-hop.nvim",
-        "rev": "337a1e9f08f972ebf7a7d26251577812ebaadc78",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-telescope",
-        "repo": "telescope-hop.nvim",
         "type": "github"
       }
     },
