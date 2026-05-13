@@ -132,6 +132,7 @@
           gitsigns-nvim
           oil-nvim
           kmonad-vim
+          fidget-nvim
           (lib.plug "hop-nvim")
           (lib.plug "fugitive-nvim")
           (lib.plugNoCheck "resty-vim")

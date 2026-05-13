@@ -132,6 +132,8 @@ function M.setup()
         return icon .. autosave .. " " .. protocol .. "%t"
     end
 
+    require("fidget").setup {}
+
     require("lualine").setup {
         options = {
             theme = "nightfox",
