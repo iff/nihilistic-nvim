@@ -125,42 +125,10 @@ function M.get()
     return maps
 end
 
--- local function visualize_submode()
---     local back = {
---         window = vim.api.nvim_get_current_win(),
---         normal = vim.api.nvim_get_hl(0, { name = "Normal" }),
---     }
---
---     local palette = require("yi.theme").palette()
---     vim.api.nvim_set_hl(0, "Normal", { bg = palette.bg3 })
---     vim.cmd.redraw()
---
---     local function reset()
---         vim.api.nvim_set_hl(
---             0,
---             "Normal",
---             back.normal ---@diagnostic disable-line: param-type-mismatch
---         )
---     end
---
---     return reset
--- end
-
--- local reset_visualized_submode = nil
-
 ---@param mode ModeFn
 local function switch_submode(mode)
     local name, maps = mode()
     M.mode = name
-    -- if name == "default" then
-    --     if reset_visualized_submode then
-    --         reset_visualized_submode()
-    --     end
-    --     reset_visualized_submode = nil
-    -- else
-    --     reset_visualized_submode = visualize_submode()
-    -- end
-    -- NOTE this also clears all mappings, very aggressive
     M.apply(maps)
     vim.cmd.redrawstatus()
     vim.cmd.redrawtabline()
@@ -589,10 +557,6 @@ end
 
 function M.for_edit()
     return validated_maps {
-        -- TODO almost not worth it? and also collides with other stuff
-        -- map { [[<c-u>]], i, "new line above", rhs = "<esc>O" },
-        -- map { [[<c-e>]], i, "new line below", rhs = "<esc>o" },
-        -- { [[<c-enter>]], i, "split into new empty line", rhs = "<enter><enter><esc>O" },
         { [[<c-o>]], i, "split into new empty line", rhs = "<enter><esc>O" },
     }
 end
@@ -612,16 +576,14 @@ end
 function M.mode_shifts()
     local maps = validated_maps {
         { [[z]], n, "exit", maps = M.mode_default },
-        { [[<esc>]], n, "exit", maps = M.mode_default },
         { [[z]], v, "exit", rhs = "<esc>", maps = M.mode_default },
+        { [[<esc>]], n, "exit", maps = M.mode_default },
         { [[<esc>]], v, "exit", rhs = "<esc>", maps = M.mode_default },
         { [[u]], nv, "exit and up", rhs = "k", maps = M.mode_default },
         { [[e]], nv, "exit and down", rhs = "j", maps = M.mode_default },
         { [[n]], n, "de-indent current line", rhs = "<<" },
-        { [[i]], n, "indent current line", rhs = ">>" },
-        -- map { [[pzn]], n, "de-indent last paste", rhs = "'[V']<" },
-        -- map { [[pzi]], n, "indent last paste", rhs = "'[V']>" },
         { [[n]], v, "de-indent visual", rhs = "<gv" },
+        { [[i]], n, "indent current line", rhs = ">>" },
         { [[i]], v, "indent visual", rhs = ">gv" },
     }
     return "shifts", maps
@@ -894,11 +856,9 @@ function M.for_search()
     return validated_maps {
         { [[f]], n, "search" },
         { [[ff]], n, "fuzzy find", fn = t.kinda_fuzzy_find_in_buffer },
-        -- { [[fu]], n, "backwards", rhs = "?", maps = M.mode_search },
-        -- { [[fe]], n, "forward", rhs = "/", maps = M.mode_search },
-        { [[fn]], n, "word backwards", rhs = "#", maps = M.mode_search },
-        { [[fi]], n, "word forward", rhs = "*", maps = M.mode_search },
         { [[f,]], n, "clear search", rhs = "<cmd>nohlsearch<enter>" },
+        -- { [[fn]], n, "word backwards", rhs = "#", maps = M.mode_search },
+        -- { [[fi]], n, "word forward", rhs = "*", maps = M.mode_search },
         -- { [[f ]], n, "activate", rhs = "<cmd>set hlsearch<enter>", maps = M.mode_search },
         -- { [[<a-u>]], n, "previous match", rhs = "Nzz" },
         -- { [[<a-e>]], n, "next match", rhs = "nzz" },
@@ -937,8 +897,8 @@ function M.for_jumps()
         { [[tr]], n, "jump to references", fn = t.pick_references },
         -- map { [[tar]], n, "jump to previous references", fn = t.pick_previous_references }, -- use resume instead?
         -- TODO wrong place a bit
-        { [[E]], n, "next entry", rhs = "<cmd>cn<enter>" },
-        { [[U]], n, "previous entry", rhs = "<cmd>cN<enter>" },
+        { [[E]], n, "next qf entry", rhs = "<cmd>cn<enter>" },
+        { [[U]], n, "previous qf entry", rhs = "<cmd>cN<enter>" },
         {
             [[a.]],
             n,
@@ -955,7 +915,7 @@ function M.for_jumps()
             fn = require("yi.diagnostic").toggle_virtual_lines,
         },
         {
-            [[<s-tab>]],
+            [[ac]], -- [[<s-tab>]]
             n,
             "show context",
             fn = function()
@@ -975,7 +935,6 @@ function M.for_jumps()
         { [[a ]], n, "clear highlight references", fn = l.clear_highlight_references },
         -- TODO range actions also exist, not the same as union of actions, more like "make try except" and stuff
         { [[a;]], n, "code action", fn = l.code_action },
-        { [[a;]], v, "code action", fn = l.code_action },
         { [[ah]], n, "toggle inlay hints", fn = l.toggle_inlay_hints },
         { [[<F11>s]], i, "show function signature", fn = l.show_function_signature },
         -- TODO again this would be better just a command behind a lsp prefix, like for layouts?
@@ -991,6 +950,8 @@ function M.for_jumps()
 
         { [[tt]], n, "definition", fn = l.go_to_definition },
         { [[t ]], n, "resume", fn = t.pick_resume },
+        { [[te]], n, "buffer symbols", fn = t.pick_buffer_symbol },
+        { [[tu]], n, "project symbols", fn = t.pick_project_symbol },
         { [[tn]], n, "files", fn = t.pick_file },
         { [[tg]], n, "live grep", fn = t.pick_grep },
         { [[tc]], n, "files diff to main", fn = t.pick_diff_files },
@@ -1003,8 +964,6 @@ function M.for_jumps()
         { [[tfn]], n, "notes", fn = t.pick_file_notes },
         { [[tfc]], n, "config files", fn = t.pick_file_config },
         { [[tfv]], n, "nvim files", fn = t.pick_file_nvim_config },
-        { [[te]], n, "buffer symbols", fn = t.pick_buffer_symbol },
-        { [[tu]], n, "project symbols", fn = t.pick_project_symbol },
 
         {
             [[tdd]],
