@@ -97,46 +97,46 @@ function M.add_ignore()
     elseif vim.bo.filetype == "lua" then
         add_ignore_lua()
     else
-        vim.cmd.echom([[no heuristics for this filetype]])
+        vim.cmd.echomsg([["no heuristics for this filetype"]])
     end
 end
 
-function M.goto_docs_browser()
-    if vim.bo.filetype == "rust" then
-        vim.cmd.RustLsp("openDocs")
-    else
-        vim.cmd.echom([[no goto web docs for this filetype]])
-    end
-end
-
-function M.explain_error()
-    if vim.bo.filetype == "rust" then
-        -- default cycles like diagnostic.goto_next
-        -- otherwise use "current"
-        vim.cmd.RustLsp("explainError")
-    else
-        vim.cmd.echom([[no error explanation for this filetype]])
-    end
-end
-
--- TODO merge with a,?
-function M.open_diagnostic()
-    if vim.bo.filetype == "rust" then
-        -- should respect lavish layouts
-        vim.cmd.RustLsp("renderDiagnostic")
-    else
-        vim.cmd.echom([[no render diagnostic for this filetype]])
-    end
-end
-
-function M.open_pkg_manager()
-    if vim.bo.filetype == "rust" then
-        -- should respect lavish layouts
-        vim.cmd.RustLsp("openCargo")
-    else
-        vim.cmd.echom([[no pkg manager for this filetype]])
-    end
-end
+-- function M.goto_docs_browser()
+--     if vim.bo.filetype == "rust" then
+--         vim.cmd.RustLsp("openDocs")
+--     else
+--         vim.cmd.echomsg([["no goto web docs for this filetype"]])
+--     end
+-- end
+--
+-- function M.explain_error()
+--     if vim.bo.filetype == "rust" then
+--         -- default cycles like diagnostic.goto_next
+--         -- otherwise use "current"
+--         vim.cmd.RustLsp("explainError")
+--     else
+--         vim.cmd.echomsg([[no error explanation for this filetype]])
+--     end
+-- end
+--
+-- -- TODO merge with a,?
+-- function M.open_diagnostic()
+--     if vim.bo.filetype == "rust" then
+--         -- should respect lavish layouts
+--         vim.cmd.RustLsp("renderDiagnostic")
+--     else
+--         vim.cmd.echom([["no render diagnostic for this filetype"]])
+--     end
+-- end
+--
+-- function M.open_pkg_manager()
+--     if vim.bo.filetype == "rust" then
+--         -- should respect lavish layouts
+--         vim.cmd.RustLsp("openCargo")
+--     else
+--         vim.cmd.echomsg([["no pkg manager for this filetype"]])
+--     end
+-- end
 
 function M.rename_symbol()
     -- TODO uses vim.ui.input()

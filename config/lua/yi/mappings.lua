@@ -983,10 +983,10 @@ function M.for_jumps()
         { [[ai]], n, "add ignore", fn = l.add_ignore },
 
         -- only rust atm
-        { [[ad]], n, "open docs in browser", fn = l.goto_docs_browser },
-        { [[a?]], n, "explain error", fn = l.explain_error },
-        { [[ar]], n, "render diagnostic", fn = l.open_diagnostic },
-        { [[ap]], n, "open package file", fn = l.open_pkg_manager },
+        -- { [[ad]], n, "open docs in browser", fn = l.goto_docs_browser },
+        -- { [[a?]], n, "explain error", fn = l.explain_error },
+        -- { [[ar]], n, "render diagnostic", fn = l.open_diagnostic },
+        -- { [[ap]], n, "open package file", fn = l.open_pkg_manager },
         { [[tdr]], n, "rust docs", fn = require("yi.rustdocs").pick_docs },
 
         { [[tt]], n, "definition", fn = l.go_to_definition },
