@@ -148,6 +148,7 @@
           # rustaceanvim
 
           # telescope
+          snacks-nvim
           plenary-nvim
           (lib.plugNoCheck "telescope-nvim")
           (lib.plug "telescope-fzf-native-nvim")

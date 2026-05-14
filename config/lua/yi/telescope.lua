@@ -1,6 +1,7 @@
 local M = {}
 
 local builtin = require("telescope.builtin")
+local builtin_snack = require("snacks.picker")
 
 local runtime_folders = nil
 
@@ -125,6 +126,62 @@ local function flex_aspect_layout(self, max_columns, max_lines)
 end
 
 function M.setup()
+    -- TODO not dynamic yet
+    -- NOTE 190 cols is aligned with when lavish-layout switches in dynamic mode
+    local heavy = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" }
+    require("snacks").setup {
+        picker = {
+            ui_select = true,
+            show_delay = 0,
+            layouts = {
+                narrow = {
+                    reverse = true,
+                    layout = {
+                        box = "vertical",
+                        width = 0.95,
+                        height = 0.9,
+                        { win = "preview" },
+                        { win = "list", height = 7 },
+                        { win = "input", height = 1 },
+                    },
+                },
+                wide = {
+                    reverse = true,
+                    layout = {
+                        box = "horizontal",
+                        width = 0.95,
+                        height = 0.9,
+                        {
+                            box = "vertical",
+                            { win = "list" },
+                            { win = "input", height = 1 },
+                        },
+                        { win = "preview" },
+                    },
+                },
+            },
+            layout = vim.o.columns > 190 and "wide" or "narrow",
+            win = {
+                input = {
+                    border = heavy,
+                    wo = { winhighlight = "Normal:Normal,FloatBorder:FloatBorder" },
+                    keys = {
+                        ["<c-e>"] = { "list_down", mode = { "i", "n" } },
+                        ["<c-u>"] = { "list_up", mode = { "i", "n" } },
+                    },
+                },
+                list = {
+                    border = heavy,
+                    wo = { winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLine" },
+                },
+                preview = {
+                    border = heavy,
+                    wo = { winhighlight = "Normal:Normal,FloatBorder:FloatBorder" },
+                },
+            },
+        },
+    }
+
     local telescope = require("telescope")
     local actions = require("telescope.actions")
 
@@ -184,35 +241,23 @@ function M.setup()
 end
 
 function M.pick_resume()
-    builtin.resume()
+    builtin_snack.resume()
 end
 
 function M.pick_file()
-    builtin.find_files()
+    builtin_snack.files()
 end
 
 function M.pick_file_notes()
-    builtin.find_files {
-        prompt_title = "notes",
-        search_dirs = { "~/src/notes" },
-        default_text = maybe_default_text(),
-    }
+    builtin_snack.files { title = "notes", dirs = { "~/src/notes" }, search = maybe_default_text() }
 end
 
 function M.pick_file_config()
-    builtin.find_files {
-        prompt_title = "config files",
-        search_dirs = { "~/src/fleet" },
-        default_text = maybe_default_text(),
-    }
+    builtin_snack.files { title = "config files", dirs = { "~/src/fleet" }, search = maybe_default_text() }
 end
 
 function M.pick_file_home()
-    builtin.find_files {
-        prompt_title = "home files",
-        search_dirs = { "~" },
-        default_text = maybe_default_text(),
-    }
+    builtin_snack.files { title = "home files", dirs = { "~" }, search = maybe_default_text() }
 end
 
 function M.pick_file_nvim_config()
@@ -220,30 +265,21 @@ function M.pick_file_nvim_config()
     -- TODO there is also nvim_get_runtime_file that could simulate exactly what nvim does? especially it can easily find all lua folders, or all ftplugin folders and things like that
     -- TODO use here current runtime, or dev environment? do we even want that enabled when in normal operation?
     -- TODO also a way to grep in all of vim source?
-    builtin.find_files {
-        prompt_title = "vim runtime",
-        search_dirs = runtime_folders,
-        default_text = maybe_default_text(),
-    }
+    -- builtin.find_files { prompt_title = "vim runtime", search_dirs = runtime_folders, default_text = maybe_default_text() }
+    builtin_snack.files { title = "vim runtime", dirs = runtime_folders, search = maybe_default_text() }
 end
 
 function M.pick_file_buffer_folder()
     local folder = assert(vim.fn.expand("%:h"), "no folder for current buffer")
-    builtin.find_files { prompt_title = folder, search_dirs = { folder }, default_text = maybe_default_text() }
+    builtin_snack.files { title = folder, dirs = { folder }, search = maybe_default_text() }
 end
 
-function M.pick_file_root()
-    -- TODO somehow this kills telescope, too many files, wont update, wont filter, wont select, and after that vim is laggy, seems to keep things running in the background
-    -- if we switch away from telescope then maybe we dont fix it here now
-    builtin.find_files {
-        prompt_title = "root files",
-        search_dirs = { "/" },
-        default_text = maybe_default_text(),
-    }
-end
+-- function M.pick_file_root()
+--     builtin_snack.files { title = "root files", dirs = { "/" }, search = maybe_default_text() }
+-- end
 
 function M.pick_jumplist()
-    builtin.jumplist { initial_mode = "normal" }
+    builtin_snack.jumps()
 end
 
 function M.pick_diff_files()
@@ -260,45 +296,46 @@ function M.pick_diff_files()
 end
 
 function M.pick_grep()
-    builtin.live_grep { default_text = maybe_default_text() }
+    builtin_snack.grep { search = maybe_default_text() }
 end
 
 function M.pick_buffer()
-    builtin.buffers { default_text = maybe_default_text() }
+    builtin_snack.buffers { search = maybe_default_text() }
 end
 
 function M.pick_references()
-    builtin.lsp_references { initial_mode = "normal", default_text = maybe_default_text() }
+    builtin_snack.lsp_references()
 end
 
 function M.kinda_fuzzy_find_in_buffer()
-    builtin.current_buffer_fuzzy_find { default_text = maybe_default_text("'") }
+    -- builtin.current_buffer_fuzzy_find { default_text = maybe_default_text("'") }
     -- alternative: builtin.current_buffer_fuzzy_find { fuzzy = false }
+    builtin_snack.lines { search = maybe_default_text("'") }
 end
 
 function M.pick_help()
-    local default_text = maybe_default_text()
-
     -- TODO not sure how to handle things when we cancel things
-    vim.cmd.enew() -- NOTE doesnt seem to leave unused unnamed buffers around, even thou I expected it to
-    vim.bo.buftype = "help" -- NOTE documentation says dont do this, but no problem so far
-    vim.bo.filetype = "help" -- not sure this is needed, or good?
-
-    builtin.help_tags { default_text = default_text }
+    -- vim.cmd.enew() -- NOTE doesnt seem to leave unused unnamed buffers around, even thou I expected it to
+    -- vim.bo.buftype = "help" -- NOTE documentation says dont do this, but no problem so far
+    -- vim.bo.filetype = "help" -- not sure this is needed, or good?
+    -- builtin.help_tags { default_text = maybe_default_text() }
+    builtin_snack.help { search = maybe_default_text() }
 end
 
 function M.pick_man()
+    -- TODO snacks.picker.man fails because man -k .
     vim.cmd.enew()
     vim.bo.buftype = "nofile"
     vim.bo.filetype = "man"
     builtin.man_pages { sections = { "1", "4", "5", "7", "8" }, default_text = maybe_default_text() }
 end
+
 function M.pick_man_all()
     builtin.man_pages { sections = { "ALL" }, default_text = maybe_default_text() }
 end
 
 function M.pick_mark()
-    builtin.marks { initial_mode = "normal" }
+    builtin_snack.marks()
 end
 
 function M.pick_project_symbol()
@@ -318,7 +355,8 @@ function M.pick_project_symbol()
         end
         ptags.telescope(sources, { attach_mappings = fn_mappings(at.top) })
     else
-        builtin.lsp_dynamic_workspace_symbols { default_text = maybe_default_text() }
+        -- builtin.lsp_dynamic_workspace_symbols { default_text = maybe_default_text() }
+        builtin_snack.lsp_workspace_symbols { tree = true, search = maybe_default_text() }
     end
 end
 
@@ -332,54 +370,29 @@ function M.pick_buffer_symbol()
         require("man").show_toc()
         vim.cmd([[wincmd c]])
         -- TODO to hide the filename? doesnt seem to work anymore
-        builtin.loclist { fname_width = 0 }
+        -- builtin.loclist { fname_width = 0 }
+        builtin_snack.loclist()
     else
         -- TODO can be annoyingly slow, see https://github.com/nvim-telescope/telescope.nvim/issues/2274
-        -- very shitty, and i tried to turn it around, but then the buf_request never calls the callback
-        -- it should be possible to update with later picker:refresh(finder, opts), but it never gets there
-        -- anyway lose telescope now?
-        builtin.lsp_document_symbols { default_text = maybe_default_text() }
+        -- builtin.lsp_document_symbols { default_text = maybe_default_text() }
+        builtin_snack.lsp_symbols { keep_parents = true, search = maybe_default_text() }
     end
 end
 
 function M.pick_buffer_diagnostics()
-    -- TODO needed to set severity because of a bug, otherwise shows nothing, still true?
-    -- see https://github.com/nvim-telescope/telescope.nvim/issues/2661
-    builtin.diagnostics {
-        initial_mode = "normal",
-        bufnr = 0,
-        severity_limit = vim.diagnostic.severity.ERROR,
-        default_text = maybe_default_text(),
-    }
+    builtin_snack.diagnostics_buffer { severity = { min = vim.diagnostic.severity.ERROR } }
 end
 
 function M.pick_buffer_diagnostics_all()
-    builtin.diagnostics {
-        initial_mode = "normal",
-        bufnr = 0,
-        severity_limit = vim.diagnostic.severity.HINT,
-        default_text = maybe_default_text(),
-    }
+    builtin_snack.diagnostics_buffer()
 end
 
 function M.pick_project_diagnostics()
-    builtin.diagnostics {
-        initial_mode = "normal",
-        bufnr = nil,
-        no_unlisted = false,
-        severity_limit = vim.diagnostic.severity.ERROR,
-        default_text = maybe_default_text(),
-    }
+    builtin_snack.diagnostics { severity = { min = vim.diagnostic.severity.ERROR } }
 end
 
 function M.pick_project_diagnostics_all()
-    builtin.diagnostics {
-        initial_mode = "normal",
-        bufnr = nil,
-        no_unlisted = false,
-        severity_limit = vim.diagnostic.severity.HINT,
-        default_text = maybe_default_text(),
-    }
+    builtin_snack.diagnostics()
 end
 
 return M
