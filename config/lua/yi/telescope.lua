@@ -38,61 +38,6 @@ local function maybe_default_text(default)
     return vim.fn.getreg("a")
 end
 
-local function laforge()
-    require("telescope.pickers.layout_strategies").laforge = function(self, max_columns, max_lines, _)
-        -- local resolve = require("telescope.config.resolve")
-        -- local p_window = require("telescope.pickers.window")
-        -- local initial_options = p_window.get_initial_window_options(self)
-        -- local results = initial_options.results
-        -- local prompt = initial_options.prompt
-        -- local preview = initial_options.preview
-        local half = vim.fn.round(max_lines / 2)
-        local pad = 3
-        return {
-            preview = {
-                border = true,
-                borderchars = { "─", "│", "═", "│", "┌", "┐", "╛", "╘" },
-                col = 2,
-                enter = false,
-                height = half - pad - 3,
-                line = 2,
-                width = max_columns - 2,
-            },
-            prompt = {
-                border = true,
-                borderchars = { "═", "│", "─", "│", "╒", "╕", "│", "│" },
-                col = 2,
-                enter = true,
-                height = 1,
-                line = half + pad + 2,
-                title = self.prompt_title,
-                width = max_columns - 2,
-            },
-            results = {
-                border = { 0, 1, 1, 1 },
-                borderchars = { "═", "│", "─", "│", "╒", "╕", "┘", "└" },
-                col = 2,
-                enter = false,
-                height = max_lines - half - pad - 4,
-                line = half + pad + 4,
-                width = max_columns - 2,
-            },
-        }
-    end
-
-    local defaults = {
-        -- TODO how to make the layout strat and the rest go together? many things are not independent, like sorting_strategy
-        layout_strategy = "laforge",
-        sorting_strategy = "ascending",
-        prompt_prefix = "󰄾 ",
-        entry_prefix = "   ",
-        selection_caret = " 󰧚 ",
-    }
-    defaults.scroll_strategy = "limit"
-    defaults.path_display = { "truncate" }
-    return defaults
-end
-
 local function flex() ---@diagnostic disable-line: unused-function,unused-local
     return {
         layout_strategy = "flex",
@@ -183,8 +128,6 @@ function M.setup()
     local telescope = require("telescope")
     local actions = require("telescope.actions")
 
-    -- local defaults = laforge()
-
     require("telescope.pickers.layout_strategies").flex_aspect = flex_aspect_layout
     local defaults = {
         borderchars = { "━", "┃", "━", "┃", "┏", "┓", "┛", "┗" },
@@ -211,11 +154,6 @@ function M.setup()
     ---@diagnostic disable-next-line:redundant-parameter
     telescope.setup {
         defaults = defaults,
-        -- {
-        --     layout_strategy = "flex",
-        --     layout_config = {},
-        --     mappings = mappings,
-        -- },
         extensions = {
             -- see https://github.com/nvim-telescope/telescope-fzf-native.nvim
             fzf = {},
@@ -404,7 +342,7 @@ function M.pick_buffer_symbol()
     end
 end
 
-function M.pick_buffer_diagnostic()
+function M.pick_buffer_diagnostics()
     -- TODO needed to set severity because of a bug, otherwise shows nothing, still true?
     -- see https://github.com/nvim-telescope/telescope.nvim/issues/2661
     builtin.diagnostics {
@@ -415,7 +353,7 @@ function M.pick_buffer_diagnostic()
     }
 end
 
-function M.pick_buffer_diagnostic_all()
+function M.pick_buffer_diagnostics_all()
     builtin.diagnostics {
         initial_mode = "normal",
         bufnr = 0,
