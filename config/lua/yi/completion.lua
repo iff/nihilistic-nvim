@@ -2,6 +2,16 @@ local M = {}
 
 function M.setup()
     require("blink.cmp").setup {
+        cmdline = {
+            completion = {
+                menu = {
+                    auto_show = false,
+                },
+                list = {
+                    selection = { preselect = false },
+                },
+            },
+        },
         completion = {
             trigger = {
                 prefetch_on_insert = false,
