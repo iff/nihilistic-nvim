@@ -126,8 +126,6 @@ local function flex_aspect_layout(self, max_columns, max_lines)
 end
 
 function M.setup()
-    -- TODO not dynamic yet
-    -- NOTE 190 cols is aligned with when lavish-layout switches in dynamic mode
     local heavy = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" }
     require("snacks").setup {
         picker = {
@@ -138,8 +136,8 @@ function M.setup()
                     reverse = true,
                     layout = {
                         box = "vertical",
-                        width = 0.95,
-                        height = 0.9,
+                        width = 0.999,
+                        height = 0.999,
                         { win = "preview" },
                         { win = "list", height = 7 },
                         { win = "input", height = 1 },
@@ -149,8 +147,8 @@ function M.setup()
                     reverse = true,
                     layout = {
                         box = "horizontal",
-                        width = 0.95,
-                        height = 0.9,
+                        width = 0.999,
+                        height = 0.999,
                         {
                             box = "vertical",
                             { win = "list" },
@@ -160,7 +158,10 @@ function M.setup()
                     },
                 },
             },
-            layout = vim.o.columns > 190 and "wide" or "narrow",
+            layout = function()
+                -- NOTE 190 cols is aligned with when lavish-layout switches in dynamic mode
+                return vim.o.columns > 190 and "wide" or "narrow"
+            end,
             win = {
                 input = {
                     border = heavy,
