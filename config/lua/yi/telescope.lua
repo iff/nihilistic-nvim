@@ -357,16 +357,44 @@ function M.pick_project_symbol()
         ptags.telescope(sources, { attach_mappings = fn_mappings(at.top) })
     else
         -- builtin.lsp_dynamic_workspace_symbols { default_text = maybe_default_text() }
-        builtin_snack.lsp_workspace_symbols { tree = true, search = maybe_default_text() }
+
+        -- NOTE the query is sent as-is to the LSP -> no fuzzy matching which is a pitty
+        -- does Telescope populate a table with "all" symbols? could we do the same here?
+        builtin_snack.lsp_symbols {
+            workspace = true,
+            live = true,
+            -- tree = true,
+            -- keep_parents = true,
+            search = maybe_default_text(),
+            filter = {
+                default = {
+                    "Class",
+                    "Constructor",
+                    "Enum",
+                    "Field",
+                    "Function",
+                    "Interface",
+                    "Method",
+                    "Module",
+                    "Namespace",
+                    "Package",
+                    "Property",
+                    "Struct",
+                    "Trait",
+                },
+            },
+        }
     end
 end
 
 function M.pick_buffer_symbol()
+    -- TODO ptags needs snack.pickers
     -- TODO make a filetype list with exceptions, just like for the snippets?
-    if vim.bo.filetype == "python" then
-        local ptags = require("ptags")
-        ptags.telescope({ vim.fn.expand("%") }, { attach_mappings = fn_mappings(at.top) })
-    elseif vim.bo.filetype == "man" then
+    -- if vim.bo.filetype == "python" then
+    --     local ptags = require("ptags")
+    --     ptags.telescope({ vim.fn.expand("%") }, { attach_mappings = fn_mappings(at.top) })
+    -- elseif vim.bo.filetype == "man" then
+    if vim.bo.filetype == "man" then
         -- TODO same for help files from vim? or are those text files? didnt know it only works in vim
         require("man").show_toc()
         vim.cmd([[wincmd c]])
@@ -374,9 +402,29 @@ function M.pick_buffer_symbol()
         -- builtin.loclist { fname_width = 0 }
         builtin_snack.loclist()
     else
-        -- TODO can be annoyingly slow, see https://github.com/nvim-telescope/telescope.nvim/issues/2274
-        -- builtin.lsp_document_symbols { default_text = maybe_default_text() }
-        builtin_snack.lsp_symbols { keep_parents = true, search = maybe_default_text() }
+        builtin_snack.lsp_symbols {
+            tree = true,
+            keep_parents = true,
+            search = maybe_default_text(),
+            filter = {
+                default = {
+                    "Variable",
+                    "Class",
+                    "Constructor",
+                    "Enum",
+                    "Field",
+                    "Function",
+                    "Interface",
+                    "Method",
+                    "Module",
+                    "Namespace",
+                    "Package",
+                    "Property",
+                    "Struct",
+                    "Trait",
+                },
+            },
+        }
     end
 end
 
