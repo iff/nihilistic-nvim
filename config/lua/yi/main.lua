@@ -5,7 +5,7 @@ function M.main()
     require("yi.theme").setup()
     require("yi.options").set()
 
-    require("yi.neovide").setup()
+    -- require("yi.neovide").setup()
 
     -- no config
     require("auspicious-autosave").setup()
@@ -16,7 +16,7 @@ function M.main()
     layouts.switch("dynamic")
 
     -- my config
-    require("yi.oil").setup()
+    -- require("yi.oil").setup()
     require("yi.dap").setup()
     require("yi.hop").setup()
     require("yi.telescope").setup()
@@ -29,6 +29,7 @@ function M.main()
     require("yi.treesitter").setup()
 
     require("yi.mappings").apply()
+    require("yi.splash").setup()
 end
 
 return M

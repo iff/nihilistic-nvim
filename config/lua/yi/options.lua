@@ -1,6 +1,7 @@
 local mod = {}
 
 local leader_map = function()
+    -- TODO remove: everything is set in mappings
     vim.g.mapleader = ","
     vim.g.maplocalleader = ","
 end
@@ -20,13 +21,12 @@ local disable_distribution_plugins = function()
     vim.g.loaded_2html_plugin = 1
     vim.g.loaded_logiPat = 1
     vim.g.loaded_rrhelper = 1
+
+    -- no netrw using oil (or nothing for now)
     vim.g.loaded_netrw = 1
     vim.g.loaded_netrwPlugin = 1
     vim.g.loaded_netrwSettings = 1
     vim.g.loaded_netrwFileHandlers = 1
-    -- no netrw using oil
-    vim.g.loaded_netrw = 1
-    vim.g.loaded_netrwPlugin = 1
 end
 
 function mod.setup()
