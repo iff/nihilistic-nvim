@@ -444,4 +444,8 @@ function M.pick_project_diagnostics_all()
     builtin_snack.diagnostics()
 end
 
+function M.pick_treesitter()
+    builtin_snack.treesitter()
+end
+
 return M

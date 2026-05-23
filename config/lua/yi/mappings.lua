@@ -551,7 +551,10 @@ function M.for_inserts()
         { [[s e]], n, "insert empty line below", rhs = "o<esc>k" },
         { [[s u]], n, "insert empty line below", rhs = "O<esc>j" },
         { [[s.]], n, "enter replace mode", rhs = "R" },
+
+        -- visual
         { [[s]], v, "insert over visual", rhs = "c" },
+        { [[<c-n>]], v, "insert left of visual block", rhs = "I" },
     }
 end
 
@@ -961,6 +964,7 @@ function M.for_jumps()
         { [[tak]], n, "all man pages", fn = t.pick_man_all },
         { [[tm]], n, "marks", fn = t.pick_mark },
         { [[tj]], n, "jumps", fn = t.pick_jumplist },
+        { [[ts]], n, "treesitter", fn = t.pick_treesitter },
 
         { [[tfn]], n, "notes", fn = t.pick_file_notes },
         { [[tfc]], n, "config files", fn = t.pick_file_config },
