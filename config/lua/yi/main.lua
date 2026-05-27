@@ -29,7 +29,9 @@ function M.main()
     require("yi.treesitter").setup()
 
     require("yi.mappings").apply()
-    require("yi.splash").setup()
+
+    -- TODO maybe just a calm empty buffer
+    -- require("yi.splash").setup()
 end
 
 return M

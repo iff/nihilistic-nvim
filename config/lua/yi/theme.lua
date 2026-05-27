@@ -50,19 +50,19 @@ function M.setup()
         end
 
         local s = vim.diagnostic.severity
-        return num(s.ERROR) .. "e " .. num(s.WARN) .. "w"
+        return "%#DiagnosticError#󰅚  " .. num(s.ERROR) .. " %#DiagnosticWarn#󰀪  " .. num(s.WARN)
     end
 
-    local function lsp_busy()
-        if #vim.lsp.get_clients { bufnr = nil } == 0 then
-            return ""
-        else
-            if #vim.lsp.status() == 0 then
-                return "idle"
-            end
-            return "busy"
-        end
-    end
+    -- local function lsp_busy()
+    --     if #vim.lsp.get_clients { bufnr = nil } == 0 then
+    --         return ""
+    --     else
+    --         if #vim.lsp.status() == 0 then
+    --             return "idle"
+    --         end
+    --         return "busy"
+    --     end
+    -- end
 
     local function map_mode()
         local mappings = require("yi.mappings")
@@ -134,29 +134,47 @@ function M.setup()
 
     require("fidget").setup {}
 
+    local function lualine_theme()
+        local pal = M.palette()
+        local bg = pal.bg0
+        local function section(fg)
+            return { bg = bg, fg = fg, gui = "bold" }
+        end
+        return {
+            normal = { a = section(pal.blue.base), b = section(pal.fg2), c = section(pal.fg2) },
+            insert = { a = section(pal.green.base), b = section(pal.fg2), c = section(pal.fg2) },
+            visual = { a = section(pal.magenta.base), b = section(pal.fg2), c = section(pal.fg2) },
+            replace = { a = section(pal.red.base), b = section(pal.fg2), c = section(pal.fg2) },
+            command = { a = section(pal.yellow.base), b = section(pal.fg2), c = section(pal.fg2) },
+            inactive = { a = section(pal.fg3), b = section(pal.fg3), c = section(pal.fg3) },
+        }
+    end
+
     require("lualine").setup {
         options = {
-            theme = "nightfox",
+            theme = lualine_theme(),
             icons_enabled = false,
             component_separators = { left = "", right = "" },
-            section_separators = { left = "", right = "" },
+            -- section_separators = { left = "", right = "" },
+            section_separators = { left = "", right = "" },
             always_divide_middle = true,
             globalstatus = false,
         },
         sections = {
-            lualine_a = { "mode", show_file },
-            lualine_b = {},
+            lualine_a = { "mode" },
+            lualine_b = { show_file },
             lualine_c = {},
-            lualine_x = {},
-            lualine_y = {
+            lualine_x = {
                 {
                     function()
                         return diagnostic(0)
                     end,
                 },
             },
-            lualine_z = {
+            lualine_y = {
                 { "filetype", icons_enabled = false },
+            },
+            lualine_z = {
                 "location",
             },
         },
@@ -183,9 +201,9 @@ function M.setup()
                 end,
             },
             lualine_z = {
-                function()
-                    return lsp_busy()
-                end,
+                -- function()
+                --     return lsp_busy()
+                -- end,
             },
         },
         extensions = {},
