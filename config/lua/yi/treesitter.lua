@@ -28,6 +28,33 @@ function M.setup()
     })
 end
 
+local context_patterns = {
+    "class",
+    "function",
+    "method",
+    "impl_item",
+    "mod_item",
+    "type_item",
+    "struct_item",
+    "function_item",
+    "macro_invocation", -- TODO not working yet
+}
+
+function M.matching_ancestors(node, patterns)
+    local at = node
+    return function()
+        while at do
+            local current = at
+            at = at:parent()
+            for _, p in ipairs(patterns) do
+                if current:type():find(p, 1, true) then
+                    return current
+                end
+            end
+        end
+    end
+end
+
 ---@return string[]
 function M.get_context()
     local lines = {}
@@ -35,41 +62,18 @@ function M.get_context()
     local cursor = vim.api.nvim_win_get_cursor(0)
     table.insert(lines, vim.fn.expand("%") .. " @ " .. cursor[1] .. ":" .. (cursor[2] + 1))
 
-    local type_patterns = {
-        "class",
-        "function",
-        "method",
-        "impl_item",
-        "mod_item",
-        "type_item",
-        "struct_item",
-        "function_item",
-        "macro_invocation", -- TODO not working yet
-    }
-    local transform_fn = function(line, _node)
+    local trim = function(line)
         return line:gsub("%s*[%[%(%{]*%s*$", "")
     end
 
-    local function get_line_for_node(node)
-        local node_type = node:type()
-        for _, pattern in ipairs(type_patterns) do
-            if node_type:find(pattern) then
-                local start_row = node:range()
-                local line = vim.api.nvim_buf_get_lines(0, start_row, start_row + 1, false)[1] or ""
-                return transform_fn(line, node)
-            end
-        end
-        return ""
-    end
-
     local contexts = {}
-    local at = vim.treesitter.get_node()
-    while at do
-        local line = get_line_for_node(at)
+    for node in M.matching_ancestors(vim.treesitter.get_node(), context_patterns) do
+        local start_row = node:start()
+        local line = vim.api.nvim_buf_get_lines(0, start_row, start_row + 1, false)[1] or ""
+        line = trim(line)
         if line ~= "" then
             table.insert(contexts, line)
         end
-        at = at:parent()
     end
 
     local indent = "  "
@@ -79,6 +83,17 @@ function M.get_context()
     end
 
     return lines
+end
+
+function M.jump_to_enclosing_fn()
+    local cursor_row = vim.api.nvim_win_get_cursor(0)[1]
+    local node = M.matching_ancestors(vim.treesitter.get_node(), { "function", "method" })()
+    if node then
+        local fn_row = node:start() + 1
+        if fn_row ~= cursor_row then
+            vim.api.nvim_win_set_cursor(0, { fn_row, 0 })
+        end
+    end
 end
 
 return M

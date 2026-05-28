@@ -965,6 +965,7 @@ function M.for_jumps()
         { [[tm]], n, "marks", fn = t.pick_mark },
         { [[tj]], n, "jumps", fn = t.pick_jumplist },
         { [[ts]], n, "treesitter", fn = t.pick_treesitter },
+        { [[tU]], n, "jump to enclosing fn", fn = require("yi.treesitter").jump_to_enclosing_fn },
 
         { [[tfn]], n, "notes", fn = t.pick_file_notes },
         { [[tfc]], n, "config files", fn = t.pick_file_config },
