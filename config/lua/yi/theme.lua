@@ -20,10 +20,10 @@ function M.setup()
         end
     end, {})
 
-    require("nvim-web-devicons").setup {}
-    -- require("mini.icons").setup {
-    --     style = "glyph",
-    -- }
+    -- require("nvim-web-devicons").setup {}
+    require("mini.icons").setup {
+        style = "glyph",
+    }
 
     -- set cursor line bg in active window to palette bg2
     local pal = M.palette()
