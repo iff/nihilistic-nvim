@@ -11,7 +11,7 @@ function M.setup(capabilities)
     vim.lsp.config("basedpyright", {
         on_attach = function(client, bufnr)
             -- TODO could be cool, but no good highlight setup yet
-            client.server_capabilities.semanticTokensProvider = true
+            client.server_capabilities.semanticTokensProvider = nil
             vim.lsp.inlay_hint.enable(false)
         end,
         capabilities = capabilities,
