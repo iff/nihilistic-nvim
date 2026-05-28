@@ -25,15 +25,26 @@ function M.setup()
     --     style = "glyph",
     -- }
 
-    vim.cmd([[
-        " hi CursorLine cterm=NONE ctermbg=1 ctermfg=NONE
-        set cursorline nocursorcolumn
-        augroup CursorLineOnlyInActiveWindow
-          autocmd!
-          autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline nocursorcolumn
-          autocmd WinLeave * setlocal nocursorline nocursorcolumn
-        augroup END
-    ]])
+    -- set cursor line bg in active window to palette bg2
+    local pal = M.palette()
+    vim.api.nvim_set_hl(0, "CursorLine", { bg = pal.bg2 })
+    vim.opt.cursorline = true
+    vim.opt.cursorcolumn = false
+    vim.api.nvim_create_augroup("CursorLineOnlyInActiveWindow", { clear = true })
+    vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, {
+        group = "CursorLineOnlyInActiveWindow",
+        callback = function()
+            vim.opt_local.cursorline = true
+            vim.opt_local.cursorcolumn = false
+        end,
+    })
+    vim.api.nvim_create_autocmd("WinLeave", {
+        group = "CursorLineOnlyInActiveWindow",
+        callback = function()
+            vim.opt_local.cursorline = false
+            vim.opt_local.cursorcolumn = false
+        end,
+    })
 
     -- local function window_nr()
     --     return "%#AlwaysOnWindowNumber#󰐤" .. vim.api.nvim_win_get_number(0)
