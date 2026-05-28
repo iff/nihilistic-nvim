@@ -13,6 +13,7 @@ function M.setup(capabilities)
     require("yi.lsps.rust").setup(capabilities)
     require("yi.lsps.typescript").setup(capabilities)
     require("yi.lsps.yaml").setup(capabilities)
+    require("yi.lsps.zig").setup(capabilities)
 end
 
 function M.go_to_definition()

@@ -22,6 +22,7 @@ function M.setup()
         nix = c.nix_nixfmt,
         toml = c.toml_taplo,
         rust = from_cmds { { "rustfmt", path_token } },
+        zig = from_cmds { { "zig", "fmt", path_token } },
         cpp = from_stdout { "clang-format", path_token },
         cuda = from_stdout { "clang-format", path_token },
         css = from_stdout { "prettier", "--parser", "css", path_token },
@@ -56,8 +57,8 @@ function M.setup()
         typst = from_stdout {
             "typstyle",
             "--wrap-text",
-            path_token
-        }
+            path_token,
+        },
     }
 end
 
