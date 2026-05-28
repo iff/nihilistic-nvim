@@ -341,7 +341,7 @@ end
 
 function M.pick_project_symbol()
     -- TODO make a filetype list with exceptions, just like for the snippets?
-    if vim.bo.filetype == "python" then
+    if false and vim.bo.filetype == "python" then
         local ptags = require("ptags")
         -- TODO could we use a defined venv?
         -- should ptags itself be able to do that?
