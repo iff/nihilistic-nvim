@@ -28,14 +28,20 @@ function M.setup()
     -- set cursor line bg in active window to palette bg2
     local pal = M.palette()
     vim.api.nvim_set_hl(0, "CursorLine", { bg = pal.bg2 })
-    vim.opt.cursorline = true
+    vim.opt.cursorline = false
     vim.opt.cursorcolumn = false
     vim.api.nvim_create_augroup("CursorLineOnlyInActiveWindow", { clear = true })
     vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, {
         group = "CursorLineOnlyInActiveWindow",
         callback = function()
+            local win = vim.api.nvim_get_current_win()
             vim.opt_local.cursorline = true
             vim.opt_local.cursorcolumn = false
+            vim.defer_fn(function()
+                if vim.api.nvim_win_is_valid(win) and vim.api.nvim_get_current_win() == win then
+                    vim.wo[win].cursorline = false
+                end
+            end, 800)
         end,
     })
     vim.api.nvim_create_autocmd("WinLeave", {
