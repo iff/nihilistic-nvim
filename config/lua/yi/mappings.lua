@@ -898,7 +898,6 @@ function M.for_jumps()
         { [[t]], n, "jumps" },
 
         { [[tr]], n, "jump to references", fn = t.pick_references },
-        -- map { [[tar]], n, "jump to previous references", fn = t.pick_previous_references }, -- use resume instead?
         -- TODO wrong place a bit
         { [[E]], n, "next qf entry", rhs = "<cmd>cn<enter>" },
         { [[U]], n, "previous qf entry", rhs = "<cmd>cN<enter>" },
