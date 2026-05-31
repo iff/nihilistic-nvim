@@ -284,16 +284,22 @@ function M.pick_jumplist()
 end
 
 function M.pick_diff_files()
-    -- TODO better check?
+    -- TODO maybe needs re-eval when review plugin lands
     local root = vim.fn.getcwd()
     local is_jj = vim.fn.isdirectory(root .. "/.jj") == 1
-    builtin.find_files {
-        prompt_title = "files with diff",
-        find_command = is_jj and { "jj", "diff", "--name-only", "-r", "trunk()..@" }
-            or { "zsh", "-c", "git diff --name-only master 2>/dev/null || git diff --name-only main" },
-        initial_mode = "normal",
-        default_text = maybe_default_text(),
-    }
+    if is_jj then
+        -- TODO only shows diff of current commit
+        require("jj.picker").status()
+    else
+        -- TODO use snacks.picker
+        builtin.find_files {
+            prompt_title = "files with diff",
+            find_command = is_jj and { "jj", "diff", "--name-only", "-r", "trunk()..@" }
+                or { "zsh", "-c", "git diff --name-only master 2>/dev/null || git diff --name-only main" },
+            initial_mode = "normal",
+            default_text = maybe_default_text(),
+        }
+    end
 end
 
 function M.pick_grep()
