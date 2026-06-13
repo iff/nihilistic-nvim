@@ -911,6 +911,30 @@ function M.for_jumps()
             end,
         },
         {
+            [[ay]],
+            n,
+            "show lsp hover in split",
+            fn = function()
+                local client = vim.lsp.get_clients({ bufnr = 0 })[1]
+                local params = vim.lsp.util.make_position_params(0, client and client.offset_encoding)
+                vim.lsp.buf_request(0, "textDocument/hover", params, function(err, result)
+                    if err or not result or not result.contents then
+                        return
+                    end
+                    local lines = vim.lsp.util.convert_input_to_markdown_lines(result.contents)
+                    if vim.tbl_isempty(lines) then
+                        return
+                    end
+                    local bufnr = vim.api.nvim_create_buf(false, true)
+                    vim.lsp.util.stylize_markdown(bufnr, lines, {})
+                    local layouts = require("lavish-layouts")
+                    layouts.new_from_split()
+                    vim.api.nvim_win_set_buf(0, bufnr)
+                    vim.bo[bufnr].modifiable = false
+                end)
+            end,
+        },
+        {
             [[a,]],
             n,
             "show diagnostic",
@@ -1021,20 +1045,42 @@ function M.for_comma()
 
         -- hop
         { [[  ]], nv, "hop 2char", fn = h.hint_char2 },
-        -- TODO fixme if still needed?
-        -- map {
-        --     [[<F11>]],
-        --     i,
-        --     "jump on same line in insert mode",
-        --     expr = todo h.hint_char1 {
-        --         direction = require("hop.hint").HintDirection.AFTER_CURSOR,
-        --         current_line_only = true,
-        --     },
-        -- },
+        {
+            [[<F11><F11>]],
+            i,
+            "hop on same line in insert mode",
+            fn = function()
+                require("hop").hint_char1 {
+                    direction = require("hop.hint").HintDirection.AFTER_CURSOR,
+                    current_line_only = true,
+                }
+                vim.schedule(function()
+                    vim.cmd("startinsert")
+                end)
+            end,
+        },
 
         -- term aliases
-        { [[,t]], n, "terminal", rhs = "<cmd>term<enter>" },
-        { [[,g]], n, "run .tmux/g", rhs = ":vsplit | term zsh -c '$(pwd)/.tmux/g'<CR>" },
+        {
+            [[,t]],
+            n,
+            "terminal",
+            fn = function()
+                local layouts = require("lavish-layouts")
+                layouts.new_from_split()
+                vim.cmd("term")
+            end,
+        },
+        {
+            [[,g]],
+            n,
+            "run .tmux/g",
+            fn = function()
+                local layouts = require("lavish-layouts")
+                layouts.new_from_split()
+                vim.cmd("term zsh -c '$(pwd)/.tmux/g'")
+            end,
+        },
         { [[<ESC>]], "t", "normal mode (term)", rhs = [[<C-\><C-n>]] },
     }
 end
