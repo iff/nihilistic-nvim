@@ -60,6 +60,7 @@ local function list_all_symbols()
 
     local docs_path, err = get_std_docs_path()
     if docs_path then
+        table.insert(symbols, { display = "std [crate]", path = docs_path .. "/index.html" })
         vim.list_extend(symbols, collect_symbols(docs_path, "std"))
     elseif err then
         vim.notify(err, vim.log.levels.WARN)
@@ -75,6 +76,7 @@ local function list_all_symbols()
             if vim.fn.isdirectory(entry) == 1 then
                 local crate_name = vim.fn.fnamemodify(entry, ":t")
                 if crate_name ~= "src" and crate_name ~= "static.files" and not crate_name:match("^%.") then
+                    table.insert(symbols, { display = crate_name .. " [crate]", path = entry .. "/index.html" })
                     vim.list_extend(symbols, collect_symbols(entry, crate_name))
                 end
             end
@@ -88,46 +90,63 @@ local function list_all_symbols()
 end
 
 function M.pick_docs()
-    local pickers = require("telescope.pickers")
-    local finders = require("telescope.finders")
-    local conf = require("telescope.config").values
-    local actions = require("telescope.actions")
-    local action_state = require("telescope.actions.state")
-
     local symbols = list_all_symbols()
     if #symbols == 0 then
         vim.notify("no rust docs found", vim.log.levels.ERROR)
         return
     end
 
-    pickers
-        .new({}, {
-            prompt_title = "Rust docs",
-            finder = finders.new_table {
-                results = symbols,
-                entry_maker = function(symbol)
-                    return {
-                        value = symbol,
-                        display = symbol.display,
-                        ordinal = symbol.display,
-                    }
-                end,
+    local items = vim.tbl_map(function(symbol)
+        return { text = symbol.display, file = symbol.path }
+    end, symbols)
+
+    require("snacks.picker").pick {
+        title = "Rust docs",
+        items = items,
+        format = function(item)
+            return { { item.text } }
+        end,
+        layout = {
+            layout = {
+                backdrop = false,
+                width = 0.6,
+                height = 0.8,
+                box = "vertical",
+                border = "rounded",
+                title = "{title}",
+                { win = "input", height = 1, border = "bottom" },
+                { win = "list", border = "none" },
             },
-            sorter = conf.generic_sorter {},
-            previewer = false,
-            attach_mappings = function(prompt_bufnr)
-                actions.select_default:replace(function()
-                    local entry = action_state.get_selected_entry()
-                    actions.close(prompt_bufnr)
-                    if not entry then
-                        return
-                    end
-                    vim.system { "firefox", "--new-window", "file://" .. entry.value.path }
-                end)
-                return true
-            end,
-        })
-        :find()
+        },
+        confirm = function(picker, item)
+            picker:close()
+            -- tried rendering docs in a scratch buffer via pandoc; rustdoc HTML is too noisy
+            -- to clean up fully
+            -- local html = table.concat(vim.fn.readfile(item.file), "\n")
+            -- html = html:gsub('<span class="sub%-heading">.-</span>', "")
+            -- html = html:gsub('<a[^>]*href="https://play%.rust%-lang%.org/[^"]*"[^>]*>.-</a>', "")
+            -- html = html:gsub('<a[^>]*class="doc%-anchor"[^>]*>.-</a>', "")
+            -- local result = vim.system(
+            --     { "pandoc", "-f", "html", "-t", "markdown_strict" },
+            --     { text = true, stdin = html }
+            -- ):wait()
+            -- if result.code ~= 0 or not result.stdout or result.stdout == "" then
+            --     vim.notify("pandoc failed to convert docs", vim.log.levels.ERROR)
+            --     return
+            -- end
+            -- local lines = vim.split(result.stdout, "\n", { plain = true })
+            -- local layouts = require("lavish-layouts")
+            -- layouts.new_from_split()
+            -- local buf = vim.api.nvim_create_buf(false, true)
+            -- vim.bo[buf].buftype = "nofile"
+            -- vim.bo[buf].bufhidden = "wipe"
+            -- vim.bo[buf].filetype = "markdown"
+            -- vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+            -- vim.bo[buf].modifiable = false
+            -- vim.api.nvim_win_set_buf(0, buf)
+            vim.system { "firefox", "--new-window", "file://" .. item.file }
+        end,
+    }
 end
 
 return M
