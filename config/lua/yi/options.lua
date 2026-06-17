@@ -68,6 +68,7 @@ function mod.set()
     set.ttimeout = true
 
     set.cmdwinheight = 10
+    set.cmdheight = 0
 
     vim.g.no_man_maps = 1 -- see share/nvim/runtime/ftplugin/man.vim
 
@@ -107,6 +108,26 @@ function mod.set()
         autocmd TermOpen * startinsert
       augroup END
     ]])
+
+    require("vim._core.ui2").enable {
+        enable = true,
+        msg = {
+            targets = "msg",
+            cmd = {
+                height = 0.5,
+            },
+            dialog = {
+                height = 0.5,
+            },
+            msg = {
+                height = 0.5,
+                timeout = 4000,
+            },
+            pager = {
+                height = 1,
+            },
+        },
+    }
 end
 
 return mod
