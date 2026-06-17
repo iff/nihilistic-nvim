@@ -267,7 +267,7 @@ function M.pick_file_nvim_config()
     -- TODO use here current runtime, or dev environment? do we even want that enabled when in normal operation?
     -- TODO also a way to grep in all of vim source?
     -- builtin.find_files { prompt_title = "vim runtime", search_dirs = runtime_folders, default_text = maybe_default_text() }
-    builtin_snack.files { title = "vim runtime", dirs = runtime_folders, search = maybe_default_text() }
+    builtin_snack.files { title = "vim runtime", dirs = { "~/src/nihilistic-nvim" }, search = maybe_default_text() }
 end
 
 function M.pick_file_buffer_folder()
