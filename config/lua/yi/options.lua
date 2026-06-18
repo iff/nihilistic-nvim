@@ -58,6 +58,9 @@ function mod.set()
     set.cinkeys = ""
     set.formatoptions = ""
 
+    -- disable intro message
+    set.shortmess:append("I")
+
     set.modeline = false
     set.modelines = 0
 

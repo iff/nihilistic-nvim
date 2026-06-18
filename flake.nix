@@ -276,7 +276,7 @@
           else
               exe=(${pkgs.neovim-unwrapped}/bin/nvim)
           fi
-          if NVIM_APPNAME=nvim-e $exe -u ${initLuaProd} ''${@:-.}; then
+          if NVIM_APPNAME=nvim-e $exe -u ${initLuaProd} ''${@:-}; then
               exit 0
           else
               ret=$?
@@ -301,9 +301,10 @@
               # inputs.funky-formatter-nvim.packages.${pkgs.stdenv.hostPlatform.system}.default
             ]
             ++ dependencies;
-          postBuild = ''
-            ln -sfT $out/bin/e $out/bin/nvim
-          '';
+
+          # postBuild = ''
+          #   ln -sfT $out/bin/e $out/bin/nvim
+          # '';
         };
 
         luarcMain = pkgs.writeTextFile {
