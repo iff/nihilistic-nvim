@@ -52,10 +52,6 @@ function M.setup()
         end,
     })
 
-    -- local function window_nr()
-    --     return "%#AlwaysOnWindowNumber#󰐤" .. vim.api.nvim_win_get_number(0)
-    -- end
-
     ---@param bufnr number | nil bufnr
     local function diagnostic(bufnr)
         if #vim.lsp.get_clients { bufnr = bufnr } == 0 then
@@ -67,7 +63,7 @@ function M.setup()
         end
 
         local s = vim.diagnostic.severity
-        return "%#DiagnosticError#󰅚  " .. num(s.ERROR) .. " %#DiagnosticWarn#󰀪  " .. num(s.WARN)
+        return "%#DiagnosticError#󰅚 " .. num(s.ERROR) .. " %#DiagnosticWarn#󰀪 " .. num(s.WARN)
     end
 
     -- local function lsp_busy()
@@ -178,25 +174,29 @@ function M.setup()
             globalstatus = false,
         },
         sections = {
-            lualine_a = { "mode" },
-            lualine_b = { show_file },
+            lualine_a = {
+                -- "mode"
+            },
+            lualine_b = {
+                -- show_file,
+            },
             lualine_c = {},
-            lualine_x = {
+            lualine_x = {},
+            lualine_y = {
                 {
                     function()
                         return diagnostic(0)
                     end,
                 },
             },
-            lualine_y = {
-                { "filetype", icons_enabled = false },
-            },
             lualine_z = {
                 "location",
             },
         },
         inactive_sections = {
-            lualine_a = { show_file },
+            lualine_a = {
+                show_file,
+            },
             lualine_b = {},
             lualine_c = {},
             lualine_x = {},
@@ -205,22 +205,26 @@ function M.setup()
         },
         tabline = {
             lualine_a = {
+                -- TODO do I really use this?
                 map_mode,
+            },
+            lualine_b = {
+                -- TODO not sure, I almost never use tabs
                 {
                     "tabs",
                     max_length = vim.o.columns,
                     show_modified_status = false,
                 },
             },
+            lualine_c = {},
+            lualine_x = {},
             lualine_y = {
                 function()
                     return diagnostic(nil)
                 end,
             },
             lualine_z = {
-                -- function()
-                --     return lsp_busy()
-                -- end,
+                { "filetype", icons_enabled = false },
             },
         },
         extensions = {},
