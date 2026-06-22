@@ -386,8 +386,8 @@
             build-dev
             nix-output-monitor
             #
-            # emmylua-ls
-            lua-language-server
+            emmylua-ls
+            # lua-language-server
           ];
         };
       }
