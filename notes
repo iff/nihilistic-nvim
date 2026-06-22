@@ -1,3 +1,4 @@
+- can we use ui2 for lsp notifications?
 - lua lsp https://github.com/EmmyLuaLs/emmylua-analyzer-rust
 - cleanup bindings - force myself to use visual selection
 - snacks pickers: workspace lsp symbols just sends stuff to lsp, no fuzzy matching
