@@ -116,7 +116,7 @@
         "type": "github"
       }
     },
-    "mad-mappings": {
+    "mad-mappings-nvim": {
       "flake": false,
       "locked": {
         "lastModified": 1768258795,
