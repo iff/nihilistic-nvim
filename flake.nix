@@ -49,10 +49,10 @@
       flake = false;
     };
 
-    lualine-nvim = {
-      url = "github:nvim-lualine/lualine.nvim";
-      flake = false;
-    };
+    # lualine-nvim = {
+    #   url = "github:nvim-lualine/lualine.nvim";
+    #   flake = false;
+    # };
 
     nvim-lspconfig = {
       url = "github:neovim/nvim-lspconfig";
@@ -136,7 +136,7 @@
           # catppuccin-nvim # -> did not like it
           # everforest # -> also not so nice
           (lib.plug "nightfox-nvim")
-          (lib.plug "lualine-nvim")
+          # (lib.plug "lualine-nvim")
           # nvim-web-devicons
           mini-icons
 

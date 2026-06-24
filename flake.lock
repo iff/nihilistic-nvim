@@ -116,23 +116,7 @@
         "type": "github"
       }
     },
-    "lualine-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1780194559,
-        "narHash": "sha256-6PjGu30Ed4/e/HQ3mIFQuUOxcCiti/71jjlMsjN7EoA=",
-        "owner": "nvim-lualine",
-        "repo": "lualine.nvim",
-        "rev": "221ce6b2d999187044529f49da6554a92f740a96",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-lualine",
-        "repo": "lualine.nvim",
-        "type": "github"
-      }
-    },
-    "mad-mappings-nvim": {
+    "mad-mappings": {
       "flake": false,
       "locked": {
         "lastModified": 1768258795,
