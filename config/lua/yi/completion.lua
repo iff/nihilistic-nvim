@@ -16,6 +16,7 @@ function M.setup()
             trigger = {
                 prefetch_on_insert = false,
                 show_on_insert_on_trigger_character = false,
+                show_in_snippet = false,
             },
             menu = {
                 auto_show = false,
@@ -38,6 +39,7 @@ function M.setup()
             ["<c-y>"] = { "hide", "fallback" },
             ["<enter>"] = { "accept", "fallback" },
             ["<c-n>"] = { "show", "fallback" },
+            ["<tab>"] = { "snippet_forward", "fallback" },
         },
         sources = {
             default = { "lsp", "snippets" },
