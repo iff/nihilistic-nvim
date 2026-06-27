@@ -173,7 +173,7 @@
         "mad-mappings-nvim": "mad-mappings-nvim",
         "nightfox-nvim": "nightfox-nvim",
         "nixpkgs": "nixpkgs",
-        "nvim-lspconfig": "nvim-lspconfig",
+        "nvim-lspconfig": "nvim-lspconfig"
       }
     },
     "systems": {
