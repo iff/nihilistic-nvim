@@ -84,10 +84,10 @@
     #   flake = false;
     # };
 
-    ptags-nvim = {
-      url = "github:dkuettel/ptags.nvim";
-      flake = true;
-    };
+    # ptags-nvim = {
+    #   url = "github:dkuettel/ptags.nvim";
+    #   flake = true;
+    # };
   };
 
   outputs =
@@ -119,7 +119,7 @@
           (lib.plug "lavish-layouts-nvim")
           (lib.plug "funky-formatter-nvim")
           # (lib.plug "mad-mappings-nvim")
-          (lib.plugNoCheck "ptags-nvim")
+          # (lib.plugNoCheck "ptags-nvim")
 
           hunk-nvim
           diffview-nvim
@@ -299,7 +299,7 @@
             bins
             ++ [
               pkgs.neovim-unwrapped
-              inputs.ptags-nvim.packages.${pkgs.stdenv.hostPlatform.system}.default
+              # inputs.ptags-nvim.packages.${pkgs.stdenv.hostPlatform.system}.default
               # inputs.funky-formatter-nvim.packages.${pkgs.stdenv.hostPlatform.system}.default
             ]
             ++ dependencies;
