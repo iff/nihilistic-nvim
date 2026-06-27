@@ -855,7 +855,7 @@ function M.mode_windows()
 end
 
 function M.for_search()
-    local t = require("yi.telescope")
+    local t = require("yi.pickers")
     return validated_maps {
         { [[f]], n, "search" },
         { [[ff]], n, "fuzzy find", fn = t.kinda_fuzzy_find_in_buffer },
@@ -891,7 +891,7 @@ end
 ---@return Map[] mappings
 function M.for_jumps()
     -- TODO want to make this generic, and dynamic
-    local t = require("yi.telescope")
+    local t = require("yi.pickers")
     local l = require("yi.lsp")
 
     return validated_maps {
@@ -984,7 +984,7 @@ function M.for_jumps()
         { [[tb]], n, "buffers", fn = t.pick_buffer },
         { [[th]], n, "help tags", fn = t.pick_help },
         { [[tk]], n, "man pages", fn = t.pick_man },
-        { [[tak]], n, "all man pages", fn = t.pick_man_all },
+        -- { [[tak]], n, "all man pages", fn = t.pick_man_all },
         { [[tm]], n, "marks", fn = t.pick_mark },
         { [[tj]], n, "jumps", fn = t.pick_jumplist },
         { [[ts]], n, "treesitter", fn = t.pick_treesitter },

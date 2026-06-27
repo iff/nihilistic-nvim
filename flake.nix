@@ -59,30 +59,30 @@
       flake = false;
     };
 
-    telescope-nvim = {
-      url = "github:nvim-telescope/telescope.nvim";
-      flake = false;
-    };
-
-    telescope-fzf-native-nvim = {
-      url = "github:nvim-telescope/telescope-fzf-native.nvim";
-      flake = false;
-    };
-
-    telescope-ui-select-nvim = {
-      url = "github:nvim-telescope/telescope-ui-select.nvim";
-      flake = false;
-    };
+    # telescope-nvim = {
+    #   url = "github:nvim-telescope/telescope.nvim";
+    #   flake = false;
+    # };
+    #
+    # telescope-fzf-native-nvim = {
+    #   url = "github:nvim-telescope/telescope-fzf-native.nvim";
+    #   flake = false;
+    # };
+    #
+    # telescope-ui-select-nvim = {
+    #   url = "github:nvim-telescope/telescope-ui-select.nvim";
+    #   flake = false;
+    # };
 
     # rustacean-nvim = {
     #   url = "github:mrcjkb/rustaceanvim";
     #   flake = true;
     # };
 
-    resty-vim = {
-      url = "github:lima1909/resty.nvim";
-      flake = false;
-    };
+    # resty-vim = {
+    #   url = "github:lima1909/resty.nvim";
+    #   flake = false;
+    # };
 
     ptags-nvim = {
       url = "github:dkuettel/ptags.nvim";
@@ -130,7 +130,9 @@
           fidget-nvim
           (lib.plug "hop-nvim")
           (lib.plug "fugitive-nvim")
-          (lib.plugNoCheck "resty-vim")
+
+          # HTTP-Rest-Client plugin
+          # (lib.plugNoCheck "resty-vim")
 
           # theme
           # catppuccin-nvim # -> did not like it
@@ -150,9 +152,9 @@
           # telescope
           snacks-nvim
           plenary-nvim
-          (lib.plugNoCheck "telescope-nvim")
-          (lib.plug "telescope-fzf-native-nvim")
-          (lib.plug "telescope-ui-select-nvim")
+          # (lib.plugNoCheck "telescope-nvim")
+          # (lib.plug "telescope-fzf-native-nvim")
+          # (lib.plug "telescope-ui-select-nvim")
 
           nvim-dap
           # nvim-dap-ui
