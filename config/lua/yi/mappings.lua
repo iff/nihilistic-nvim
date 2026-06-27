@@ -926,10 +926,13 @@ function M.for_jumps()
                         return
                     end
                     local bufnr = vim.api.nvim_create_buf(false, true)
-                    vim.lsp.util.stylize_markdown(bufnr, lines, {})
+                    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+                    vim.bo[bufnr].filetype = "markdown"
+                    vim.treesitter.start(bufnr, "markdown")
                     local layouts = require("lavish-layouts")
                     layouts.new_from_split()
                     vim.api.nvim_win_set_buf(0, bufnr)
+                    vim.wo[0].conceallevel = 2
                     vim.bo[bufnr].modifiable = false
                 end)
             end,
