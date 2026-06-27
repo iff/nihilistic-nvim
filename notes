@@ -1,8 +1,8 @@
 - can we use ui2 for lsp notifications?
-- lua lsp https://github.com/EmmyLuaLs/emmylua-analyzer-rust
 - cleanup bindings - force myself to use visual selection
 - snacks pickers: workspace lsp symbols just sends stuff to lsp, no fuzzy matching
   - eg. `search = "#"` gets us everything but only for rust-analyzer
+x lua lsp https://github.com/EmmyLuaLs/emmylua-analyzer-rust
 x try snacks pickers
 x try blink.cmp
 x oil instead of netrw
