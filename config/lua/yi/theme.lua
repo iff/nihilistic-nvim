@@ -35,8 +35,8 @@ end
 
 function M.setup_tabline()
     local function setup_hls(pal)
-        vim.api.nvim_set_hl(0, "StatusLine", { bg = pal.bg0, fg = pal.bg0 })
-        vim.api.nvim_set_hl(0, "StatusLineNC", { bg = pal.bg0, fg = pal.bg0 })
+        vim.api.nvim_set_hl(0, "StatusLine", { bg = pal.bg1, fg = pal.bg0 })
+        vim.api.nvim_set_hl(0, "StatusLineNC", { bg = pal.bg1, fg = pal.bg0 })
         vim.api.nvim_set_hl(0, "TabLine", { bg = pal.bg0, fg = pal.fg3, bold = true })
         vim.api.nvim_set_hl(0, "TabLineSel", { bg = pal.bg0, fg = pal.fg1, bold = true })
         vim.api.nvim_set_hl(0, "TabLineFill", { bg = pal.bg0 })
@@ -94,7 +94,11 @@ function M.setup_tabline()
     M.tabline = tabline
     vim.o.tabline = "%!v:lua.require('yi.theme').tabline()"
     vim.o.showtabline = 2
-    vim.o.statusline = " "
+
+    M.statusline = function()
+        return string.rep("─", vim.api.nvim_win_get_width(0))
+    end
+    vim.o.statusline = "%!v:lua.require('yi.theme').statusline()"
     vim.o.laststatus = 0
 
     vim.api.nvim_create_autocmd("DiagnosticChanged", {
