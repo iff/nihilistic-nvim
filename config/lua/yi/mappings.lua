@@ -305,9 +305,10 @@ function M.clear()
 
     -- TODO try generically to delete all
     -- and there is also nvim_buf_get_keymap ... how to make sure we always have a clean slate?
-    vim.iter(vim.api.nvim_get_keymap("n")):each(function(map)
-        vim.api.nvim_del_keymap("n", map.lhs)
-        -- del(map.mode, map.lhs)
+    vim.iter({ "n", "i", "v", "o", "x" }):each(function(mode)
+        vim.iter(vim.api.nvim_get_keymap(mode)):each(function(map)
+            vim.api.nvim_del_keymap(mode, map.lhs)
+        end)
     end)
 
     -- TODO help index.txt has a list, but need to parse it, there is no api to get all of those
