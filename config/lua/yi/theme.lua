@@ -23,13 +23,12 @@ local function combined_diagnostics(bufnr)
         return ""
     end
 
-    local function num(severity)
-        local loc = #vim.diagnostic.get(0, { severity = severity })
-        local all = #vim.diagnostic.get(nil, { severity = severity })
-        return loc .. "/" .. all
-    end
-
     local s = vim.diagnostic.severity
+    local loc = vim.diagnostic.count(0)
+    local all = vim.diagnostic.count(nil)
+    local function num(severity)
+        return (loc[severity] or 0) .. "/" .. (all[severity] or 0)
+    end
     return "%#DiagnosticError#󰅚 " .. num(s.ERROR) .. " %#DiagnosticWarn#󰀪 " .. num(s.WARN)
 end
 
