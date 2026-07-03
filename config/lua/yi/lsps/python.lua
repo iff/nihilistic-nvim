@@ -13,13 +13,22 @@ function M.setup(capabilities)
     })
 
     vim.lsp.config("ty", {
-        on_attach = function(client, _)
-            -- ty registers diagnosticProvider dynamically, so workspace_diagnostics
-            -- must fire after client/registerCapability, not in on_attach
-            local orig = client.handlers["client/registerCapability"] or vim.lsp.handlers["client/registerCapability"]
-            client.handlers["client/registerCapability"] = function(err, result, ctx, config)
-                local ret = orig(err, result, ctx, config)
-                vim.lsp.buf.workspace_diagnostics { client_id = client.id }
+        ---@param client vim.lsp.Client
+        ---@param initialization_result lsp.InitializeResult
+        on_init = function(client, _initialization_result)
+            -- we cant do vim.lsp.buf.workspace_diagnostics before the capabilities are dynamically registered
+            -- (and we want that, `diagnosticMode = "workspace"` doesnt seem to do anything)
+            -- TODO I think eventually there must be a better way
+            local handler = client.handlers["client/registerCapability"]
+                or vim.lsp.handlers["client/registerCapability"]
+            local tried = false
+            client.handlers["client/registerCapability"] = function(...)
+                local ret = handler(...)
+                if not tried then
+                    vim.lsp.buf.workspace_diagnostics { client_id = client.id }
+                    -- NOTE we only do it once, maybe there is a way to check if the cap has been set
+                    tried = true
+                end
                 return ret
             end
         end,
