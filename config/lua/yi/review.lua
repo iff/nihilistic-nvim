@@ -104,7 +104,7 @@ local function find_changed_functions(filepath, ranges, root)
     end
 
     local ok, parser = pcall(vim.treesitter.get_parser, bufnr, lang)
-    if not ok then
+    if not ok or parser == nil then
         if scratch then
             vim.api.nvim_buf_delete(bufnr, { force = true })
         end
