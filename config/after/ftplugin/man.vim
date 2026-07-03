@@ -9,4 +9,4 @@ nnoremap <silent> <buffer> k <cmd>set scroll=0<enter><c-u><c-u>
 nnoremap <silent> <buffer> h <cmd>set scroll=0<enter><c-d><c-d>
 " TODO this mapping is not very well aligned yet
 " not bad, a bit hacky to "hide" the filename column
-nnoremap <silent> <buffer> go <cmd>lua require("man").show_toc()<enter><c-w>c<cmd>lua require("telescope.builtin").loclist({fname_width=0})<enter>
+nnoremap <silent> <buffer> go <cmd>lua require("man").show_toc()<enter><c-w>c<cmd>lua require("snacks.picker").loclist()<enter>

@@ -160,29 +160,6 @@ function M.get_one_lsp_client()
     end
 end
 
-local function highlight()
-    local back = {
-        window = vim.api.nvim_get_current_win(),
-        cursorline = vim.wo[0].cursorline,
-        highlight = vim.api.nvim_get_hl(0, { name = "CursorLine" }),
-    }
-
-    vim.wo.cursorline = true
-    vim.api.nvim_set_hl(0, "CursorLine", { bg = "#81a1c1" })
-    vim.cmd("redraw!")
-
-    local function reset()
-        vim.wo[back.window].cursorline = back.cursorline
-        vim.api.nvim_set_hl(
-            0,
-            "CursorLine",
-            back.highlight ---@diagnostic disable-line: param-type-mismatch
-        )
-    end
-
-    return reset
-end
-
 function M.op(method)
     local function fn(make)
         local client = M.get_one_lsp_client()
@@ -190,42 +167,30 @@ function M.op(method)
             return
         end
 
-        local reset_highlight = highlight()
-
         local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
         local replies, error = client:request_sync(method, params, 2000, 0)
 
         if error or not replies or replies.err then
             vim.print { replies = replies, error = error }
             vim.cmd.echomsg([["lsp error"]])
-            reset_highlight()
             return
         end
 
         if not replies.result or #replies.result == 0 then
             vim.cmd.echomsg([["no candidates"]])
-            reset_highlight()
             return
         end
 
         if #replies.result > 1 then
-            reset_highlight()
-            local builtin = require("telescope.builtin")
-            builtin.lsp_definitions()
+            require("snacks.picker").lsp_definitions()
             return
         end
 
         local selected = replies.result[1]
 
-        reset_highlight()
-
         make()
         vim.lsp.util.show_document(selected, client.offset_encoding)
         vim.cmd("normal! zt")
-
-        -- TODO could we instead highlight only the target word?
-        reset_highlight = highlight()
-        vim.defer_fn(reset_highlight, 500)
     end
     return fn
 end
