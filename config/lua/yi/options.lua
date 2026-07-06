@@ -45,6 +45,7 @@ function mod.set()
     set.jumpoptions = { "view" }
     set.wildmode = "longest:full"
 
+    set.signcolumn = "yes"
     set.tabstop = 4
     set.softtabstop = 4
     set.shiftwidth = 4

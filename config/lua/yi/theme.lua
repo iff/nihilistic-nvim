@@ -95,7 +95,7 @@ function M.setup_tabline()
     vim.o.showtabline = 2
 
     M.statusline = function()
-        return string.rep("─", vim.api.nvim_win_get_width(0))
+        return string.rep("━", vim.api.nvim_win_get_width(0))
     end
     vim.o.statusline = "%!v:lua.require('yi.theme').statusline()"
     vim.o.laststatus = 0
@@ -284,6 +284,16 @@ function M.setup()
 
     vim.opt.background = "dark"
     vim.cmd("colorscheme nordfox")
+
+    vim.opt.fillchars:append {
+        vert = "┃",
+        horiz = "━",
+        horizup = "┻",
+        horizdown = "┳",
+        vertleft = "┫",
+        vertright = "┣",
+        verthoriz = "╋",
+    }
 
     vim.api.nvim_create_user_command("SwTheme", function()
         local name = vim.g.colors_name --[[@as string]]
