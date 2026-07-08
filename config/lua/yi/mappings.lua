@@ -639,7 +639,6 @@ function M.for_operators()
 end
 
 function M.for_visual()
-    local ts = require("yi.incremental_selection")
     return validated_maps {
         -- { [[v]], n, "visual lines", rhs = "V" },
         { [[ v]], n, "visual block", rhs = "<c-v>" },
@@ -669,7 +668,13 @@ function M.for_visual()
         { [[v`]], n, "visual inner `", rhs = "vi`" },
         { [[v `]], n, "visual outer `", rhs = "va`" },
         { [[vc]], n, "visual comment", fn = require("vim._comment").textobject },
-        { [[vt]], n, "visual treesitter", fn = ts.init_selection, maps = M.mode_treesitter },
+        {
+            [[vt]],
+            n,
+            "visual treesitter",
+            rhs = "v<cmd>lua require'vim.treesitter._select'.select_parent(1)<enter>",
+            maps = M.mode_treesitter,
+        },
 
         { [[v]], v, "exit visual", rhs = "<esc>" },
         { [[ v]], v, "other side", rhs = "o" },
@@ -816,11 +821,24 @@ end
 
 ---@type ModeFn
 function M.mode_treesitter()
-    local ts = require("yi.incremental_selection")
+    local ts = require("vim.treesitter._select")
     local maps = validated_maps {
-        { [[u]], v, "one more parent", fn = ts.node_incremental },
-        { [[U]], v, "one more parent", fn = ts.scope_incremental },
-        { [[e]], v, "one less parent", fn = ts.node_decremental },
+        {
+            [[u]],
+            v,
+            "one more parent",
+            fn = function()
+                ts.select_parent(1)
+            end,
+        },
+        {
+            [[e]],
+            v,
+            "one less parent",
+            fn = function()
+                ts.select_child(1)
+            end,
+        },
         { [[<esc>]], v, "end treesitter and visual", rhs = "<esc>", maps = M.mode_default },
         { [[<enter>]], v, "end treesitter but keep visual", maps = M.mode_default },
     }
