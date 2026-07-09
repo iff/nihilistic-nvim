@@ -675,6 +675,24 @@ function M.for_visual()
             rhs = "v<cmd>lua require'vim.treesitter._select'.select_parent(1)<enter>",
             maps = M.mode_treesitter,
         },
+        {
+            [[va]],
+            n,
+            "visual inner argument",
+            fn = function()
+                vim.cmd.normal { "v", bang = true }
+                require("nvim-treesitter-textobjects.select").select_textobject("@parameter.inner", "textobjects")
+            end,
+        },
+        {
+            [[v a]],
+            n,
+            "visual outer argument",
+            fn = function()
+                vim.cmd.normal { "v", bang = true }
+                require("nvim-treesitter-textobjects.select").select_textobject("@parameter.outer", "textobjects")
+            end,
+        },
 
         { [[v]], v, "exit visual", rhs = "<esc>" },
         { [[ v]], v, "other side", rhs = "o" },

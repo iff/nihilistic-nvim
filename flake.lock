@@ -162,6 +162,22 @@
         "type": "github"
       }
     },
+    "nvim-treesitter-textobjects": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1775552773,
+        "narHash": "sha256-fOpRElIwvsFWm4AwETx7fpC3RtdH2BpCfX4YHVitqw0=",
+        "owner": "nvim-treesitter",
+        "repo": "nvim-treesitter-textobjects",
+        "rev": "851e865342e5a4cb1ae23d31caf6e991e1c99f1e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-treesitter",
+        "repo": "nvim-treesitter-textobjects",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "auspicious-autosave-nvim": "auspicious-autosave-nvim",
@@ -173,7 +189,8 @@
         "mad-mappings-nvim": "mad-mappings-nvim",
         "nightfox-nvim": "nightfox-nvim",
         "nixpkgs": "nixpkgs",
-        "nvim-lspconfig": "nvim-lspconfig"
+        "nvim-lspconfig": "nvim-lspconfig",
+        "nvim-treesitter-textobjects": "nvim-treesitter-textobjects"
       }
     },
     "systems": {

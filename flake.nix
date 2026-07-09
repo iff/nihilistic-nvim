@@ -8,12 +8,6 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    # life on the cutting edge
-    # neovim-nightly-overlay = {
-    #   url = "github:nix-community/neovim-nightly-overlay";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-
     hop-nvim = {
       url = "github:smoka7/hop.nvim";
       flake = false;
@@ -49,30 +43,15 @@
       flake = false;
     };
 
-    # lualine-nvim = {
-    #   url = "github:nvim-lualine/lualine.nvim";
-    #   flake = false;
-    # };
-
     nvim-lspconfig = {
       url = "github:neovim/nvim-lspconfig";
       flake = false;
     };
 
-    # telescope-nvim = {
-    #   url = "github:nvim-telescope/telescope.nvim";
-    #   flake = false;
-    # };
-    #
-    # telescope-fzf-native-nvim = {
-    #   url = "github:nvim-telescope/telescope-fzf-native.nvim";
-    #   flake = false;
-    # };
-    #
-    # telescope-ui-select-nvim = {
-    #   url = "github:nvim-telescope/telescope-ui-select.nvim";
-    #   flake = false;
-    # };
+    nvim-treesitter-textobjects = {
+      url = "github:nvim-treesitter/nvim-treesitter-textobjects";
+      flake = false;
+    };
 
     # rustacean-nvim = {
     #   url = "github:mrcjkb/rustaceanvim";
@@ -138,8 +117,6 @@
           # catppuccin-nvim # -> did not like it
           # everforest # -> also not so nice
           (lib.plug "nightfox-nvim")
-          # (lib.plug "lualine-nvim")
-          # nvim-web-devicons
           mini-icons
 
           # lsp (minimal)
@@ -152,14 +129,12 @@
           # telescope
           snacks-nvim
           plenary-nvim
-          # (lib.plugNoCheck "telescope-nvim")
-          # (lib.plug "telescope-fzf-native-nvim")
-          # (lib.plug "telescope-ui-select-nvim")
 
           nvim-dap
           # nvim-dap-ui
           nvim-dap-view
 
+          (lib.plugNoCheck "nvim-treesitter-textobjects")
           pkgs.vimPlugins.nvim-treesitter.withAllGrammars
         ];
 
