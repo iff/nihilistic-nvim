@@ -82,6 +82,22 @@
         "type": "github"
       }
     },
+    "indent-blankline-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1771288550,
+        "narHash": "sha256-Vc79ff416uJFqKH8zlM1y208SxaQGpQPqGVbiz5Vflg=",
+        "owner": "lukas-reineke",
+        "repo": "indent-blankline.nvim",
+        "rev": "d28a3f70721c79e3c5f6693057ae929f3d9c0a03",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lukas-reineke",
+        "repo": "indent-blankline.nvim",
+        "type": "github"
+      }
+    },
     "lavish-layouts-nvim": {
       "flake": false,
       "locked": {
@@ -185,6 +201,7 @@
         "fugitive-nvim": "fugitive-nvim",
         "funky-formatter-nvim": "funky-formatter-nvim",
         "hop-nvim": "hop-nvim",
+        "indent-blankline-nvim": "indent-blankline-nvim",
         "lavish-layouts-nvim": "lavish-layouts-nvim",
         "mad-mappings-nvim": "mad-mappings-nvim",
         "nightfox-nvim": "nightfox-nvim",

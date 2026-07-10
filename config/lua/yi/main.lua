@@ -15,6 +15,8 @@ function M.main()
     layouts.setup()
     layouts.switch("dynamic")
 
+    require("yi.indent_blankline").setup()
+
     -- my config
     -- require("yi.oil").setup()
     require("yi.dap").setup()
