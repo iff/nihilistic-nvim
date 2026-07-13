@@ -1,6 +1,6 @@
 local M = {}
 
-function M.setup(capabilities)
+function M.setup()
     vim.lsp.enable("zls")
 end
 

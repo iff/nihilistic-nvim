@@ -1,9 +1,6 @@
 local M = {}
 
-function M.setup(capabilities)
-    vim.lsp.config("leanls", {
-        capabilities = capabilities,
-    })
+function M.setup()
     vim.lsp.enable("leanls")
 end
 

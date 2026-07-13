@@ -1,6 +1,6 @@
 local M = {}
 
-function M.setup(capabilities)
+function M.setup()
     local default_root_dir = vim.lsp.config["rust_analyzer"].root_dir
     local default_before_init = vim.lsp.config["rust_analyzer"].before_init
 
@@ -8,7 +8,6 @@ function M.setup(capabilities)
     vim.lsp.config("rust_analyzer", {
         cmd = { "rust-analyzer" },
         filetypes = { "rust" },
-        capabilities = capabilities,
         root_dir = function(bufnr, on_dir)
             local git_root = vim.fs.root(bufnr, { ".git" })
             if git_root and vim.uv.fs_stat(vim.fs.joinpath(git_root, "src/etc/rust_analyzer_zed.json")) then

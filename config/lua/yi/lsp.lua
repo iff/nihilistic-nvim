@@ -1,19 +1,20 @@
 local M = {}
 
--- TODO this argument is to make it so we setup completion before
--- is there a better way to make that happen?
-function M.setup(capabilities)
+function M.setup()
+    -- applies to all servers configured below; per-server config still merges on top
+    vim.lsp.config("*", { capabilities = require("yi.completion").get_capabilities() })
+
     -- see https://github.com/neovim/nvim-lspconfig
-    require("yi.lsps.clangd").setup(capabilities)
+    require("yi.lsps.clangd").setup()
     -- TODO
-    -- require("yi.lsps.lean").setup(capabilities)
-    require("yi.lsps.lua").setup(capabilities)
-    require("yi.lsps.nix").setup(capabilities)
-    require("yi.lsps.python").setup(capabilities)
-    require("yi.lsps.rust").setup(capabilities)
-    require("yi.lsps.typescript").setup(capabilities)
-    require("yi.lsps.yaml").setup(capabilities)
-    require("yi.lsps.zig").setup(capabilities)
+    -- require("yi.lsps.lean").setup()
+    require("yi.lsps.lua").setup()
+    require("yi.lsps.nix").setup()
+    require("yi.lsps.python").setup()
+    require("yi.lsps.rust").setup()
+    require("yi.lsps.typescript").setup()
+    require("yi.lsps.yaml").setup()
+    require("yi.lsps.zig").setup()
 end
 
 function M.go_to_definition()

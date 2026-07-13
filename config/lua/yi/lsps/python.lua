@@ -1,8 +1,8 @@
 local M = {}
 
-function M.setup(capabilities)
+function M.setup()
     -- TODO only for ty?
-    capabilities = vim.tbl_deep_extend("force", capabilities, {
+    local capabilities = {
         workspace = {
             didChangeWatchedFiles = { dynamicRegistration = true },
             diagnostics = { refreshSupport = true },
@@ -10,7 +10,7 @@ function M.setup(capabilities)
         textDocument = {
             diagnostic = { dynamicRegistration = true },
         },
-    })
+    }
 
     vim.lsp.config("ty", {
         ---@param client vim.lsp.Client

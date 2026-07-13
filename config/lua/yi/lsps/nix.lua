@@ -1,10 +1,8 @@
 local M = {}
 
-function M.setup(capabilities)
+function M.setup()
     vim.lsp.config("nil_ls", {
-        capabilities = capabilities,
         settings = { -- https://github.com/oxalica/nil/blob/main/docs/configuration.md
-
             ["nil"] = {
                 nix = {
                     maxMemoryMB = 10000,
