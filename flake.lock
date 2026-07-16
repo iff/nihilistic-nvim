@@ -207,7 +207,8 @@
         "nightfox-nvim": "nightfox-nvim",
         "nixpkgs": "nixpkgs",
         "nvim-lspconfig": "nvim-lspconfig",
-        "nvim-treesitter-textobjects": "nvim-treesitter-textobjects"
+        "nvim-treesitter-textobjects": "nvim-treesitter-textobjects",
+        "tree-sitter-lean": "tree-sitter-lean"
       }
     },
     "systems": {
@@ -222,6 +223,22 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tree-sitter-lean": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782254639,
+        "narHash": "sha256-WT9cdOrtA4jV9zbZ6EPTadwAZBn4FQZkv8Dchcwisoc=",
+        "owner": "Julian",
+        "repo": "tree-sitter-lean",
+        "rev": "dc5997b2744595eeb389e1ed9c4f5e727c5b655e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Julian",
+        "repo": "tree-sitter-lean",
         "type": "github"
       }
     }

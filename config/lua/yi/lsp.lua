@@ -7,7 +7,7 @@ function M.setup()
     -- see https://github.com/neovim/nvim-lspconfig
     require("yi.lsps.clangd").setup()
     -- TODO
-    -- require("yi.lsps.lean").setup()
+    require("yi.lsps.lean").setup()
     require("yi.lsps.lua").setup()
     require("yi.lsps.nix").setup()
     require("yi.lsps.python").setup()

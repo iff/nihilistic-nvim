@@ -53,6 +53,11 @@
       flake = false;
     };
 
+    tree-sitter-lean = {
+      url = "github:Julian/tree-sitter-lean";
+      flake = false;
+    };
+
     indent-blankline-nvim = {
       url = "github:lukas-reineke/indent-blankline.nvim";
       flake = false;
@@ -109,7 +114,7 @@
           diffview-nvim
           jj-nvim
           gitsigns-nvim
-          oil-nvim
+          # oil-nvim
           kmonad-vim
           fidget-nvim
           (lib.plug "hop-nvim")
@@ -140,8 +145,19 @@
           # nvim-dap-ui
           nvim-dap-view
 
+          # treesitter
           (lib.plugNoCheck "nvim-treesitter-textobjects")
-          pkgs.vimPlugins.nvim-treesitter.withAllGrammars
+          (pkgs.vimPlugins.nvim-treesitter.withPlugins (
+            _:
+            pkgs.vimPlugins.nvim-treesitter.allGrammars
+            ++ [
+              (pkgs.tree-sitter.buildGrammar {
+                language = "lean";
+                version = "unstable-${inputs.tree-sitter-lean.shortRev or "dirty"}";
+                src = inputs.tree-sitter-lean;
+              })
+            ]
+          ))
         ];
 
         devPlugins = map lib.plugNoCheck devPluginNames;
