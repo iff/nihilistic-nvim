@@ -145,6 +145,8 @@
           # nvim-dap-ui
           nvim-dap-view
 
+          lean-nvim
+
           # treesitter
           (lib.plugNoCheck "nvim-treesitter-textobjects")
           (pkgs.vimPlugins.nvim-treesitter.withPlugins (

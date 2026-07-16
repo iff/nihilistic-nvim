@@ -17,6 +17,9 @@ function M.main()
 
     require("yi.indent_blankline").setup()
 
+    -- TODO setup
+    require("lean").setup { mappings = true }
+
     -- my config
     -- require("yi.oil").setup()
     require("yi.dap").setup()
