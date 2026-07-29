@@ -113,6 +113,10 @@ function M.pick_jumplist()
     builtin_snack.jumps()
 end
 
+function M.pick_qflist()
+    builtin_snack.qflist()
+end
+
 function M.pick_diff_files()
     -- TODO maybe needs re-eval when review plugin lands
     local root = vim.fn.getcwd()

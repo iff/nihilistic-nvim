@@ -1030,6 +1030,7 @@ function M.for_jumps()
         { [[ts]], n, "treesitter", fn = t.pick_treesitter },
         { [[tU]], n, "jump to enclosing fn", fn = require("yi.treesitter").jump_to_enclosing_fn },
         { [[tD]], n, "diff fns", fn = require("yi.review").pick_changed_functions },
+        { [[tq]], n, "marks", fn = t.pick_qflist },
 
         { [[tfn]], n, "notes", fn = t.pick_file_notes },
         { [[tfc]], n, "config files", fn = t.pick_file_config },
