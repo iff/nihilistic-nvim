@@ -119,9 +119,7 @@ end
 
 function M.pick_diff_files()
     -- TODO maybe needs re-eval when review plugin lands
-    local root = vim.fn.getcwd()
-    local is_jj = vim.fn.isdirectory(root .. "/.jj") == 1
-    if is_jj then
+    if require("yi.vcs").jj_root() then
         -- TODO only shows diff of current commit
         require("jj.picker").status()
     else
@@ -131,6 +129,12 @@ function M.pick_diff_files()
                 or { "zsh", "-c", "git diff --name-only master 2>/dev/null || git diff --name-only main" },
             search = maybe_default_text(),
         }
+    end
+end
+
+function M.pick_conflicts()
+    if require("yi.vcs").jj_root() then
+        require("jj.picker").conflict()
     end
 end
 

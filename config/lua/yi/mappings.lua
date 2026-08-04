@@ -1021,6 +1021,7 @@ function M.for_jumps()
         { [[tn]], n, "files", fn = t.pick_file },
         { [[tg]], n, "live grep", fn = t.pick_grep },
         { [[tc]], n, "files diff to main", fn = t.pick_diff_files },
+        { [[tx]], n, "conflicts (jj only)", fn = t.pick_conflicts },
         { [[tb]], n, "buffers", fn = t.pick_buffer },
         { [[th]], n, "help tags", fn = t.pick_help },
         { [[tk]], n, "man pages", fn = t.pick_man },
@@ -1068,14 +1069,14 @@ function M.for_comma()
     local h = require("hop")
     local j = require("yi.jj")
 
-    -- TODO only bindings for the vcs we have
     local vcs_status = nil
-    local cwd = vim.fn.getcwd()
-    if vim.uv.fs_stat(cwd .. "/.jj") then
+    local vcs_kind = require("yi.vcs").detect()
+    if vcs_kind == "jj" then
         vcs_status = j.status
-    elseif vim.uv.fs_stat(cwd .. "/.git") then
+    elseif vcs_kind == "git" then
         vcs_status = g.git
     end
+
     return validated_maps {
         { [[,]], n, "misc" },
         { [[<c-d>]], ni, "(try) save and exit (anyway)", rhs = "<cmd>silent! wa<enter><cmd>qa!<enter>" },
