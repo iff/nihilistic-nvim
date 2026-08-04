@@ -969,7 +969,7 @@ function M.for_jumps()
                     local layouts = require("lavish-layouts")
                     layouts.new_from_split()
                     vim.api.nvim_win_set_buf(0, bufnr)
-                    vim.wo[0].conceallevel = 2
+                    vim.wo[0].conceallevel = 0
                     vim.bo[bufnr].modifiable = false
                 end)
             end,
