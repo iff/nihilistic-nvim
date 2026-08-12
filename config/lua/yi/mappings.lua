@@ -1070,9 +1070,11 @@ function M.for_comma()
     local j = require("yi.jj")
 
     local vcs_status = nil
+    local vcs_diff_main = nil
     local vcs_kind = require("yi.vcs").detect()
     if vcs_kind == "jj" then
         vcs_status = j.status
+        vcs_diff_main = j.diff_main
     elseif vcs_kind == "git" then
         vcs_status = g.git
     end
@@ -1085,6 +1087,7 @@ function M.for_comma()
         -- formatter and git
         { [[==]], n, "format buffer", fn = reset_view_and_format },
         { [[gn]], n, "git", fn = vcs_status },
+        { [[gd]], n, "diff to main", fn = vcs_diff_main },
 
         -- hop
         { [[  ]], nv, "hop 2char", fn = h.hint_char2 },
