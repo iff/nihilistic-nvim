@@ -4,6 +4,10 @@ function M.status()
     vim.cmd([[J log]])
 end
 
+function M.diff_main()
+    vim.cmd([[J diff @..main]])
+end
+
 function M.setup()
     require("jj").setup {
         diff = {
