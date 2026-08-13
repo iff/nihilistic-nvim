@@ -20,12 +20,12 @@ function M.setup()
             },
             menu = {
                 auto_show = false,
-                border = "double",
+                border = "rounded",
                 max_height = 20,
             },
             documentation = {
                 auto_show = true,
-                window = { border = "double", max_height = 20 },
+                window = { border = "rounded", max_height = 20 },
             },
             list = {
                 selection = { preselect = false },

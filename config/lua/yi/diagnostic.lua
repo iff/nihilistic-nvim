@@ -80,7 +80,7 @@ function M.config(enable_virtual_lines)
                     return "  [" .. icons[diagnostic.severity] .. "=" .. diagnostic.code .. "]", ""
                 end
             end,
-            border = "double",
+            border = "rounded",
             anchor_bias = "below",
         },
     }

@@ -944,7 +944,7 @@ function M.for_jumps()
             "show lsp hover",
             fn = function()
                 -- TODO cant find where we can set those defaults
-                vim.lsp.buf.hover { border = "double", anchor_bias = "above" }
+                vim.lsp.buf.hover { border = "rounded", anchor_bias = "above" }
             end,
         },
         {
@@ -992,7 +992,7 @@ function M.for_jumps()
                     wrap = true,
                     focus_id = "context",
                     anchor_bias = "above",
-                    border = "double",
+                    border = "rounded",
                 })
             end,
         },

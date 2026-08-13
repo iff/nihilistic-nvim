@@ -22,7 +22,7 @@ function M.go_to_definition()
 end
 
 function M.show_function_signature()
-    vim.lsp.buf.signature_help { border = "double", anchor_bias = "above" }
+    vim.lsp.buf.signature_help { border = "rounded", anchor_bias = "above" }
 end
 
 function M.pick_references()
@@ -194,52 +194,6 @@ function M.op(method)
         vim.cmd("normal! zt")
     end
     return fn
-end
-
-function M.try_autoimport()
-    -- TODO doesnt work, how to easily have the completion menu in normal mode? for autoimports?
-    -- TODO this is probably very specific for python, and not yet robust either
-    -- could we programatically go to insert mode, call complete, first element, and select?
-    -- we expect to be in normal mode after that, so we have to do it directly
-    -- we cannot wait, unless we can give an additional mapping into complete?
-    -- cmp.complete() does accept config, and cmp.ContextReason?, but config is the same config
-    -- where we can have a lot of control
-    -- TODO this works, poc, could we have virtual text for the guess import?
-    -- and then we just do ctrl-n in normal mode if we like that
-    vim.keymap.set("n", "M", function()
-        -- TODO we should go to the end of the word, plus one more character
-        -- at least for params, not necessarily for vim
-        -- TODO or instead we could use only the additionalTextEdits and ignore the current symbol edit
-        -- but still, it looks like the proposals are better when done at the end of the symbol
-        -- maybe there is an option fo the complete LSP call that gives a hint? no it doesnt
-        local params = vim.lsp.util.make_position_params(0, "utf-8")
-        local function handler(_, result, _, _)
-            -- full signature: err, result, ctx, config
-            for _, item in ipairs(result.items) do
-                if item.detail == "Auto-import" then
-                    vim.lsp.buf_request(0, "completionItem/resolve", item, function(_, result, ctx, _)
-                        -- full signature: err, result, ctx, config
-                        local offset_encoding = vim.lsp.get_client_by_id(ctx.client_id).offset_encoding
-                        if result.textEdit ~= nil then
-                            vim.lsp.util.apply_text_edits({ result.textEdit }, 0, offset_encoding)
-                        end
-                        if result.additionalTextEdits ~= nil then
-                            vim.lsp.util.apply_text_edits(result.additionalTextEdits, 0, offset_encoding)
-                        end
-                        if result.documentation ~= nil then
-                            -- TODO used to be there always in my tests, but not anymore?
-                            print(vim.split(result.documentation.value, "\n")[2])
-                        else
-                            vim.pretty_print(result)
-                        end
-                    end)
-                    return
-                end
-            end
-            print("Did not find any auto-import candidates.")
-        end
-        vim.lsp.buf_request(0, "textDocument/completion", params, handler)
-    end, { desc = "auto-import" })
 end
 
 return M
