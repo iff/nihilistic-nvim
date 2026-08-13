@@ -85,6 +85,59 @@ function M.get_context()
     return lines
 end
 
+---@param node TSNode
+---@return TSNode?
+local function rightmost_identifier(node)
+    if node:type():find("identifier", 1, true) then
+        return node
+    end
+    for i = node:named_child_count() - 1, 0, -1 do
+        local child = node:named_child(i)
+        if child then
+            ---@cast child TSNode
+            local found = rightmost_identifier(child)
+            if found then
+                return found
+            end
+        end
+    end
+    return nil
+end
+
+---@param node TSNode
+---@param visit fun(node: TSNode)
+local function walk(node, visit)
+    visit(node)
+    for i = 0, node:child_count() - 1 do
+        local child = node:child(i)
+        if child then
+            ---@cast child TSNode
+            walk(child, visit)
+        end
+    end
+end
+
+-- heuristic to find callees with `name`
+---@param bufnr integer
+---@param root TSNode
+---@param name string
+---@return TSNode[]
+function M.find_calls(bufnr, root, name)
+    local matches = {}
+    walk(root, function(node)
+        if node:type():find("call", 1, true) then
+            local callee = node:named_child(0)
+            if callee then
+                local ident = rightmost_identifier(callee)
+                if ident and vim.treesitter.get_node_text(ident, bufnr) == name then
+                    table.insert(matches, node)
+                end
+            end
+        end
+    end)
+    return matches
+end
+
 function M.jump_to_enclosing_fn()
     local cursor_row = vim.api.nvim_win_get_cursor(0)[1]
     local node = M.matching_ancestors(vim.treesitter.get_node(), { "function", "method" })()
