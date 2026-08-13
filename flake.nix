@@ -277,15 +277,7 @@
           else
               exe=(${pkgs.neovim-unwrapped}/bin/nvim)
           fi
-          if NVIM_APPNAME=nvim-e $exe -u ${initLuaProd} ''${@:-}; then
-              exit 0
-          else
-              ret=$?
-              if [[ -e ./reload-session.vim ]]; then
-                  exec $0 -S ./reload-session.vim
-              fi
-              exit $ret
-          fi
+          NVIM_APPNAME=nvim-e exec $exe -u ${initLuaProd} ''${@:-}
         '';
 
         bins = [
