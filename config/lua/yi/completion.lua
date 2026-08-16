@@ -95,8 +95,9 @@ local function kind_from_id(id)
 end
 
 local function apply_completion(item)
+    -- its a bit sad that we have to replicate code from nvim-cpm/blink here
+    -- decided to only support textEdit protocol
     -- see https://github.com/microsoft/language-server-protocol/blob/gh-pages/_specifications/lsp/3.18/language/completion.md
-    -- vim.print(item)
     if item.textEdit then
         local text_edit = item.textEdit
         local new_text = text_edit.newText
@@ -108,21 +109,29 @@ local function apply_completion(item)
             local end_line = range["end"].line
             local end_col = range["end"].character
 
-            -- NOTE most of the time text will not contain newlines for comp?
-            local l = vim.split(new_text, "\n")
-            assert(#l == 1, "only newText without newlines supported atm")
-            -- TODO mostly we will be in the case where start = end
-            vim.api.nvim_buf_set_text(0, start_line, start_col, end_line, end_col, l)
-            -- TODO move cursor with multiline, need to compute what we added
-            vim.api.nvim_win_set_cursor(0, { end_line + 1, end_col })
+            -- insertTextFormat: 2 => snipped, 1 => plain text
+            if item.insertTextFormat == 2 then
+                vim.api.nvim_buf_set_text(0, start_line, start_col, end_line, end_col, {})
+                vim.api.nvim_win_set_cursor(0, { start_line + 1, start_col })
+                vim.snippet.expand(new_text)
+            else
+                local l = vim.split(new_text, "\n")
+                vim.api.nvim_buf_set_text(0, start_line, start_col, end_line, end_col, l)
+                -- TODO not sure this is correct :)
+                local new_end_line = start_line + #l - 1
+                local new_end_col = #l[#l]
+                if #l == 1 then
+                    new_end_col = start_col + #l[1]
+                end
+                vim.api.nvim_win_set_cursor(0, { new_end_line + 1, new_end_col })
+            end
+        elseif item.insertTextFormat == 2 then
+            vim.snippet.expand(new_text)
         else
             vim.api.nvim_put({ new_text }, "c", false, true)
         end
     elseif item.insertText then
-        assert(item.insertTextFormat == 1, "only plain text insert is supported, no snippets")
-        -- TODO somehow this doesnt seem to do the right thing if you already typed some
-        -- its not clear to me if the lsp should give the diff, or if we should understand part of it in the client
-        vim.api.nvim_put({ item.insertText }, "c", false, true)
+        assert(false, "insertText completion not supported, expected textEdit")
     elseif item.label then
         vim.api.nvim_put({ item.label }, "c", false, true)
     else
@@ -179,8 +188,7 @@ function M.complete_select()
         end,
         on_close = function()
             vim.schedule(function()
-                -- TODO doesnt quite always end up where it should
-                vim.cmd.startinsert { bang = true }
+                vim.cmd.startinsert {}
             end)
         end,
     }
