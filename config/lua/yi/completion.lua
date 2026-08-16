@@ -130,7 +130,7 @@ local function apply_completion(item)
     end
 end
 
---- open the completion items in telescope and select there with fuzzy matching
+--- open the completion items in a snacks picker and select there with fuzzy matching
 function M.complete_select()
     -- TODO this is only lazy failsafe
     local client = assert(require("yi.lsp").get_one_lsp_client(), "no lsp client")
@@ -140,52 +140,50 @@ function M.complete_select()
     -- vim.print { replies = replies, error = error }
     local result = assert((replies or {}).result, "lsp request error")
 
-    local function entry_maker(entry)
+    local items = vim.tbl_map(function(entry)
         return {
-            value = entry,
-            display = entry.label .. " [" .. kind_from_id(entry.kind) .. "]",
-            ordinal = entry.sortText,
+            text = entry.label,
+            entry = entry,
         }
-    end
+    end, result.items)
 
-    -- see https://github.com/nvim-telescope/telescope.nvim/blob/master/developers.md
-    local pickers = require("telescope.pickers")
-    local finders = require("telescope.finders")
-    local conf = require("telescope.config").values
-    local actions = require("telescope.actions")
-    local action_state = require("telescope.actions.state")
-    local opts = {}
-    pickers
-        .new(opts, {
-            prompt_title = "completion",
-            finder = finders.new_table {
-                results = result.items,
-                entry_maker = entry_maker,
-            },
-            sorter = conf.generic_sorter(opts),
-            attach_mappings = function(prompt_bufnr, map)
-                -- TODO this is so strange, does this replace only apply to this picker? if so, then they must be doing some unholy magic in the back
-                actions.select_default:replace(function()
-                    actions.close(prompt_bufnr)
-                    local selection = action_state.get_selected_entry()
-                    apply_completion(selection.value)
-                    vim.schedule(function()
-                        -- TODO doesnt quite always end up where it should
-                        vim.cmd.startinsert { bang = true }
-                    end)
-                end)
-                map("n", "<esc>", function(prompt_bufnr)
-                    actions.close(prompt_bufnr)
-                    vim.cmd.startinsert()
-                    vim.schedule(function()
-                        -- TODO doesnt quite always end up where it should
-                        vim.cmd.startinsert { bang = true }
-                    end)
-                end)
-                return true
-            end,
-        })
-        :find()
+    require("snacks.picker").pick {
+        title = "completion",
+        items = items,
+        format = function(item)
+            return {
+                { item.entry.label },
+                { " [" .. kind_from_id(item.entry.kind) .. "]", "SnacksPickerComment" },
+            }
+        end,
+        preview = function(ctx)
+            local entry = ctx.item.entry
+            local lines = {}
+            if entry.detail then
+                vim.list_extend(lines, vim.split(entry.detail, "\n"))
+            end
+            local doc = entry.documentation
+            if doc then
+                if #lines > 0 then
+                    table.insert(lines, "")
+                end
+                vim.list_extend(lines, vim.split(type(doc) == "table" and doc.value or doc, "\n"))
+            end
+            vim.bo[ctx.buf].modifiable = true
+            vim.api.nvim_buf_set_lines(ctx.buf, 0, -1, false, lines)
+            vim.bo[ctx.buf].filetype = "markdown"
+        end,
+        confirm = function(picker, item)
+            picker:close()
+            apply_completion(item.entry)
+        end,
+        on_close = function()
+            vim.schedule(function()
+                -- TODO doesnt quite always end up where it should
+                vim.cmd.startinsert { bang = true }
+            end)
+        end,
+    }
 end
 
 return M
