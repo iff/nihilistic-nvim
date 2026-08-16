@@ -16,6 +16,22 @@
         "type": "github"
       }
     },
+    "everforest-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1785144799,
+        "narHash": "sha256-+/GahVEA2ensvI/EWCH/tRVbCYUxAKPXmyzZEra8u40=",
+        "owner": "neanias",
+        "repo": "everforest-nvim",
+        "rev": "a0e9edc57379e8feafc6ba207c26dbb12fc1b6d8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "neanias",
+        "repo": "everforest-nvim",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
@@ -197,6 +213,7 @@
     "root": {
       "inputs": {
         "auspicious-autosave-nvim": "auspicious-autosave-nvim",
+        "everforest-nvim": "everforest-nvim",
         "flake-utils": "flake-utils",
         "fugitive-nvim": "fugitive-nvim",
         "funky-formatter-nvim": "funky-formatter-nvim",

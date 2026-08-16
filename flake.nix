@@ -43,6 +43,11 @@
       flake = false;
     };
 
+    everforest-nvim = {
+      url = "github:neanias/everforest-nvim";
+      flake = false;
+    };
+
     nvim-lspconfig = {
       url = "github:neovim/nvim-lspconfig";
       flake = false;
@@ -126,7 +131,7 @@
 
           # theme
           # catppuccin-nvim # -> did not like it
-          everforest # -> also not so nice
+          (lib.plugNoCheck "everforest-nvim")
           (lib.plug "nightfox-nvim")
           mini-icons
 
