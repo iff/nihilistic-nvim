@@ -1,5 +1,12 @@
 local M = {}
 
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "jjdescription",
+    callback = function(args)
+        vim.keymap.set("n", "<esc>", "<cmd>x<enter>", { buffer = args.buf, nowait = true })
+    end,
+})
+
 function M.status()
     vim.cmd([[J log]])
 end
@@ -12,6 +19,11 @@ function M.setup()
     require("jj").setup {
         diff = {
             backend = "diffview",
+        },
+        terminal = {
+            window = {
+                type = "tab", -- TODO or floating?
+            },
         },
     }
     require("hunk").setup {
