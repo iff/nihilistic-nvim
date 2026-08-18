@@ -145,7 +145,7 @@ function M.complete_select()
     local client = assert(require("yi.lsp").get_one_lsp_client(), "no lsp client")
     local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
     local replies, error = client:request_sync("textDocument/completion", params, 5000, 0)
-    assert(not error, "lst request error")
+    assert(not error, "lsp request error")
     -- vim.print { replies = replies, error = error }
     local result = assert((replies or {}).result, "lsp request error")
 
