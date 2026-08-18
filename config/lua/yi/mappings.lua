@@ -1084,27 +1084,15 @@ function M.for_comma()
         { [[<c-d>]], ni, "(try) save and exit (anyway)", rhs = "<cmd>silent! wa<enter><cmd>qa!<enter>" },
         { [[<c-s>]], ni, "save", rhs = "<cmd>silent! w<enter>" },
 
-        -- formatter and git
+        -- formatter
         { [[==]], n, "format buffer", fn = reset_view_and_format },
+
+        -- vcs
         { [[gn]], n, "git", fn = vcs_status },
         { [[gd]], n, "diff to main", fn = vcs_diff_main },
 
         -- hop
         { [[  ]], nv, "hop 2char", fn = h.hint_char2 },
-        {
-            [[<F11><F11>]],
-            i,
-            "hop on same line in insert mode",
-            fn = function()
-                require("hop").hint_char1 {
-                    direction = require("hop.hint").HintDirection.AFTER_CURSOR,
-                    current_line_only = true,
-                }
-                vim.schedule(function()
-                    vim.cmd("startinsert")
-                end)
-            end,
-        },
 
         -- term aliases
         {
