@@ -1,5 +1,18 @@
 local M = {}
 
+--- title capped at 50 chars, body wrapped at 72.
+function M.commit_guidelines()
+    vim.wo.colorcolumn = "73"
+    local match_id = vim.fn.matchadd("Error", [[\%1l\%>50v.\+]])
+    vim.api.nvim_create_autocmd("BufWipeout", {
+        buffer = 0,
+        once = true,
+        callback = function()
+            pcall(vim.fn.matchdelete, match_id)
+        end,
+    })
+end
+
 --- runs `cmd` and trims trailing newline
 ---@param cmd string
 ---@return string output

@@ -100,6 +100,7 @@ end
 
 function M.gitcommit_config()
     vim.bo.textwidth = 0
+    require("yi.vcs").commit_guidelines()
     local n, i = "n", "i"
     map(n, "<esc>", "<cmd>x<enter>")
     map(n, "c", "<cmd>x<enter>")

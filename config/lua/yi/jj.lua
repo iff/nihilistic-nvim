@@ -3,6 +3,7 @@ local M = {}
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "jjdescription",
     callback = function(args)
+        require("yi.vcs").commit_guidelines()
         vim.keymap.set("n", "<esc>", "<cmd>x<enter>", { buffer = args.buf, nowait = true })
     end,
 })
