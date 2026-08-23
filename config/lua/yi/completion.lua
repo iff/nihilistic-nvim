@@ -18,6 +18,9 @@ function M.setup()
                 show_on_insert_on_trigger_character = false,
                 show_in_snippet = false,
             },
+            accept = {
+                dot_repeat = false,
+            },
             menu = {
                 auto_show = false,
                 border = "rounded",
