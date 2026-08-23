@@ -2,15 +2,16 @@ local M = {}
 
 function M.setup()
     -- change some hl for visibility
-    local palette = require("yi.theme").palette()
-    vim.api.nvim_set_hl(0, "@comment", { fg = palette.orange.dim })
-    vim.api.nvim_set_hl(0, "@comment.documentation", { fg = palette.green.dim })
-    vim.api.nvim_set_hl(0, "@comment.line", { fg = palette.orange.dim })
+    local theme = require("yi.theme")
+    local palette = theme.palette()
+    vim.api.nvim_set_hl(0, "@comment", { fg = theme.shade(palette.orange, "dim") })
+    vim.api.nvim_set_hl(0, "@comment.documentation", { fg = theme.shade(palette.green, "dim") })
+    vim.api.nvim_set_hl(0, "@comment.line", { fg = theme.shade(palette.orange, "dim") })
 
     -- handle TODO/NOTE highlighting with autocmd
-    vim.api.nvim_set_hl(0, "@comment.todo", { fg = palette.green.bright, bold = true })
-    vim.api.nvim_set_hl(0, "@comment.note", { fg = palette.blue.bright, bold = true })
-    vim.api.nvim_set_hl(0, "@comment.safety", { fg = palette.red.bright, bold = true })
+    vim.api.nvim_set_hl(0, "@comment.todo", { fg = theme.shade(palette.green, "bright"), bold = true })
+    vim.api.nvim_set_hl(0, "@comment.note", { fg = theme.shade(palette.blue, "bright"), bold = true })
+    vim.api.nvim_set_hl(0, "@comment.safety", { fg = theme.shade(palette.red, "bright"), bold = true })
     vim.api.nvim_create_autocmd({ "BufWinEnter", "WinNew" }, {
         callback = function()
             vim.fn.matchadd("@comment.todo", [[//.*\zs\<TODO\>]])

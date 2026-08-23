@@ -1,7 +1,42 @@
 local M = {}
 
+local THEMES = {
+    nordfox = {
+        colorscheme = "nordfox",
+        background = "dark",
+        palette = function()
+            return require("nightfox.palette").load("nordfox")
+        end,
+    },
+    everforest = {
+        colorscheme = "everforest",
+        background = "dark",
+        palette = function()
+            local everforest = require("everforest")
+            return require("everforest.colours").generate_palette(everforest.config, vim.o.background)
+        end,
+    },
+}
+
+local active_theme = "everforest"
+
 function M.palette()
-    return require("nightfox.palette").load(vim.g.colors_name or "nordfox")
+    local theme = THEMES[vim.g.colors_name] or THEMES[active_theme]
+    return theme.palette()
+end
+
+function M.shade(color, variant)
+    if type(color) == "table" then
+        return (variant and color[variant]) or color.base or color
+    end
+    return color
+end
+
+local function apply_theme(name)
+    local theme = THEMES[name]
+    active_theme = name
+    vim.opt.background = theme.background
+    vim.cmd("colorscheme " .. theme.colorscheme)
 end
 
 local function map_mode()
@@ -36,14 +71,18 @@ function M.setup_tabline()
     local function setup_hls(pal)
         vim.api.nvim_set_hl(0, "StatusLine", { bg = pal.bg1, fg = pal.bg0 })
         vim.api.nvim_set_hl(0, "StatusLineNC", { bg = pal.bg1, fg = pal.bg0 })
+        vim.api.nvim_set_hl(0, "WinSeparator", { fg = pal.bg4 })
         vim.api.nvim_set_hl(0, "TabLine", { bg = pal.bg0, fg = pal.fg3, bold = true })
         vim.api.nvim_set_hl(0, "TabLineSel", { bg = pal.bg0, fg = pal.fg1, bold = true })
         vim.api.nvim_set_hl(0, "TabLineFill", { bg = pal.bg0 })
-        vim.api.nvim_set_hl(0, "TablineModeN", { bg = pal.bg0, fg = pal.blue.base, bold = true })
-        vim.api.nvim_set_hl(0, "TablineModeI", { bg = pal.bg0, fg = pal.green.base, bold = true })
-        vim.api.nvim_set_hl(0, "TablineModeV", { bg = pal.bg0, fg = pal.magenta.base, bold = true })
-        vim.api.nvim_set_hl(0, "TablineModeR", { bg = pal.bg0, fg = pal.red.base, bold = true })
-        vim.api.nvim_set_hl(0, "TablineModeC", { bg = pal.bg0, fg = pal.yellow.base, bold = true })
+
+        vim.api.nvim_set_hl(0, "TablineModeN", { bg = pal.bg0, fg = M.shade(pal.blue), bold = true })
+        vim.api.nvim_set_hl(0, "TablineModeI", { bg = pal.bg0, fg = M.shade(pal.green), bold = true })
+        -- HACK: everforest calls this hue "purple"/"aqua"; nightfox calls it "magenta"
+        vim.api.nvim_set_hl(0, "TablineModeV", { bg = pal.bg0, fg = M.shade(pal.aqua or pal.magenta), bold = true })
+        vim.api.nvim_set_hl(0, "TablineModeV", { bg = pal.bg0, fg = pal.aqua, bold = true })
+        vim.api.nvim_set_hl(0, "TablineModeR", { bg = pal.bg0, fg = M.shade(pal.red), bold = true })
+        vim.api.nvim_set_hl(0, "TablineModeC", { bg = pal.bg0, fg = M.shade(pal.yellow), bold = true })
         vim.api.nvim_set_hl(0, "TablineItem", { bg = pal.bg0, fg = pal.fg2, bold = true })
     end
     setup_hls(M.palette())
@@ -121,9 +160,7 @@ end
 
 function M.setup()
     vim.cmd("syntax enable")
-
-    vim.opt.background = "dark"
-    vim.cmd("colorscheme nordfox")
+    apply_theme(active_theme)
 
     vim.opt.fillchars:append {
         vert = "┃",
@@ -136,14 +173,7 @@ function M.setup()
     }
 
     vim.api.nvim_create_user_command("SwTheme", function()
-        local name = vim.g.colors_name --[[@as string]]
-        if name == "nordfox" then
-            vim.opt.background = "light"
-            vim.cmd("colorscheme dayfox")
-        else
-            vim.opt.background = "dark"
-            vim.cmd("colorscheme nordfox")
-        end
+        apply_theme(active_theme == "everforest" and "nordfox" or "everforest")
     end, {})
 
     -- require("nvim-web-devicons").setup {}
