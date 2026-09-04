@@ -154,18 +154,20 @@
 
           # treesitter
           (lib.plugNoCheck "nvim-treesitter-textobjects")
-          (pkgs.vimPlugins.nvim-treesitter.withPlugins (
-            _:
-            pkgs.vimPlugins.nvim-treesitter.allGrammars
-            ++ [
-              (pkgs.tree-sitter.buildGrammar {
-                language = "lean";
-                version = "unstable-${inputs.tree-sitter-lean.shortRev or "dirty"}";
-                src = inputs.tree-sitter-lean;
-              })
-            ]
-          ))
+          treesitterPlugins
         ];
+
+        treesitterPlugins = pkgs.vimPlugins.nvim-treesitter.withPlugins (
+          _:
+          pkgs.vimPlugins.nvim-treesitter.allGrammars
+          ++ [
+            (pkgs.tree-sitter.buildGrammar {
+              language = "lean";
+              version = "unstable-${inputs.tree-sitter-lean.shortRev or "dirty"}";
+              src = inputs.tree-sitter-lean;
+            })
+          ]
+        );
 
         devPlugins = map lib.plugNoCheck devPluginNames;
         devPluginPaths =
@@ -191,12 +193,23 @@
         dependencies = dependencies-telescope ++ dependencies-lsp-fmt;
 
         plugins = worldPlugins ++ devPlugins;
-        # TODO is that still true? do plugins bring their dependencies?
-        # TODO does pkgs.lib.unique here really work as intended? can it properly compare those things?
         pluginsWithDependencies = pkgs.lib.unique (builtins.concatMap getWithDependencies plugins);
         getWithDependencies =
           plugin: [ plugin ] ++ (builtins.concatMap getWithDependencies (plugin.dependencies or [ ]));
         dependencyPlugins = pkgs.lib.subtractLists plugins pluginsWithDependencies;
+
+        treesitterDependencies = builtins.concatMap getWithDependencies (
+          treesitterPlugins.dependencies or [ ]
+        );
+        dependenciesWithoutTreesitter = pkgs.lib.subtractLists treesitterDependencies dependencyPlugins;
+        compactTreesitterDependencies = pkgs.buildEnv {
+          name = "compact-treesitter";
+          paths = treesitterDependencies;
+        };
+        compactDependencyPlugins = builtins.concatLists [
+          dependenciesWithoutTreesitter
+          [ compactTreesitterDependencies ]
+        ];
 
         # TODO is getName guaranteed to never clash? maybe not use -f?
         linkInPlugin = plugin: "ln -sfT ${plugin} ${pkgs.lib.getName plugin}";
@@ -205,7 +218,7 @@
           pkgs.runCommandLocal "packs" { } ''
             mkdir -p $out/pack/dependencies/start/
             cd $out/pack/dependencies/start
-            ${pkgs.lib.concatMapStringsSep "\n" linkInPlugin dependencyPlugins}
+            ${pkgs.lib.concatMapStringsSep "\n" linkInPlugin compactDependencyPlugins}
 
             mkdir -p $out/pack/prod/start/
             cd $out/pack/prod/start
