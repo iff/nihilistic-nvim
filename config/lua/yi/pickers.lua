@@ -2,6 +2,8 @@ local M = {}
 
 local builtin_snack = require("snacks.picker")
 
+local exclude = { ".git", "uv.lock", "flake.lock", "cargo.lock", "npm.lock" }
+
 ---@param default? string
 ---@return string
 local function maybe_default_text(default)
@@ -10,6 +12,10 @@ local function maybe_default_text(default)
     end
     vim.cmd([[normal! "ay]])
     return vim.fn.getreg("a")
+end
+
+local function fn_normal()
+    vim.cmd("stopinsert")
 end
 
 function M.setup()
@@ -23,8 +29,7 @@ function M.setup()
                     reverse = true,
                     layout = {
                         box = "vertical",
-                        width = 0.999,
-                        height = 0.999,
+                        fullscreen = true,
                         { win = "preview" },
                         { win = "list", height = 7 },
                         { win = "input", height = 1 },
@@ -34,8 +39,7 @@ function M.setup()
                     reverse = true,
                     layout = {
                         box = "horizontal",
-                        width = 0.999,
-                        height = 0.999,
+                        fullscreen = true,
                         {
                             box = "vertical",
                             { win = "list" },
@@ -49,6 +53,7 @@ function M.setup()
                 -- NOTE 190 cols is aligned with when lavish-layout switches in dynamic mode
                 return vim.o.columns > 190 and "wide" or "narrow"
             end,
+            formatters = { file = { filename_first = true, truncate = "left", icon_width = 3 } },
             win = {
                 input = {
                     border = heavy,
@@ -56,6 +61,7 @@ function M.setup()
                     keys = {
                         ["<c-e>"] = { "list_down", mode = { "i", "n" } },
                         ["<c-u>"] = { "list_up", mode = { "i", "n" } },
+                        [" "] = { "flash", mode = "n" },
                     },
                 },
                 list = {
@@ -67,6 +73,26 @@ function M.setup()
                     wo = { winhighlight = "Normal:Normal,FloatBorder:FloatBorder" },
                 },
             },
+            actions = {
+                flash = function(picker)
+                    require("flash").jump {
+                        pattern = "^",
+                        label = { after = { 0, 0 } },
+                        search = {
+                            mode = "search",
+                            exclude = {
+                                function(win)
+                                    return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "snacks_picker_list"
+                                end,
+                            },
+                        },
+                        action = function(match)
+                            local idx = picker.list:row2idx(match.pos[1])
+                            picker.list:_move(idx, true, true)
+                        end,
+                    }
+                end,
+            },
         },
     }
 end
@@ -76,7 +102,12 @@ function M.pick_resume()
 end
 
 function M.pick_file()
-    builtin_snack.files()
+    builtin_snack.files {
+        cmd = "fd",
+        hidden = true,
+        exclude = exclude,
+        search = maybe_default_text(),
+    }
 end
 
 function M.pick_file_notes()
@@ -139,27 +170,53 @@ function M.pick_conflicts()
 end
 
 function M.pick_grep()
-    builtin_snack.grep { search = maybe_default_text() }
+    builtin_snack.grep {
+        search = maybe_default_text(),
+        command = "rg",
+        exclude = exclude,
+    }
 end
 
 function M.pick_buffer()
-    builtin_snack.buffers { search = maybe_default_text() }
+    builtin_snack.buffers { pattern = maybe_default_text(), sort_lastuse = true, hidden = false, nofile = false }
 end
 
 function M.pick_references()
-    builtin_snack.lsp_references()
+    builtin_snack.lsp_references { pattern = maybe_default_text() }
 end
 
 function M.kinda_fuzzy_find_in_buffer()
-    builtin_snack.lines { search = maybe_default_text("'") }
+    builtin_snack.lines { pattern = maybe_default_text("'") }
 end
 
 function M.pick_help()
-    builtin_snack.help { search = maybe_default_text() }
+    builtin_snack.help {
+        pattern = maybe_default_text(),
+        confirm = function(picker, item)
+            picker:close()
+            vim.cmd.enew() -- doesnt seem to leave unused unnamed buffers around, even thou I expected it to
+            vim.bo.buftype = "help" -- documentation says dont do this, but no problem so far
+            vim.bo.filetype = "help" -- not sure this is needed, or good?
+            picker:action("help", item)
+        end,
+    }
 end
 
 function M.pick_man()
-    builtin_snack.man()
+    -- TODO used to have: sections = { "1", "4", "5", "7", "8" }
+    builtin_snack.man {
+        pattern = maybe_default_text(),
+        confirm = function(picker, item, action)
+            picker:close()
+            vim.schedule(function()
+                vim.cmd.enew()
+                vim.bo.buftype = "nofile"
+                vim.bo.filetype = "man"
+                local cmd = "Man " .. item.ref ---@type string
+                vim.cmd(cmd)
+            end)
+        end,
+    }
 end
 
 -- function M.pick_man_all()
@@ -167,7 +224,17 @@ end
 -- end
 
 function M.pick_mark()
-    builtin_snack.marks()
+    builtin_snack.marks {
+        pattern = maybe_default_text(),
+        on_show = fn_normal,
+        win = {
+            input = {
+                keys = {
+                    ["d"] = { "mark_delete", mode = "n" },
+                },
+            },
+        },
+    }
 end
 
 function M.pick_project_symbol()
@@ -211,7 +278,7 @@ function M.pick_buffer_symbol()
         builtin_snack.lsp_symbols {
             tree = true,
             keep_parents = true,
-            search = maybe_default_text(),
+            pattern = maybe_default_text(),
             filter = {
                 default = {
                     "Variable",
@@ -251,7 +318,22 @@ function M.pick_project_diagnostics_all()
 end
 
 function M.pick_treesitter()
-    builtin_snack.treesitter()
+    builtin_snack.treesitter {
+        pattern = maybe_default_text(),
+        keep_parents = true,
+    }
+end
+
+function M.pick_command_history()
+    builtin_snack.command_history {
+        pattern = maybe_default_text(),
+    }
+end
+
+function M.pick_undo()
+    builtin_snack.undo {
+        on_show = fn_normal,
+    }
 end
 
 return M

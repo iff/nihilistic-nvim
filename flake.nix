@@ -142,8 +142,9 @@
           # (lib.plugNoCheck "rustacean-nvim")
           # rustaceanvim
 
-          # telescope
+          # pickers
           snacks-nvim
+          flash-nvim
           plenary-nvim
 
           nvim-dap
@@ -174,7 +175,7 @@
           (map (name: "./plugins/${name}") devPluginNames)
           ++ (map (name: "./plugins/${name}/after") devPluginNames);
 
-        dependencies-telescope = with pkgs; [
+        dependencies-pickers = with pkgs; [
           fd
           ripgrep
         ];
@@ -190,7 +191,7 @@
           stylua
           taplo
         ];
-        dependencies = dependencies-telescope ++ dependencies-lsp-fmt;
+        dependencies = dependencies-pickers ++ dependencies-lsp-fmt;
 
         plugins = worldPlugins ++ devPlugins;
         pluginsWithDependencies = pkgs.lib.unique (builtins.concatMap getWithDependencies plugins);
@@ -339,7 +340,7 @@
           };
         };
 
-        # TODO just one for now, but they are not the same technically, just lazy, giving them all telescope
+        # TODO just one for now, but they are not the same technically
         luarcPlugins = pkgs.writeTextFile {
           name = "luarc-plugins";
           destination = "/luarcs/plugin.json";
@@ -353,7 +354,6 @@
             "workspace.library" = [
               "${pkgs.neovim-unwrapped}/share/nvim/runtime"
               "${pkgs.neovim-unwrapped}/lib/nvim"
-              "${pkgs.vimPlugins.telescope-nvim}"
             ];
           };
         };
