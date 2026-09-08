@@ -1068,7 +1068,6 @@ function M.for_comma()
     end
 
     local g = require("yi.fugitive")
-    local h = require("hop")
     local j = require("yi.jj")
 
     local vcs_status = nil
@@ -1093,8 +1092,8 @@ function M.for_comma()
         { [[gn]], n, "git", fn = vcs_status },
         { [[gd]], n, "diff to main", fn = vcs_diff_main },
 
-        -- hop
-        { [[  ]], nv, "hop 2char", fn = h.hint_char2 },
+        -- flash
+        { [[  ]], nv, "flash jump", fn = function() require("flash").jump() end },
 
         -- term aliases
         {

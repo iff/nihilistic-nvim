@@ -8,10 +8,10 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    hop-nvim = {
-      url = "github:smoka7/hop.nvim";
-      flake = false;
-    };
+    # hop-nvim = {
+    #   url = "github:smoka7/hop.nvim";
+    #   flake = false;
+    # };
 
     fugitive-nvim = {
       url = "github:tpope/vim-fugitive";
@@ -122,7 +122,7 @@
           # oil-nvim
           kmonad-vim
           fidget-nvim
-          (lib.plug "hop-nvim")
+          # (lib.plug "hop-nvim")
           (lib.plug "fugitive-nvim")
           (lib.plugNoCheck "indent-blankline-nvim")
 

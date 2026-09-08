@@ -82,22 +82,6 @@
         "type": "github"
       }
     },
-    "hop-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1786727969,
-        "narHash": "sha256-KZY2DbLuM3M8P2Rp6ngbSesmd5uRQBa5nNpWxawOed8=",
-        "owner": "smoka7",
-        "repo": "hop.nvim",
-        "rev": "6e83486f351066e38c3ae9daad2a4f01dfb262ad",
-        "type": "github"
-      },
-      "original": {
-        "owner": "smoka7",
-        "repo": "hop.nvim",
-        "type": "github"
-      }
-    },
     "indent-blankline-nvim": {
       "flake": false,
       "locked": {
@@ -217,7 +201,6 @@
         "flake-utils": "flake-utils",
         "fugitive-nvim": "fugitive-nvim",
         "funky-formatter-nvim": "funky-formatter-nvim",
-        "hop-nvim": "hop-nvim",
         "indent-blankline-nvim": "indent-blankline-nvim",
         "lavish-layouts-nvim": "lavish-layouts-nvim",
         "mad-mappings-nvim": "mad-mappings-nvim",
