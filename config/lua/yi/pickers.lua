@@ -70,7 +70,7 @@ function M.setup()
                 },
                 preview = {
                     border = heavy,
-                    wo = { winhighlight = "Normal:Normal,FloatBorder:FloatBorder" },
+                    wo = { winhighlight = "Normal:Normal,FloatBorder:FloatBorder", number = false },
                 },
             },
             actions = {
