@@ -1091,9 +1091,19 @@ function M.for_comma()
         -- vcs
         { [[gn]], n, "git", fn = vcs_status },
         { [[gd]], n, "diff to main", fn = vcs_diff_main },
+        { [[ge]], n, "next hunk", fn = require("yi.diff").next_hunk },
+        { [[gu]], n, "prev hunk", fn = require("yi.diff").prev_hunk },
+        { [[gi]], n, "prev hunk", fn = require("yi.diff").toggle_inline },
 
         -- flash
-        { [[  ]], nv, "flash jump", fn = function() require("flash").jump() end },
+        {
+            [[  ]],
+            nv,
+            "flash jump",
+            fn = function()
+                require("flash").jump()
+            end,
+        },
 
         -- term aliases
         {

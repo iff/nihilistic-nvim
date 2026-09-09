@@ -118,7 +118,8 @@
           hunk-nvim
           diffview-nvim
           jj-nvim
-          gitsigns-nvim
+          # gitsigns-nvim
+          mini-diff
           # oil-nvim
           kmonad-vim
           fidget-nvim
