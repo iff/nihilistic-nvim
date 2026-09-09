@@ -669,6 +669,22 @@ function M.for_visual()
         { [[v `]], n, "visual outer `", rhs = "va`" },
         { [[vc]], n, "visual comment", fn = require("vim._comment").textobject },
         {
+            [[vf]],
+            n,
+            "flash treesitter",
+            fn = function()
+                require("flash").treesitter {
+                    -- TODO I think its then not using u and e for the labels
+                    -- TODO this wraps around, which is a bit unexpected, especially when you do "eee" to get smaller
+                    -- TODO works okay, but it stays in flash mode, so you first need to select a label, or hit enter, to use it as visual for further ops
+                    actions = {
+                        ["u"] = "next",
+                        ["e"] = "prev",
+                    },
+                }
+            end,
+        },
+        {
             [[vt]],
             n,
             "visual treesitter",
@@ -1100,9 +1116,7 @@ function M.for_comma()
             [[  ]],
             nv,
             "flash jump",
-            fn = function()
-                require("flash").jump()
-            end,
+            fn = require("flash").jump,
         },
 
         -- term aliases
