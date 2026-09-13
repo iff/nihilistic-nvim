@@ -18,7 +18,8 @@ local THEMES = {
     },
 }
 
-local active_theme = "everforest"
+-- local active_theme = "everforest"
+local active_theme = "nordfox"
 
 function M.palette()
     local theme = THEMES[vim.g.colors_name] or THEMES[active_theme]
