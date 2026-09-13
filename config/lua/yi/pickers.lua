@@ -238,8 +238,8 @@ function M.pick_mark()
 end
 
 function M.pick_project_symbol()
-    -- NOTE the query is sent as-is to the LSP -> no fuzzy matching which is a pitty
-    -- does Telescope populate a table with "all" symbols? could we do the same here?
+    -- NOTE the query is sent as-is to the LSP -> no fuzzy matching which is sad?
+    -- TODO difference between lsp_symbols with workspace vs. lsp_workspace_symbols
     builtin_snack.lsp_symbols {
         workspace = true,
         live = true,
