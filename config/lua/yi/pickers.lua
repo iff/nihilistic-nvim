@@ -153,11 +153,15 @@ function M.pick_diff_files()
     if require("yi.vcs").jj_root() then
         -- TODO only shows diff of current commit
         require("jj.picker").status()
+        -- builtin_snack.files {
+        --     title = "jj files with diff",
+        --     cmd = { "jj", "diff", "--name-only", "-r", "trunk()..@" },
+        --     search = maybe_default_text(),
+        -- }
     else
         builtin_snack.files {
-            title = "files with diff",
-            cmd = is_jj and { "jj", "diff", "--name-only", "-r", "trunk()..@" }
-                or { "zsh", "-c", "git diff --name-only master 2>/dev/null || git diff --name-only main" },
+            title = "git files with diff",
+            cmd = { "zsh", "-c", "git diff --name-only master 2>/dev/null || git diff --name-only main" },
             search = maybe_default_text(),
         }
     end
@@ -276,8 +280,10 @@ function M.pick_buffer_symbol()
         builtin_snack.loclist()
     else
         builtin_snack.lsp_symbols {
-            tree = true,
-            keep_parents = true,
+            --     tree = true,
+            --     keep_parents = true,
+            tree = false,
+            keep_parents = false,
             pattern = maybe_default_text(),
             filter = {
                 default = {
@@ -297,12 +303,34 @@ function M.pick_buffer_symbol()
                     "Trait",
                 },
             },
+            -- NOTE see require("snacks.picker.format").lsp_symbol and require("snacks.picker.util.highlight").format
+            -- see also https://github.com/folke/snacks.nvim/pull/2266 (wont implement)
+            format = function(item, picker)
+                local path = ""
+                local at = item
+                while not at.parent.root do
+                    at = at.parent
+                    path = at.name .. "." .. path
+                end
+                local kind = item.lsp_kind or item.kind or "Unknown" ---@type string
+                kind = picker.opts.icons.kinds[kind] and kind or "Unknown"
+                local kind_hl = "SnacksPickerIcon" .. kind
+                local ret = {
+                    { picker.opts.icons.kinds[kind], kind_hl, virtual = true },
+                    { " " },
+                    { path, "Comment", virtual = false },
+                }
+                builtin_snack.highlight.format(item, item.name, ret)
+                return ret
+            end,
         }
     end
 end
 
 function M.pick_buffer_diagnostics()
-    builtin_snack.diagnostics_buffer { severity = { min = vim.diagnostic.severity.ERROR } }
+    builtin_snack.diagnostics_buffer {
+        severity = { min = vim.diagnostic.severity.ERROR },
+    }
 end
 
 function M.pick_buffer_diagnostics_all()
@@ -310,11 +338,20 @@ function M.pick_buffer_diagnostics_all()
 end
 
 function M.pick_project_diagnostics()
-    builtin_snack.diagnostics { severity = { min = vim.diagnostic.severity.ERROR } }
+    builtin_snack.diagnostics {
+        sort = {
+            fields = { "severity", "is_current", "is_cwd", "file", "lnum" },
+        },
+        severity = { min = vim.diagnostic.severity.ERROR },
+    }
 end
 
 function M.pick_project_diagnostics_all()
-    builtin_snack.diagnostics()
+    builtin_snack.diagnostics {
+        sort = {
+            fields = { "severity", "is_current", "is_cwd", "file", "lnum" },
+        },
+    }
 end
 
 function M.pick_treesitter()
