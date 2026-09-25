@@ -24,6 +24,12 @@ function M.setup()
         picker = {
             ui_select = true,
             show_delay = 0,
+            main = {
+                -- should make it always use the previously open window
+                -- usually works for me, but could be a problem sometimes?
+                -- see https://github.com/folke/snacks.nvim/issues/2378#issuecomment-3474790578
+                current = true,
+            },
             layouts = {
                 narrow = {
                     reverse = true,
@@ -54,6 +60,25 @@ function M.setup()
                 return vim.o.columns > 190 and "wide" or "narrow"
             end,
             formatters = { file = { filename_first = true, truncate = "left", icon_width = 3 } },
+            sources = {
+                select = {
+                    kinds = {
+                        codeaction = {
+                            layout = {
+                                preset = "select",
+                                layout = {
+                                    relative = "cursor",
+                                    width = 110,
+                                    min_width = 0,
+                                    row = 1,
+                                },
+                            },
+                            -- TODO vim.fn.feedkeys(" ") actually works to go to flash mode right away
+                            on_show = fn_normal,
+                        },
+                    },
+                },
+            },
             win = {
                 input = {
                     border = heavy,
