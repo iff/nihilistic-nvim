@@ -2,6 +2,7 @@ local M = {}
 
 function M.setup()
     vim.lsp.config("emmylua_ls", {
+        cmd = { "emmylua_ls", "--editor=neovim" },
         ---@param client vim.lsp.Client
         on_init = function(client)
             vim.lsp.buf.workspace_diagnostics { client_id = client.id }

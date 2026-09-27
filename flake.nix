@@ -320,42 +320,44 @@
           # '';
         };
 
-        luarcMain = pkgs.writeTextFile {
-          name = "luarc-main";
-          destination = "/luarcs/main.json";
+        # TODO emmylua doesnt offer a way yet to validate this json
+        # and when it cant be parsed it is just ignored, no notification in nvim and hard to notice
+        emmyrc = pkgs.writeTextFile {
+          name = "emmyrc";
+          destination = "/emmyrc.json";
           text = builtins.toJSON {
-            "runtime.version" = "LuaJIT";
-            "runtime.pathStrict" = true;
-            # TODO we dont add /after right now, not sure this is ever needed? its a bit messy the alternative
-            "runtime.path" = [
-              "lua/?.lua"
-              "lua/?/init.lua"
-            ];
-            # TODO we also add packs here, in theory nvim runtime could also have packs? didnt see any last time I checked
-            "workspace.library" = [
-              "${pkgs.neovim-unwrapped}/share/nvim/runtime"
-              "${pkgs.neovim-unwrapped}/lib/nvim"
-              # "../plugins/ptags.nvim"
-            ]
-            ++ (packPaths true);
-          };
-        };
-
-        # TODO just one for now, but they are not the same technically
-        luarcPlugins = pkgs.writeTextFile {
-          name = "luarc-plugins";
-          destination = "/luarcs/plugin.json";
-          text = builtins.toJSON {
-            "runtime.version" = "LuaJIT";
-            "runtime.pathStrict" = true;
-            "runtime.path" = [
-              "lua/?.lua"
-              "lua/?/init.lua"
-            ];
-            "workspace.library" = [
-              "${pkgs.neovim-unwrapped}/share/nvim/runtime"
-              "${pkgs.neovim-unwrapped}/lib/nvim"
-            ];
+            "$schema" =
+              "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json";
+            runtime = {
+              version = "LuaJIT";
+              requirePattern = [
+                "lua/?.lua"
+                "lua/?/init.lua"
+                # could add `after/lua/...`
+              ];
+            };
+            doc = {
+              syntax = "md";
+            };
+            strict = {
+              requirePath = true;
+              typeCall = true;
+            };
+            workspace = {
+              # workspace entries contribute to workspace diagnostics
+              # but I think the plugins arent really considered in an isolated fashion with this
+              workspaceRoots = [
+                "./config"
+              ]
+              ++ (map (n: "./plugins/${n}") devPluginNames);
+              # library entries are indexed, goto-able, but dont contribute to project diagnostics
+              library = [
+                "${pkgs.neovim-unwrapped}/share/nvim/runtime"
+                "${pkgs.neovim-unwrapped}/lib/nvim"
+              ]
+              # NOTE in theory nvim runtime could also have packPaths, didnt last time I checked, if a future version does, we are probably missing it here
+              ++ (packPaths true);
+            };
           };
         };
 
@@ -371,8 +373,6 @@
           name = "nvim-dev";
           paths = [
             bin-nvim-dev
-            luarcMain
-            luarcPlugins
             package
           ];
         };
@@ -401,6 +401,21 @@
             emmylua-ls
             # lua-language-server
           ];
+
+          shellHook = ''
+            # nd_env is a flake spec ([path:]dir[#name]), so reduce it to the directory
+            root=''${h:-''${nd_env:-}}
+            root=''${root#path:}
+            root=''${root%%#*}
+            if [[ -n $root ]]; then
+              export PATH=$root/bin:$PATH;
+              if [[ ! $root/.nd/state -ef $root/.nd/dev ]] then
+                ln -sfT ${emmyrc}/emmyrc.json $root/.emmyrc.json
+              fi
+            else
+              echo 'Project root unknown: neither h nor nd_env is set.' >&2
+            fi
+          '';
         };
       }
     );
