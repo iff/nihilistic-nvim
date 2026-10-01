@@ -1040,7 +1040,7 @@ function M.for_jumps()
         { [[tx]], n, "conflicts (jj only)", fn = t.pick_conflicts },
         { [[tb]], n, "buffers", fn = t.pick_buffer },
         { [[th]], n, "help tags", fn = t.pick_help },
-        { [[tk]], n, "man pages", fn = t.pick_man },
+        { [[tk]], n, "man pages", fn = t.pick_man_with_descs },
         -- { [[tak]], n, "all man pages", fn = t.pick_man_all },
         { [[tm]], n, "marks", fn = t.pick_mark },
         { [[tj]], n, "jumps", fn = t.pick_jumplist },

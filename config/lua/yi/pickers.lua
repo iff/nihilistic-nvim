@@ -231,11 +231,35 @@ function M.pick_help()
     }
 end
 
-function M.pick_man()
-    -- TODO used to have: sections = { "1", "4", "5", "7", "8" }
-    builtin_snack.man {
+---@param search_desc bool search the description too (otherwise only the command name is searched)
+local function pick_some_man(search_desc)
+    Snacks.picker.man {
         pattern = maybe_default_text(),
-        confirm = function(picker, item, action)
+        ---@param item snacks.picker.finder.Item
+        transform = function(item)
+            -- adapted from picker/source/system.lua
+            local page, section, desc = item.text:match("^(%S+)%s*%((%S-)%)%s+-%s+(.+)$")
+            -- TODO used to have: sections = { "1", "4", "5", "7", "8" }
+            if page and section and desc then
+                item.section = section
+                item.desc = desc
+                item.page = page
+                item.section = section
+                item.ref = ("%s(%s)"):format(item.page, item.section or 1)
+                -- NOTE item.text is the text actually matched for search patterns
+                -- what the format= produces can be very different, doesnt have to include item.text even
+                -- and the visualization of what has been "matched" is not real
+                if search_desc then
+                    item.text = item.page .. "  " .. item.desc
+                else
+                    item.text = item.page
+                end
+            else
+                return false
+            end
+        end,
+        -- NOTE find format= at picker/format.lua::man(...), if you want to change it
+        confirm = function(picker, item, _action)
             picker:close()
             vim.schedule(function()
                 vim.cmd.enew()
@@ -246,6 +270,14 @@ function M.pick_man()
             end)
         end,
     }
+end
+
+function M.pick_man()
+    pick_some_man(false)
+end
+
+function M.pick_man_with_descs()
+    pick_some_man(true)
 end
 
 -- function M.pick_man_all()
