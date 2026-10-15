@@ -69,6 +69,7 @@ function M.setup()
             style = "sign",
             -- default signs too wide for me
             signs = { add = "┃", change = "┃", delete = "┃" },
+            priority = 0,
         },
         mappings = {
             apply = "",
