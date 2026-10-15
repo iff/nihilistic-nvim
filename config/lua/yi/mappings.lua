@@ -122,6 +122,7 @@ function M.get()
     vim.list_extend(maps, M.for_comments())
     vim.list_extend(maps, M.for_dap())
     vim.list_extend(maps, M.for_literals())
+    vim.list_extend(maps, M.for_trains())
     return maps
 end
 
@@ -1218,6 +1219,19 @@ function M.for_literals()
         end
     )
     return validated_maps(maps)
+end
+
+---@return Map[] mappings
+function M.for_trains()
+    local rails = require("rocky-rails")
+    return validated_maps {
+        {
+            [[gr]],
+            n,
+            "trains",
+            fn = rails.cycle,
+        },
+    }
 end
 
 return M

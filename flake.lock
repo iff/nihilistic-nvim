@@ -194,6 +194,23 @@
         "type": "github"
       }
     },
+    "rocky-rails": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792007022,
+        "narHash": "sha256-cLjDLPk8p2YxBX/5f3XwEdeYJKG+AaNnU4sRJU63E04=",
+        "owner": "dkuettel",
+        "repo": "rocky-rails.nvim",
+        "rev": "b3f1b44e0da3f345289cd589b0aa3cc1d3010f50",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dkuettel",
+        "ref": "main",
+        "repo": "rocky-rails.nvim",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "auspicious-autosave-nvim": "auspicious-autosave-nvim",
@@ -208,6 +225,7 @@
         "nixpkgs": "nixpkgs",
         "nvim-lspconfig": "nvim-lspconfig",
         "nvim-treesitter-textobjects": "nvim-treesitter-textobjects",
+        "rocky-rails": "rocky-rails",
         "tree-sitter-lean": "tree-sitter-lean"
       }
     },

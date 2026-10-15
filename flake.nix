@@ -38,6 +38,11 @@
       flake = false;
     };
 
+    rocky-rails = {
+      url = "github:dkuettel/rocky-rails.nvim/main";
+      flake = false;
+    };
+
     nightfox-nvim = {
       url = "github:EdenEast/nightfox.nvim";
       flake = false;
@@ -112,6 +117,7 @@
           (lib.plug "auspicious-autosave-nvim")
           (lib.plug "lavish-layouts-nvim")
           (lib.plug "funky-formatter-nvim")
+          (lib.plug "rocky-rails")
           # (lib.plug "mad-mappings-nvim")
           # (lib.plugNoCheck "ptags-nvim")
 
