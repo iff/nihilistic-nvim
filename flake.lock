@@ -101,11 +101,11 @@
     "lavish-layouts-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1791145107,
-        "narHash": "sha256-LJuDdlYA2oTmh61u2k0ELx3w4Ap7HGNx+W+jEDScpX4=",
+        "lastModified": 1792457542,
+        "narHash": "sha256-fke5ge4e8WqU/qOiR8kkaaYxllh0W69u+XInetXkVUc=",
         "owner": "dkuettel",
         "repo": "lavish-layouts.nvim",
-        "rev": "3821b4460bc2a963895753ba51842409edfd81c7",
+        "rev": "2f1e2e08611e1a48bc8d93fe923ecdcc657d5820",
         "type": "github"
       },
       "original": {
