@@ -939,6 +939,7 @@ function M.for_windows()
         { [[wm]], n, "layout main", fn = layouts.switch_main },
         { [[ws]], n, "layout stacked", fn = layouts.switch_stacked },
         { [[wld]], n, "layout dynamic", fn = layouts.switch_dynamic },
+        { [[wn]], n, "layout none", fn = layouts.switch_none },
     }
 end
 
@@ -1041,7 +1042,7 @@ function M.for_jumps()
         { [[tx]], n, "conflicts (jj only)", fn = t.pick_conflicts },
         { [[tb]], n, "buffers", fn = t.pick_buffer },
         { [[th]], n, "help tags", fn = t.pick_help },
-        { [[tk]], n, "man pages", fn = t.pick_man_with_descs },
+        { [[tk]], n, "man pages", fn = t.pick_man },
         -- { [[tak]], n, "all man pages", fn = t.pick_man_all },
         { [[tm]], n, "marks", fn = t.pick_mark },
         { [[tj]], n, "jumps", fn = t.pick_jumplist },
