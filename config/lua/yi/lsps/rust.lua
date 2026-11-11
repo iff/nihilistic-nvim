@@ -56,6 +56,10 @@ function M.setup()
                         enable = false,
                     },
                 },
+                -- let rust-analyzer watch files (only relevant for osx)
+                files = {
+                    watcher = "server",
+                },
                 -- procMacro = {
                 --     enable = false,
                 -- },
