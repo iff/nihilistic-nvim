@@ -46,6 +46,10 @@ function M.setup()
         },
         sources = {
             default = { "lsp", "snippets" },
+            per_filetype = { markdown = { "lsp", "snippets", "wikilink" } },
+            providers = {
+                wikilink = { name = "wikilink", module = "yi.notes" },
+            },
         },
         snippets = {
             preset = "default",

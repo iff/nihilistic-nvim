@@ -1054,6 +1054,7 @@ function M.for_jumps()
         { [[tz]], n, "undo", fn = t.pick_undo },
 
         { [[tfn]], n, "notes", fn = t.pick_file_notes },
+        { [[tfb]], n, "notes backlinks", fn = require("yi.notes").pick_backlinks },
         { [[tfc]], n, "config files", fn = t.pick_file_config },
         { [[tfv]], n, "nvim files", fn = t.pick_file_nvim_config },
         { [[tfh]], n, "home files", fn = t.pick_file_home },

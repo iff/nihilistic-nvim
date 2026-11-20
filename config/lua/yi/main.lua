@@ -34,6 +34,7 @@ function M.main()
     require("yi.formatter").setup()
     require("yi.diagnostic").setup()
     require("yi.treesitter").setup()
+    require("yi.notes").setup()
 
     require("yi.mappings").apply()
 
