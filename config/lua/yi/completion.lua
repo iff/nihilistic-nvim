@@ -60,7 +60,9 @@ function M.complete_full()
 end
 
 function M.get_capabilities()
-    return require("blink.cmp").get_lsp_capabilities()
+    local caps = require("blink.cmp").get_lsp_capabilities(nil, true)
+    caps.workspace.didChangeWatchedFiles.dynamicRegistration = true
+    return caps
 end
 
 ---@param id integer

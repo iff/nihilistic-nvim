@@ -43,7 +43,6 @@ function M.setup()
         -- }),
         settings = {
             ["rust-analyzer"] = {
-                -- checkOnSave = false,
                 cargo = {
                     allFeatures = true,
                 },
@@ -55,10 +54,6 @@ function M.setup()
                     experimental = {
                         enable = false,
                     },
-                },
-                -- let rust-analyzer watch files (only relevant for osx)
-                files = {
-                    watcher = "server",
                 },
                 -- procMacro = {
                 --     enable = false,
