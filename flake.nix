@@ -68,11 +68,6 @@
       flake = false;
     };
 
-    indent-blankline-nvim = {
-      url = "github:lukas-reineke/indent-blankline.nvim";
-      flake = false;
-    };
-
     # rustacean-nvim = {
     #   url = "github:mrcjkb/rustaceanvim";
     #   flake = true;
@@ -131,7 +126,6 @@
           fidget-nvim
           # (lib.plug "hop-nvim")
           (lib.plug "fugitive-nvim")
-          (lib.plugNoCheck "indent-blankline-nvim")
 
           # HTTP-Rest-Client plugin
           # (lib.plugNoCheck "resty-vim")

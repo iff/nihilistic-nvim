@@ -15,7 +15,7 @@ function M.main()
     layouts.setup()
     layouts.switch("dynamic")
 
-    require("yi.indent_blankline").setup()
+    require("yi.indent_guides").setup()
 
     -- TODO setup
     require("lean").setup { mappings = true }
